@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { SectionHeader } from '../components/SectionHeader';
 import { CGCLogo } from '../components/Logo/CGCLogo';
+import { LEAD_ADMIN, CO_ADMIN, OFFICIAL_COMMUNITY, CAMPUS_EVENT_PHOTOS, CampusEventPhoto } from '../data/team';
 import { 
   ShieldCheck, 
   Users, 
@@ -11,7 +12,15 @@ import {
   MapPin, 
   ArrowRight,
   Maximize2,
-  X
+  X,
+  UserCheck,
+  Send,
+  Linkedin,
+  Github,
+  Mail,
+  Award,
+  Calendar,
+  ExternalLink
 } from 'lucide-react';
 
 interface AboutPageProps {
@@ -20,7 +29,7 @@ interface AboutPageProps {
 }
 
 export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandModal }) => {
-  const [isPhotoLightboxOpen, setIsPhotoLightboxOpen] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState<CampusEventPhoto | null>(null);
 
   const coreValues = [
     {
@@ -100,34 +109,156 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
 
       {/* 
         =======================================================
-        AUTHENTIC CAMPUS LAB PHOTO FEATURE
+        LEADERSHIP & ADMIN SPOTLIGHT (YESUF DERGU)
         =======================================================
       */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl overflow-hidden border border-slate-800 bg-[#111A2E] shadow-2xl relative">
-          <div className="relative h-80 sm:h-96 w-full cursor-pointer group" onClick={() => setIsPhotoLightboxOpen(true)}>
-            <img
-              src="/cgc-community-lab.jpg"
-              alt="CGC students working on laptops in Woliso Campus computer lab"
-              className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 filter brightness-[0.85]"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/40 to-transparent" />
-            <div className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700 text-xs text-white flex items-center gap-1.5 shadow-lg">
-              <Maximize2 className="w-3.5 h-3.5 text-blue-400" />
-              <span>Click to Expand</span>
-            </div>
-            <div className="absolute bottom-6 left-6 right-6">
-              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20 inline-block mb-2">
-                Live from Ambo University, Woliso Campus
+        <SectionHeader
+          badge="Club Governance"
+          badgeColor="green"
+          title="Leadership & Community Administration"
+          description="CGC is founded and operated by passionate undergraduates committed to open-source culture and practical engineering."
+        />
+
+        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-[#111A2E] via-slate-900 to-[#10192E] border border-slate-800 shadow-2xl relative overflow-hidden">
+          <div className="flex flex-col lg:flex-row items-center gap-10">
+            {/* Admin Photo */}
+            <div className="relative flex-shrink-0 group">
+              <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-3xl overflow-hidden border-2 border-blue-500/50 shadow-glow-blue relative">
+                <img
+                  src={LEAD_ADMIN.photoUrl}
+                  alt={LEAD_ADMIN.name}
+                  className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full border-2 border-slate-900 whitespace-nowrap shadow-md flex items-center gap-1">
+                <UserCheck className="w-3.5 h-3.5" />
+                <span>President & Lead Admin</span>
               </span>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
-                Where Ideas Turn into Reality
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-200 mt-1 max-w-2xl leading-relaxed">
-                Photograph from our hands-on student lab sessions in the Main ICT Building: students pair programming, analyzing network packets, and building practical software together.
+            </div>
+
+            {/* Admin Details & Bio */}
+            <div className="space-y-4 text-center lg:text-left flex-1">
+              <div>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-white">{LEAD_ADMIN.name}</h3>
+                <p className="text-sm font-semibold text-blue-400 mt-0.5">{LEAD_ADMIN.role}</p>
+                <p className="text-xs text-slate-400 mt-1">{LEAD_ADMIN.department}</p>
+              </div>
+
+              <p className="text-sm text-slate-300 leading-relaxed max-w-2xl">
+                {LEAD_ADMIN.bio} Yesuf leads campus technical workshops, coordinates cross-batch development hackathons like the Cursor Hackathon Ambo, and stewards the CGC open-source roadmap.
               </p>
+
+              {/* Direct Admin Links */}
+              <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3">
+                <a
+                  href={LEAD_ADMIN.telegramUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-md transition-colors"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span>Telegram ({LEAD_ADMIN.telegram})</span>
+                </a>
+
+                <a
+                  href={CO_ADMIN.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors"
+                >
+                  <Send className="w-3.5 h-3.5 text-blue-400" />
+                  <span>Co-Admin ({CO_ADMIN.handle})</span>
+                </a>
+
+                <a
+                  href={LEAD_ADMIN.linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="p-2.5 rounded-xl bg-slate-800 hover:bg-blue-600 hover:text-white text-slate-300 border border-slate-700 transition-colors"
+                  title="LinkedIn Profile"
+                >
+                  <Linkedin className="w-4 h-4" />
+                </a>
+
+                <a
+                  href={LEAD_ADMIN.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 hover:text-white text-slate-300 border border-slate-700 transition-colors"
+                  title="GitHub Profile (YUD-west)"
+                >
+                  <Github className="w-4 h-4" />
+                </a>
+
+                <a
+                  href={`mailto:${LEAD_ADMIN.email}`}
+                  className="p-2.5 rounded-xl bg-slate-800 hover:bg-emerald-600 hover:text-white text-slate-300 border border-slate-700 transition-colors"
+                  title={`Email ${LEAD_ADMIN.email}`}
+                >
+                  <Mail className="w-4 h-4" />
+                </a>
+              </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* 
+        =======================================================
+        WOLISO CAMPUS TECH EVENTS & HACKATHON PHOTO GALLERY
+        =======================================================
+      */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHeader
+          badge="Authentic Photo Archive"
+          badgeColor="blue"
+          title="Tech Events & Hackathons in Woliso Campus"
+          description="Photographic highlights from our tech orientation ceremonies, Cursor Hackathon Ambo project demos, classroom lectures, and laboratory build sessions."
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {CAMPUS_EVENT_PHOTOS.map((photo) => (
+            <div
+              key={photo.id}
+              onClick={() => setSelectedPhoto(photo)}
+              className="group cursor-pointer rounded-2xl overflow-hidden bg-[#111A2E] border border-slate-800 hover:border-blue-500/50 shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between"
+            >
+              <div className="relative h-56 w-full overflow-hidden bg-slate-950">
+                <img
+                  src={photo.imageUrl}
+                  alt={photo.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#111A2E] via-transparent to-transparent opacity-80" />
+                <span className="absolute top-3 right-3 bg-slate-900/90 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-mono text-emerald-400 border border-slate-700 flex items-center gap-1">
+                  <Maximize2 className="w-3 h-3" />
+                  <span>Click to Expand</span>
+                </span>
+              </div>
+
+              <div className="p-5 space-y-2">
+                <div className="flex items-center gap-1.5 text-xs text-blue-400 font-semibold">
+                  <Calendar className="w-3.5 h-3.5" />
+                  <span>{photo.event}</span>
+                </div>
+                <h4 className="text-base font-bold text-white group-hover:text-blue-300 transition-colors">
+                  {photo.title}
+                </h4>
+                <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
+                  {photo.description}
+                </p>
+
+                <div className="pt-2 flex flex-wrap gap-1">
+                  {photo.tags.map((t, i) => (
+                    <span key={i} className="text-[10px] font-mono bg-slate-900 text-slate-400 px-2 py-0.5 rounded border border-slate-800">
+                      #{t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -249,81 +380,63 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
 
       {/* 
         =======================================================
-        VISUAL IDENTITY CALLOUT
+        JOIN CTA
         =======================================================
       */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-8 sm:p-10 rounded-3xl bg-[#111A2E] border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="space-y-3 max-w-xl">
-            <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-              Club Identity & Credibility
-            </span>
-            <h3 className="text-2xl font-bold text-white">A Geometric Identity Designed for Impact</h3>
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              The CGC lettermark was custom-engineered to represent resilience, digital defense, and collaborative velocity. Tested for high readability on small mobile screens, conference badges, academic certificates, and university merchandise.
-            </p>
-            <div className="pt-2">
-              <button
-                onClick={onOpenBrandModal}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-colors"
-              >
-                <span>Inspect CGC Monogram & Palette Tokens</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-
-          <div className="flex-shrink-0 p-6 rounded-2xl bg-slate-900 border border-slate-800">
-            <CGCLogo variant="full" size="lg" />
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="p-10 rounded-3xl bg-slate-900 border border-slate-800 max-w-3xl mx-auto space-y-4">
+          <h3 className="text-2xl font-bold text-white">Connect with Lead Admin Yesuf Dergu</h3>
+          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Have questions or want to partner on a campus hackathon? Join the IT Joint Community or message our leadership directly.
+          </p>
+          <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+            <a
+              href={OFFICIAL_COMMUNITY.telegramGroup}
+              target="_blank"
+              rel="noreferrer"
+              className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-colors flex items-center gap-2"
+            >
+              <Send className="w-4 h-4" />
+              <span>Join Telegram Group</span>
+            </a>
+            <button
+              onClick={() => onNavigate('contact')}
+              className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 transition-colors"
+            >
+              Official Contact Form
+            </button>
           </div>
         </div>
       </section>
 
       {/* 
         =======================================================
-        JOIN CTA
+        PHOTO LIGHTBOX MODAL
         =======================================================
       */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="p-10 rounded-3xl bg-slate-900 border border-slate-800 max-w-3xl mx-auto space-y-4">
-          <h3 className="text-2xl font-bold text-white">Join the Woliso Student Movement</h3>
-          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            Beginner or seasoned programmer, IT or natural sciences—our cohorts are open and waiting for you.
-          </p>
-          <div className="pt-2">
-            <button
-              onClick={() => onNavigate('join')}
-              className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-colors"
-            >
-              Fill Out Membership Form
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Photo Lightbox Modal */}
-      {isPhotoLightboxOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in" onClick={() => setIsPhotoLightboxOpen(false)}>
+      {selectedPhoto && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in" onClick={() => setSelectedPhoto(null)}>
           <div className="relative max-w-4xl w-full bg-[#111A2E] rounded-2xl overflow-hidden border border-slate-700 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <button
-              onClick={() => setIsPhotoLightboxOpen(false)}
+              onClick={() => setSelectedPhoto(null)}
               className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/60 text-white hover:bg-black/90 transition-colors"
               aria-label="Close photo preview"
             >
               <X className="w-5 h-5" />
             </button>
             <img
-              src="/cgc-community-lab.jpg"
-              alt="CGC students working together in computer laboratory at Woliso Campus"
+              src={selectedPhoto.imageUrl}
+              alt={selectedPhoto.title}
               className="w-full max-h-[75vh] object-contain bg-black"
             />
-            <div className="p-4 bg-slate-900 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
+            <div className="p-5 bg-slate-900 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
               <div>
-                <span className="font-bold text-white block text-sm">Ambo University, Woliso Campus • CGC Lab Session</span>
-                <span className="text-slate-400">Collaborative problem-solving in the Main ICT Building Computer Lab.</span>
+                <span className="text-[11px] font-mono text-blue-400 font-semibold uppercase block">{selectedPhoto.event} • {selectedPhoto.location}</span>
+                <span className="font-bold text-white text-base mt-0.5 block">{selectedPhoto.title}</span>
+                <p className="text-slate-300 mt-1 max-w-2xl">{selectedPhoto.description}</p>
               </div>
-              <span className="text-emerald-400 font-mono font-semibold bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20 whitespace-nowrap">
-                Ideas into Impact
+              <span className="text-emerald-400 font-mono font-semibold bg-emerald-500/10 px-2.5 py-1 rounded border border-emerald-500/20 whitespace-nowrap">
+                Ambo University
               </span>
             </div>
           </div>

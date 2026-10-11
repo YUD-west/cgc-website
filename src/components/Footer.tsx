@@ -6,11 +6,12 @@ import {
   Mail, 
   Linkedin, 
   MapPin, 
-  ExternalLink, 
   ShieldCheck, 
-  Heart,
-  Palette
+  Palette,
+  ExternalLink,
+  UserCheck
 } from 'lucide-react';
+import { LEAD_ADMIN, CO_ADMIN, OFFICIAL_COMMUNITY } from '../data/team';
 
 interface FooterProps {
   setActiveTab: (tab: string) => void;
@@ -28,54 +29,75 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, openBrandModal }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 pb-12 border-b border-slate-800/80">
           
-          {/* Col 1 & 2: CGC Brand info */}
+          {/* Col 1 & 2: CGC Brand & Official Admin info */}
           <div className="lg:col-span-2 space-y-4">
             <CGCLogo variant="full" size="lg" />
-            <p className="text-slate-400 text-sm leading-relaxed max-w-sm mt-3">
+            <p className="text-slate-300 text-sm leading-relaxed max-w-sm mt-3">
               A student-led technology and innovation community at Ambo University, Woliso Campus, Ethiopia. 
               We unite students from IT, engineering, business, and natural sciences to learn, collaborate, and build things that matter.
             </p>
 
-            <div className="flex items-center gap-2 text-xs text-slate-400 pt-1">
-              <MapPin className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+            <div className="flex items-center gap-2 text-xs text-slate-300 pt-1">
+              <MapPin className="w-4 h-4 text-emerald-400 flex-shrink-0" />
               <span>Woliso Campus, Ambo University, Oromia, Ethiopia</span>
             </div>
 
+            {/* Admin Lead Badge */}
+            <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-white flex items-center gap-1.5">
+                  <UserCheck className="w-3.5 h-3.5 text-blue-400" />
+                  Lead Admin: {LEAD_ADMIN.name}
+                </span>
+                <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                  President
+                </span>
+              </div>
+              <div className="text-[11px] text-slate-400">
+                Direct Telegram: <a href={LEAD_ADMIN.telegramUrl} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">{LEAD_ADMIN.telegram}</a> or <a href={CO_ADMIN.url} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">{CO_ADMIN.handle}</a>
+              </div>
+            </div>
+
+            {/* Official Social Links */}
             <div className="pt-2 flex items-center gap-3">
               <a
-                href="https://t.me"
+                href={OFFICIAL_COMMUNITY.telegramGroup}
                 target="_blank"
                 rel="noreferrer"
-                className="w-9 h-9 rounded-lg bg-slate-800/80 hover:bg-blue-600 hover:text-white flex items-center justify-center text-slate-400 transition-colors"
-                title="Telegram Channel (@CGC_Woliso)"
+                className="px-3 py-2 rounded-lg bg-blue-600/10 hover:bg-blue-600 text-blue-400 hover:text-white flex items-center gap-1.5 text-xs font-semibold border border-blue-500/30 transition-all shadow-sm"
+                title="Join IT Joint Community Telegram"
               >
-                <Send className="w-4 h-4" />
+                <Send className="w-3.5 h-3.5" />
+                <span>Telegram Community</span>
               </a>
+
               <a
-                href="https://github.com"
+                href={LEAD_ADMIN.github}
                 target="_blank"
                 rel="noreferrer"
-                className="w-9 h-9 rounded-lg bg-slate-800/80 hover:bg-slate-700 hover:text-white flex items-center justify-center text-slate-400 transition-colors"
-                title="GitHub Repositories"
+                className="w-9 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 hover:text-white flex items-center justify-center text-slate-300 transition-colors"
+                title="GitHub (YUD-west)"
               >
                 <Github className="w-4 h-4" />
               </a>
+
               <a
-                href="https://linkedin.com"
+                href={LEAD_ADMIN.linkedin}
                 target="_blank"
                 rel="noreferrer"
-                className="w-9 h-9 rounded-lg bg-slate-800/80 hover:bg-blue-700 hover:text-white flex items-center justify-center text-slate-400 transition-colors"
-                title="LinkedIn Organization"
+                className="w-9 h-9 rounded-lg bg-slate-800 hover:bg-blue-600 hover:text-white flex items-center justify-center text-slate-300 transition-colors"
+                title="LinkedIn (Yusuf Dergu)"
               >
                 <Linkedin className="w-4 h-4" />
               </a>
-              <button
-                onClick={() => handleNav('contact')}
-                className="w-9 h-9 rounded-lg bg-slate-800/80 hover:bg-emerald-600 hover:text-white flex items-center justify-center text-slate-400 transition-colors"
-                title="Email Official Contact"
+
+              <a
+                href={`mailto:${LEAD_ADMIN.email}`}
+                className="w-9 h-9 rounded-lg bg-slate-800 hover:bg-emerald-600 hover:text-white flex items-center justify-center text-slate-300 transition-colors"
+                title={`Email: ${LEAD_ADMIN.email}`}
               >
                 <Mail className="w-4 h-4" />
-              </button>
+              </a>
             </div>
           </div>
 
@@ -92,7 +114,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, openBrandModal }) 
               </li>
               <li>
                 <button onClick={() => handleNav('about')} className="hover:text-blue-400 transition-colors">
-                  About CGC & Values
+                  About CGC & Leadership
                 </button>
               </li>
               <li>
@@ -107,7 +129,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, openBrandModal }) 
               </li>
               <li>
                 <button onClick={() => handleNav('events')} className="hover:text-blue-400 transition-colors">
-                  Workshops & Events
+                  Workshops & Hackathons
                 </button>
               </li>
               <li>
@@ -118,7 +140,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, openBrandModal }) 
             </ul>
           </div>
 
-          {/* Col 4: Tracks */}
+          {/* Col 4: Innovation Tracks */}
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-200 mb-4">
               Specialization Tracks
@@ -152,14 +174,37 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, openBrandModal }) 
             </ul>
           </div>
 
-          {/* Col 5: Visual Identity & Transparency */}
+          {/* Col 5: Contact Direct Line & Identity */}
           <div className="space-y-4">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-200 mb-4">
-              Visual Identity & Trust
+              Official Contact Point
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Designed with a distinctive geometric monogram and purposeful minimalism. Built to work on certificates, code repositories, campus badges, and official documents.
-            </p>
+            <div className="text-xs space-y-2 text-slate-300">
+              <div>
+                <span className="text-slate-500 block text-[11px]">Primary Email</span>
+                <a href={`mailto:${LEAD_ADMIN.email}`} className="font-mono text-slate-200 hover:text-blue-400 transition-colors">
+                  {LEAD_ADMIN.email}
+                </a>
+              </div>
+              <div>
+                <span className="text-slate-500 block text-[11px]">Telegram Community</span>
+                <a href={OFFICIAL_COMMUNITY.telegramGroup} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">
+                  t.me/IT_Jointcommunity
+                </a>
+              </div>
+              <div>
+                <span className="text-slate-500 block text-[11px]">Admins to Message</span>
+                <div className="flex gap-2 font-mono text-[11px] mt-0.5">
+                  <a href={LEAD_ADMIN.telegramUrl} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">
+                    {LEAD_ADMIN.telegram}
+                  </a>
+                  <span className="text-slate-600">|</span>
+                  <a href={CO_ADMIN.url} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">
+                    {CO_ADMIN.handle}
+                  </a>
+                </div>
+              </div>
+            </div>
 
             {openBrandModal && (
               <button
@@ -170,24 +215,19 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, openBrandModal }) 
                 <span>View Identity & Palette</span>
               </button>
             )}
-
-            <div className="p-3 bg-slate-900/80 rounded-lg border border-slate-800 text-[11px] text-slate-400">
-              <span className="font-semibold text-slate-300">Open Community Standard:</span>
-              <p className="mt-0.5">Projects and resources are open-source. Anyone can learn; members build together.</p>
-            </div>
           </div>
 
         </div>
 
         {/* Bottom copyright bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <div className="flex items-center gap-2">
             <span>© {new Date().getFullYear()} Cyber Guardians Club (CGC). Ambo University, Woliso Campus.</span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-slate-400 font-medium">Tagline: Ideas into Impact.</span>
+            <span className="text-slate-300 font-medium">Tagline: Ideas into Impact.</span>
             <span>•</span>
-            <span className="text-slate-500">Made with dedication by Woliso students</span>
+            <span className="text-slate-400">Led by {LEAD_ADMIN.name} & Woliso Student Innovators</span>
           </div>
         </div>
       </div>
