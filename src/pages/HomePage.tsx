@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CGCLogo } from '../components/Logo/CGCLogo';
 import { SectionHeader } from '../components/SectionHeader';
 import { ProjectCard } from '../components/ProjectCard';
@@ -19,10 +19,10 @@ import {
   Users, 
   Zap, 
   Sparkles,
-  ExternalLink,
   ChevronRight,
-  BookOpen,
-  Compass
+  MapPin,
+  Maximize2,
+  X
 } from 'lucide-react';
 
 interface HomePageProps {
@@ -40,6 +40,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   onOpenBrandModal,
   onProposeProject,
 }) => {
+  const [isPhotoLightboxOpen, setIsPhotoLightboxOpen] = useState(false);
   const featuredProjects = INITIAL_PROJECTS.filter((p) => p.featured);
   const upcomingEvents = EVENTS.filter((e) => e.status === 'Upcoming').slice(0, 3);
 
@@ -64,33 +65,49 @@ export const HomePage: React.FC<HomePageProps> = ({
     <div className="space-y-24 sm:space-y-32 pb-20">
       {/* 
         =======================================================
-        HERO SECTION
+        HERO SECTION WITH AUTHENTIC WOLISO LAB PHOTO BACKGROUND
         =======================================================
       */}
-      <section className="relative pt-12 sm:pt-20 pb-16 overflow-hidden">
-        {/* Subtle background tech grid and radial gradient glow */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-40 pointer-events-none" />
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-1/3 right-1/4 w-[350px] h-[300px] bg-emerald-600/10 rounded-full blur-3xl pointer-events-none" />
+      <section className="relative pt-12 sm:pt-20 pb-20 overflow-hidden min-h-[85vh] flex items-center">
+        {/* Real Campus Lab Background Image Layer */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/cgc-community-lab.jpg"
+            alt="CGC Students collaborating in computer lab at Ambo University, Woliso Campus"
+            className="w-full h-full object-cover object-center scale-105 filter brightness-[0.38] contrast-[1.1] transition-transform duration-1000"
+          />
+          {/* Multi-layered gradient scrim for perfect text contrast & seamless blend into Midnight Navy */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/85 to-[#0F172A]/70" />
+          <div className="absolute inset-0 bg-grid-pattern opacity-25" />
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[300px] bg-emerald-600/15 rounded-full blur-3xl pointer-events-none" />
+        </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
           <div className="max-w-4xl mx-auto text-center">
             
-            {/* Campus & Community Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-800/90 border border-slate-700/80 shadow-subtle mb-8 animate-fade-in">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-semibold text-slate-300">
+            {/* Campus & Community Badge with Photo Trigger */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 backdrop-blur-md border border-slate-700/80 shadow-lg mb-8 animate-fade-in">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-xs font-semibold text-slate-200">
                 Ambo University • Woliso Campus, Ethiopia
               </span>
               <span className="text-slate-600">|</span>
-              <span className="text-xs text-blue-400 font-medium">Student-Led Community</span>
+              <button
+                onClick={() => setIsPhotoLightboxOpen(true)}
+                className="text-xs text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1 transition-colors"
+                title="View authentic campus lab session photo"
+              >
+                <span>Live Lab Photo</span>
+                <Maximize2 className="w-3 h-3" />
+              </button>
             </div>
 
             {/* Central CGC Monogram Hero Feature */}
             <div className="flex justify-center mb-6">
               <div 
                 onClick={onOpenBrandModal}
-                className="cursor-pointer group p-3 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-blue-500/50 transition-all duration-300 shadow-xl"
+                className="cursor-pointer group p-3.5 rounded-2xl bg-slate-900/90 backdrop-blur-md border border-slate-700/80 hover:border-blue-500/60 transition-all duration-300 shadow-2xl hover:scale-105"
                 title="Click to view CGC Visual Identity tokens"
               >
                 <CGCLogo variant="symbol" size="xl" />
@@ -98,26 +115,26 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
 
             {/* Main Headline */}
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1]">
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1] drop-shadow-md">
               Ideas into <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-emerald-400">Impact.</span>
             </h1>
 
             {/* Supporting Text */}
-            <p className="mt-6 text-lg sm:text-xl text-slate-300 leading-relaxed max-w-2xl mx-auto">
-              Welcome to <strong className="text-white">CGC (Cyber Guardians Club)</strong>. We are a student-led technology and innovation community where students learn, collaborate, build real projects, and turn ideas into useful solutions.
+            <p className="mt-6 text-lg sm:text-xl text-slate-200 leading-relaxed max-w-2xl mx-auto drop-shadow-sm font-normal">
+              Welcome to <strong className="text-white font-semibold">CGC (Cyber Guardians Club)</strong>. A student-led technology and innovation community where students learn, collaborate, build real projects, and turn ideas into useful solutions.
             </p>
 
             {/* Core Principle Callout */}
-            <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-950/60 border border-blue-800/60 text-xs sm:text-sm font-medium text-blue-200">
+            <div className="mt-6 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900/90 backdrop-blur-md border border-blue-500/30 text-xs sm:text-sm font-medium text-blue-200 shadow-lg">
               <Terminal className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-              <span>Core Principle: <strong>Don't just attend events. Build things that matter.</strong></span>
+              <span>Core Principle: <strong className="text-white">Don't just attend events. Build things that matter.</strong></span>
             </div>
 
             {/* Call To Actions */}
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
               <button
                 onClick={() => onNavigate('join')}
-                className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-base shadow-glow-blue transition-all duration-200 flex items-center justify-center gap-2 group"
+                className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-base shadow-glow-blue transition-all duration-200 flex items-center justify-center gap-2 group hover:scale-[1.02]"
               >
                 <span>Join CGC Today</span>
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -125,7 +142,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
               <button
                 onClick={() => onNavigate('projects')}
-                className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700/80 text-slate-200 font-semibold text-base border border-slate-700 transition-colors flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 font-semibold text-base border border-slate-700 backdrop-blur-md transition-colors flex items-center justify-center gap-2"
               >
                 <span>Explore Student Projects</span>
                 <ChevronRight className="w-4 h-4 text-slate-400" />
@@ -133,33 +150,88 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
 
             {/* Department Inclusivity Note */}
-            <p className="mt-6 text-xs text-slate-400">
-              * Welcoming students from <span className="text-slate-300">IT, Informatics, Natural Sciences, Business & Social Sciences</span>. Beginners warmly supported!
+            <p className="mt-6 text-xs text-slate-300">
+              * Welcoming students from <span className="text-white font-medium">IT, Informatics, Natural Sciences, Agriculture, Business & Social Sciences</span>.
             </p>
 
             {/* Stats / Highlights Row */}
-            <div className="mt-16 pt-10 border-t border-slate-800/80 grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
-              <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-800/80">
+            <div className="mt-14 pt-8 border-t border-slate-800/80 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-left">
+              <div className="p-4 rounded-xl bg-slate-900/80 backdrop-blur-md border border-slate-800/80 shadow-md">
                 <div className="text-2xl font-extrabold text-white">5 Tracks</div>
-                <div className="text-xs text-slate-400 mt-1">Cyber, AI, Code, Web, Startup</div>
+                <div className="text-xs text-slate-300 mt-1">Cyber, AI, Code, Web, Startup</div>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-800/80">
+              <div className="p-4 rounded-xl bg-slate-900/80 backdrop-blur-md border border-slate-800/80 shadow-md">
                 <div className="text-2xl font-extrabold text-blue-400">100% Student-Led</div>
-                <div className="text-xs text-slate-400 mt-1">Peer learning & open collaboration</div>
+                <div className="text-xs text-slate-300 mt-1">Peer learning & open sprints</div>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-800/80">
+              <div className="p-4 rounded-xl bg-slate-900/80 backdrop-blur-md border border-slate-800/80 shadow-md">
                 <div className="text-2xl font-extrabold text-emerald-400">Real Projects</div>
-                <div className="text-xs text-slate-400 mt-1">Tangible tools, zero tutorial fatigue</div>
+                <div className="text-xs text-slate-300 mt-1">Working tools, zero tutorial fatigue</div>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-800/80">
+              <div className="p-4 rounded-xl bg-slate-900/80 backdrop-blur-md border border-slate-800/80 shadow-md">
                 <div className="text-2xl font-extrabold text-white">Open Community</div>
-                <div className="text-xs text-slate-400 mt-1">Free public sessions for all campus</div>
+                <div className="text-xs text-slate-300 mt-1">Free public lab sessions for all</div>
               </div>
             </div>
 
+          </div>
+        </div>
+      </section>
+
+      {/* 
+        =======================================================
+        COMMUNITY IN ACTION FEATURE BANNER
+        =======================================================
+      */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="p-6 sm:p-10 rounded-3xl bg-gradient-to-r from-[#111A2E] via-slate-900 to-[#111A2E] border border-slate-800 shadow-2xl flex flex-col lg:flex-row items-center gap-8">
+          {/* Photo Thumbnail Showcase */}
+          <div className="relative group rounded-2xl overflow-hidden border border-slate-700 shadow-xl lg:w-1/2 flex-shrink-0 cursor-pointer" onClick={() => setIsPhotoLightboxOpen(true)}>
+            <img
+              src="/cgc-community-lab.jpg"
+              alt="CGC members in Woliso Campus computer lab"
+              className="w-full h-64 sm:h-72 object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-transparent to-transparent opacity-80" />
+            <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+              <span className="flex items-center gap-1.5 font-medium bg-slate-900/90 px-2.5 py-1 rounded-md border border-slate-700">
+                <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Woliso Campus ICT Lab Session</span>
+              </span>
+              <span className="bg-blue-600/90 px-2 py-1 rounded-md font-semibold text-[11px] flex items-center gap-1">
+                <Maximize2 className="w-3 h-3" /> Expand
+              </span>
+            </div>
+          </div>
+
+          {/* Description of authentic community */}
+          <div className="space-y-4 lg:w-1/2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400 uppercase tracking-wider">
+              <span>Authentic Campus Community</span>
+            </div>
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
+              Real Students. Real Code. Real Impact.
+            </h3>
+            <p className="text-sm text-slate-300 leading-relaxed">
+              Every week, CGC brings students together in the Woliso Campus computer laboratories. Senior peers mentor freshmen, cross-faculty teams assemble around shared challenges, and concepts move rapidly from whiteboard to working code.
+            </p>
+            <div className="pt-2 flex flex-wrap gap-3">
+              <button
+                onClick={() => onNavigate('about')}
+                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md transition-colors"
+              >
+                Read Our Story & Values
+              </button>
+              <button
+                onClick={() => onNavigate('events')}
+                className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-colors"
+              >
+                Join Next Lab Session
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -490,6 +562,39 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
         </div>
       </section>
+
+      {/* 
+        =======================================================
+        PHOTO LIGHTBOX MODAL
+        =======================================================
+      */}
+      {isPhotoLightboxOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in" onClick={() => setIsPhotoLightboxOpen(false)}>
+          <div className="relative max-w-4xl w-full bg-[#111A2E] rounded-2xl overflow-hidden border border-slate-700 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setIsPhotoLightboxOpen(false)}
+              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/60 text-white hover:bg-black/90 transition-colors"
+              aria-label="Close photo preview"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <img
+              src="/cgc-community-lab.jpg"
+              alt="CGC students working together in computer laboratory at Woliso Campus"
+              className="w-full max-h-[75vh] object-contain bg-black"
+            />
+            <div className="p-4 bg-slate-900 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
+              <div>
+                <span className="font-bold text-white block text-sm">Ambo University, Woliso Campus • CGC Lab Session</span>
+                <span className="text-slate-400">Students actively pair-programming, discussing system architectures, and testing tools.</span>
+              </div>
+              <span className="text-emerald-400 font-mono font-semibold bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20 whitespace-nowrap">
+                Ideas into Impact
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

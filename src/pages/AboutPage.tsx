@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SectionHeader } from '../components/SectionHeader';
 import { CGCLogo } from '../components/Logo/CGCLogo';
 import { 
@@ -7,13 +7,11 @@ import {
   Compass, 
   TrendingUp, 
   Sparkles, 
-  BookOpen, 
   Target, 
   MapPin, 
   ArrowRight,
-  GraduationCap,
-  Layers,
-  HeartHandshake
+  Maximize2,
+  X
 } from 'lucide-react';
 
 interface AboutPageProps {
@@ -22,6 +20,8 @@ interface AboutPageProps {
 }
 
 export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandModal }) => {
+  const [isPhotoLightboxOpen, setIsPhotoLightboxOpen] = useState(false);
+
   const coreValues = [
     {
       title: 'Innovation',
@@ -92,6 +92,39 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
               <h3 className="text-2xl font-bold text-white">Our Vision</h3>
               <p className="text-slate-300 leading-relaxed text-sm sm:text-base">
                 To become the benchmark for student-led technology communities in Ethiopian higher education—where multidisciplinary student teams launch viable open-source projects, publish security audits, and turn campus graduation projects into real sustainable startups.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 
+        =======================================================
+        AUTHENTIC CAMPUS LAB PHOTO FEATURE
+        =======================================================
+      */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="rounded-3xl overflow-hidden border border-slate-800 bg-[#111A2E] shadow-2xl relative">
+          <div className="relative h-80 sm:h-96 w-full cursor-pointer group" onClick={() => setIsPhotoLightboxOpen(true)}>
+            <img
+              src="/cgc-community-lab.jpg"
+              alt="CGC students working on laptops in Woliso Campus computer lab"
+              className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 filter brightness-[0.85]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/40 to-transparent" />
+            <div className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700 text-xs text-white flex items-center gap-1.5 shadow-lg">
+              <Maximize2 className="w-3.5 h-3.5 text-blue-400" />
+              <span>Click to Expand</span>
+            </div>
+            <div className="absolute bottom-6 left-6 right-6">
+              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20 inline-block mb-2">
+                Live from Ambo University, Woliso Campus
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
+                Where Ideas Turn into Reality
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-200 mt-1 max-w-2xl leading-relaxed">
+                Photograph from our hands-on student lab sessions in the Main ICT Building: students pair programming, analyzing network packets, and building practical software together.
               </p>
             </div>
           </div>
@@ -267,6 +300,35 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
           </div>
         </div>
       </section>
+
+      {/* Photo Lightbox Modal */}
+      {isPhotoLightboxOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in" onClick={() => setIsPhotoLightboxOpen(false)}>
+          <div className="relative max-w-4xl w-full bg-[#111A2E] rounded-2xl overflow-hidden border border-slate-700 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setIsPhotoLightboxOpen(false)}
+              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/60 text-white hover:bg-black/90 transition-colors"
+              aria-label="Close photo preview"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <img
+              src="/cgc-community-lab.jpg"
+              alt="CGC students working together in computer laboratory at Woliso Campus"
+              className="w-full max-h-[75vh] object-contain bg-black"
+            />
+            <div className="p-4 bg-slate-900 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
+              <div>
+                <span className="font-bold text-white block text-sm">Ambo University, Woliso Campus • CGC Lab Session</span>
+                <span className="text-slate-400">Collaborative problem-solving in the Main ICT Building Computer Lab.</span>
+              </div>
+              <span className="text-emerald-400 font-mono font-semibold bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20 whitespace-nowrap">
+                Ideas into Impact
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
