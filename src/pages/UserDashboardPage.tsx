@@ -38,11 +38,12 @@ export const UserDashboardPage: React.FC<UserDashboardProps> = ({
     );
   }
 
-  const memberId = membership?.id || `CGC-WL-2026-${user.id.slice(-4).toUpperCase()}`;
+  const isApproved = Boolean(user.role === 'ADMIN' || membership?.isApproved || (membership?.status === 'Approved' && membership?.id));
+  const memberId = isApproved ? (membership?.id || (user.role === 'ADMIN' ? 'CGC-WL-2026-PRES' : `CGC-WL-2026-${user.id.slice(-4).toUpperCase()}`)) : null;
 
-  // Cache pass offline for instant PWA loading
+  // Cache pass offline for instant PWA loading (only if approved)
   useEffect(() => {
-    if (user && memberId) {
+    if (user && isApproved && memberId) {
       try {
         localStorage.setItem('cgc_cached_pass', JSON.stringify({
           memberId,
@@ -56,7 +57,7 @@ export const UserDashboardPage: React.FC<UserDashboardProps> = ({
         // Ignored
       }
     }
-  }, [user, memberId]);
+  }, [user, isApproved, memberId]);
 
   return (
     <div className="py-12 sm:py-16 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 animate-fade-in">
@@ -65,8 +66,10 @@ export const UserDashboardPage: React.FC<UserDashboardProps> = ({
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 sm:p-8 rounded-3xl bg-[#111A2E] border border-slate-800 shadow-card">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">CGC Member Portal</span>
+            <span className={`w-2.5 h-2.5 rounded-full ${isApproved ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+            <span className={`text-xs font-semibold uppercase tracking-wider ${isApproved ? 'text-emerald-400' : 'text-amber-400'}`}>
+              {isApproved ? 'Official CGC Member Portal' : 'Provisional Student Account'}
+            </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
             Welcome, {user.fullName}
@@ -92,82 +95,137 @@ export const UserDashboardPage: React.FC<UserDashboardProps> = ({
         </div>
       </div>
 
-      {/* Grid: Official Digital Pass & Member Status */}
+      {/* Grid: Member Pass or Provisional Application Review */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        {/* Column 1: Official Verified Digital Member Card */}
-        <div id="cgc-member-card" className="p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-[#0F172A] to-[#162238] border border-blue-900/60 shadow-2xl relative flex flex-col justify-between space-y-5">
-          <div>
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
-              <CGCLogo variant="full" size="sm" showTagline={false} />
-              <span className="px-2.5 py-1 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                OFFICIAL MEMBER
-              </span>
-            </div>
-
-            <div className="space-y-3.5 text-xs">
-              <div>
-                <span className="text-slate-500 text-[10px] uppercase font-semibold">Student Name</span>
-                <div className="text-lg font-bold text-white">{user.fullName}</div>
+        {/* Column 1: Member Card (Official QR if Approved, or Pending Notice) */}
+        {isApproved && memberId ? (
+          <div id="cgc-member-card" className="p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-[#0F172A] to-[#162238] border border-blue-900/60 shadow-2xl relative flex flex-col justify-between space-y-5">
+            <div>
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                <CGCLogo variant="full" size="sm" showTagline={false} />
+                <span className="px-2.5 py-1 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  OFFICIALLY APPROVED
+                </span>
               </div>
 
-              <div>
-                <span className="text-slate-500 text-[10px] uppercase font-semibold">Department & Year</span>
-                <div className="text-slate-200 font-medium">
-                  {user.department || 'Informatics'} • {user.yearOfStudy || '2nd Year'}
+              <div className="space-y-3.5 text-xs">
+                <div>
+                  <span className="text-slate-500 text-[10px] uppercase font-semibold">Student Name</span>
+                  <div className="text-lg font-bold text-white">{user.fullName}</div>
+                </div>
+
+                <div>
+                  <span className="text-slate-500 text-[10px] uppercase font-semibold">Department & Year</span>
+                  <div className="text-slate-200 font-medium">
+                    {user.department || 'Informatics'} • {user.yearOfStudy || '2nd Year'}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <span className="text-slate-500 text-[10px] uppercase font-semibold">Track</span>
+                    <div className="text-blue-400 font-semibold capitalize">{user.primaryTrack || 'Cyber & Software'}</div>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 text-[10px] uppercase font-semibold">Verified Member ID</span>
+                    <div className="text-emerald-400 font-mono font-bold">{memberId}</div>
+                  </div>
+                </div>
+
+                <div>
+                  <span className="text-slate-500 text-[10px] uppercase font-semibold">Campus & Location</span>
+                  <div className="text-slate-300 font-medium">Ambo University, Woliso Campus</div>
                 </div>
               </div>
 
+              {/* Scannable Dynamic QR Code */}
+              <div className="mt-4 pt-4 border-t border-slate-800/80 flex flex-col items-center justify-center bg-slate-900/60 p-3 rounded-2xl border border-slate-800">
+                <QRCodeView
+                  value={typeof window !== 'undefined' ? `${window.location.origin}/#verify/${memberId}` : `http://localhost:3000/#verify/${memberId}`}
+                  size={110}
+                  label="Scan to Verify at Lab Door"
+                />
+              </div>
+            </div>
+
+            {/* Pass Action Buttons */}
+            <div className="space-y-2 pt-2 border-t border-slate-800/80">
               <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <span className="text-slate-500 text-[10px] uppercase font-semibold">Track</span>
-                  <div className="text-blue-400 font-semibold capitalize">{user.primaryTrack || 'Cyber & Software'}</div>
-                </div>
-                <div>
-                  <span className="text-slate-500 text-[10px] uppercase font-semibold">Verified Member ID</span>
-                  <div className="text-emerald-400 font-mono font-bold">{memberId}</div>
-                </div>
+                <button
+                  onClick={() => onNavigate(`verify/${memberId}`)}
+                  className="w-full py-2 px-2.5 rounded-xl bg-blue-600/90 hover:bg-blue-600 text-white text-[11px] font-semibold flex items-center justify-center gap-1 transition"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Verify Live</span>
+                </button>
+                <button
+                  onClick={() => window.print()}
+                  className="w-full py-2 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold border border-slate-700 flex items-center justify-center gap-1 transition"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Save Pass</span>
+                </button>
               </div>
-
-              <div>
-                <span className="text-slate-500 text-[10px] uppercase font-semibold">Campus & Location</span>
-                <div className="text-slate-300 font-medium">Ambo University, Woliso Campus</div>
+              <div className="text-center text-[10px] text-slate-500 font-mono">
+                Official Executive Clearance • Computer Lab 02
               </div>
-            </div>
-
-            {/* Scannable Dynamic QR Code */}
-            <div className="mt-4 pt-4 border-t border-slate-800/80 flex flex-col items-center justify-center bg-slate-900/60 p-3 rounded-2xl border border-slate-800">
-              <QRCodeView
-                value={typeof window !== 'undefined' ? `${window.location.origin}/#verify/${memberId}` : `http://localhost:3000/#verify/${memberId}`}
-                size={110}
-                label="Scan to Verify at Lab Door"
-              />
             </div>
           </div>
+        ) : (
+          /* Provisional / Pending Approval Card */
+          <div className="p-6 sm:p-7 rounded-3xl bg-[#111A2E] border border-amber-500/30 shadow-xl relative flex flex-col justify-between space-y-5">
+            <div>
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                <CGCLogo variant="full" size="sm" showTagline={false} />
+                <span className="px-2.5 py-1 rounded text-[10px] font-mono font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                  PENDING REVIEW
+                </span>
+              </div>
 
-          {/* Pass Action Buttons */}
-          <div className="space-y-2 pt-2 border-t border-slate-800/80">
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={() => onNavigate(`verify/${memberId}`)}
-                className="w-full py-2 px-2.5 rounded-xl bg-blue-600/90 hover:bg-blue-600 text-white text-[11px] font-semibold flex items-center justify-center gap-1 transition"
-              >
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Verify Live</span>
-              </button>
-              <button
-                onClick={() => window.print()}
-                className="w-full py-2 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold border border-slate-700 flex items-center justify-center gap-1 transition"
-              >
-                <Download className="w-3.5 h-3.5" />
-                <span>Save Pass</span>
-              </button>
+              <div className="space-y-4 text-xs">
+                <div>
+                  <span className="text-slate-500 text-[10px] uppercase font-semibold">Account Holder</span>
+                  <div className="text-lg font-bold text-white">{user.fullName}</div>
+                  <div className="text-slate-400 text-[11px]">{user.email}</div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-amber-950/20 border border-amber-500/20 space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-amber-300 font-bold text-xs">
+                    <span>⏳ Awaiting Executive Approval</span>
+                  </div>
+                  <p className="text-slate-300 text-[11px] leading-relaxed">
+                    Official CGC Digital Member Passes and scannable Computer Lab 02 QR entry codes are issued exclusively after membership approval by Lead Admin Yesuf Dergu.
+                  </p>
+                </div>
+
+                <div className="space-y-1 text-slate-400 text-xs">
+                  <div className="flex items-center gap-1.5 text-slate-300">
+                    <span className="text-emerald-400 font-bold">✓</span> Community Lectures: Open
+                  </div>
+                  <div className="flex items-center gap-1.5 text-slate-300">
+                    <span className="text-emerald-400 font-bold">✓</span> Find a Co-Creator: Open
+                  </div>
+                  <div className="flex items-center gap-1.5 text-slate-400">
+                    <span className="text-amber-400 font-bold">⏳</span> Lab 02 QR Pass: Pending Approval
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="text-center text-[10px] text-slate-500 font-mono">
-              Offline Ready • Valid for 2026 Academic Year
+
+            <div className="pt-4 border-t border-slate-800 space-y-2">
+              <button
+                onClick={() => onNavigate('join')}
+                className="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition"
+              >
+                Submit / Update Membership Details →
+              </button>
+              <div className="text-center text-[10px] text-slate-500">
+                Contact: yesufdergu464@gmail.com
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Column 2 & 3: Student Hub & Community Involvement */}
         <div className="lg:col-span-2 p-6 sm:p-8 rounded-3xl bg-[#111A2E] border border-slate-800 flex flex-col justify-between space-y-6">

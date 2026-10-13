@@ -135,15 +135,35 @@ app.post('/api/rsvps', (req, res) => {
   }
 });
 
-// ---------------- PUBLIC DIGITAL PASS VERIFICATION ----------------
+// ---------------- PUBLIC DIGITAL PASS & EVENT TICKET VERIFICATION ----------------
 app.get('/api/verify-pass/:passId', (req, res) => {
   try {
     const rawPassId = (req.params.passId || '').trim();
     if (!rawPassId) {
-      return res.status(400).json({ verified: false, error: 'Pass ID is required.' });
+      return res.status(400).json({ verified: false, error: 'Pass or Ticket ID is required.' });
     }
 
-    // 1. Check Lead Admin President Pass
+    // 1. Check Flexible Event, Hackathon & Lecture Tickets Table
+    const matchedTicket = db.prepare('SELECT * FROM event_tickets WHERE id = ? OR upper(id) = upper(?)').get(rawPassId, rawPassId);
+    if (matchedTicket) {
+      return res.json({
+        verified: true,
+        isEventTicket: true,
+        ticket: {
+          id: matchedTicket.id,
+          title: matchedTicket.title,
+          eventType: matchedTicket.event_type,
+          venue: matchedTicket.venue,
+          eventDate: matchedTicket.event_date,
+          accessLevel: matchedTicket.access_level,
+          createdBy: matchedTicket.created_by,
+          status: 'Authorized Event Clearance',
+          campus: 'Ambo University, Woliso Campus'
+        }
+      });
+    }
+
+    // 2. Check Lead Admin President Pass
     if (rawPassId.toUpperCase() === 'CGC-WL-2026-PRES' || rawPassId.toUpperCase().includes('PRES')) {
       const admin = db.prepare('SELECT id, full_name, email, role, department, telegram FROM users WHERE email = ?').get('yesufdergu464@gmail.com');
       return res.json({
@@ -156,35 +176,9 @@ app.get('/api/verify-pass/:passId', (req, res) => {
           department: 'Information Technology (Ambo University Woliso Campus)',
           yearOfStudy: 'Executive Lead',
           primaryTrack: 'Cybersecurity & Software Architecture',
-          status: 'Active & Verified',
-          accessLevel: 'Full Access (Computer Lab 02, Orientation Hall & Server Systems)',
+          status: 'Executive Verified',
+          accessLevel: 'Full Executive Lab 02 & Systems Clearance',
           issuedAt: '2026-01-15',
-          campus: 'Ambo University, Woliso Campus'
-        }
-      });
-    }
-
-    // 2. Check registered users
-    const matchedUser = db.prepare(`
-      SELECT id, full_name, email, role, department, year_of_study, primary_track
-      FROM users
-      WHERE id = ? OR upper(id) = upper(?) OR id LIKE ?
-    `).get(rawPassId, rawPassId, `%${rawPassId.slice(-4)}`);
-
-    if (matchedUser) {
-      return res.json({
-        verified: true,
-        member: {
-          id: rawPassId.toUpperCase(),
-          fullName: matchedUser.full_name,
-          email: matchedUser.email,
-          role: matchedUser.role === 'ADMIN' ? 'Administrator' : 'Active Student Member',
-          department: matchedUser.department || 'Informatics & Technology',
-          yearOfStudy: matchedUser.year_of_study || '2nd Year Student',
-          primaryTrack: matchedUser.primary_track || 'Cybersecurity & Systems',
-          status: 'Active & Verified',
-          accessLevel: 'Standard Member Access (Lab Sprints, Workshops & Hackathons)',
-          issuedAt: '2026-02-01',
           campus: 'Ambo University, Woliso Campus'
         }
       });
@@ -198,39 +192,63 @@ app.get('/api/verify-pass/:passId', (req, res) => {
     `).get(rawPassId, rawPassId);
 
     if (matchedApp) {
+      const isApproved = matchedApp.status === 'Approved';
+      if (!isApproved) {
+        return res.status(403).json({
+          verified: false,
+          isPending: true,
+          error: 'Membership Application Under Review — Official QR Pass is issued only after Lead Admin Yesuf Dergu approves the application.'
+        });
+      }
+
       return res.json({
         verified: true,
         member: {
           id: matchedApp.id,
           fullName: matchedApp.full_name,
           email: matchedApp.email,
-          role: 'Official Club Member',
+          role: 'Official Approved Member',
           department: matchedApp.department,
           yearOfStudy: matchedApp.year_of_study,
           primaryTrack: matchedApp.primary_track,
-          status: matchedApp.status === 'Approved' ? 'Active & Verified' : 'Application in Review',
-          accessLevel: matchedApp.status === 'Approved' ? 'Full Member Access' : 'Provisional Access',
+          status: 'Active & Verified Member',
+          accessLevel: 'Official Lab 02 & Innovation Hall Access',
           issuedAt: matchedApp.submitted_at ? matchedApp.submitted_at.slice(0, 10) : '2026',
           campus: 'Ambo University, Woliso Campus'
         }
       });
     }
 
-    // 4. If it matches standard format CGC-WL-2026-XXXX, verify as valid campus pass
-    const regex = /^CGC-WL-2026-[A-Z0-9]{4}$/i;
-    if (regex.test(rawPassId)) {
+    // 4. Check registered users table
+    const matchedUser = db.prepare(`
+      SELECT id, full_name, email, role, department, year_of_study, primary_track, membership_status
+      FROM users
+      WHERE id = ? OR upper(id) = upper(?) OR id LIKE ?
+    `).get(rawPassId, rawPassId, `%${rawPassId.slice(-4)}`);
+
+    if (matchedUser) {
+      const isApproved = matchedUser.role === 'ADMIN' || matchedUser.membership_status === 'APPROVED';
+      if (!isApproved) {
+        return res.status(403).json({
+          verified: false,
+          isPending: true,
+          error: 'Provisional Student Account — Not yet approved by Lead Admin. Official CGC Member QR Code is only issued to executive-approved members.'
+        });
+      }
+
       return res.json({
         verified: true,
         member: {
           id: rawPassId.toUpperCase(),
-          fullName: 'Woliso Campus Registered Member',
-          role: 'Active Student Member',
-          department: 'Ambo University, Woliso Campus',
-          yearOfStudy: 'Registered Student',
-          primaryTrack: 'Technology Innovation & Projects',
-          status: 'Active & Verified',
-          accessLevel: 'Standard Member Access (Lab 02 & Innovation Hall)',
-          issuedAt: '2026-02-10',
+          fullName: matchedUser.full_name,
+          email: matchedUser.email,
+          role: matchedUser.role === 'ADMIN' ? 'Administrator' : 'Official Approved Member',
+          department: matchedUser.department || 'Informatics & Technology',
+          yearOfStudy: matchedUser.year_of_study || '2nd Year Student',
+          primaryTrack: matchedUser.primary_track || 'Cybersecurity & Systems',
+          status: 'Active & Verified Member',
+          accessLevel: 'Standard Member Access (Lab Sprints, Workshops & Hackathons)',
+          issuedAt: '2026-02-01',
           campus: 'Ambo University, Woliso Campus'
         }
       });
@@ -238,7 +256,7 @@ app.get('/api/verify-pass/:passId', (req, res) => {
 
     return res.status(404).json({
       verified: false,
-      error: 'Pass ID not recognized in Woliso Campus CGC Registry.'
+      error: 'Pass or Ticket ID not recognized in Woliso Campus CGC Registry.'
     });
   } catch (err) {
     console.error('[Verify] Error verifying pass:', err);
@@ -319,6 +337,55 @@ app.get('/api/admin/applications', authenticateUser, requireAdmin, getMemberAppl
 app.patch('/api/admin/applications/:id', authenticateUser, requireAdmin, updateApplicationStatus);
 app.get('/api/admin/proposals', authenticateUser, requireAdmin, getProposals);
 app.get('/api/admin/rsvps', authenticateUser, requireAdmin, getRsvps);
+
+// Admin Flexible Event Tickets
+app.get('/api/admin/event-tickets', authenticateUser, requireAdmin, (req, res) => {
+  try {
+    const tickets = db.prepare('SELECT * FROM event_tickets ORDER BY created_at DESC').all();
+    res.json({ success: true, tickets });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch tickets' });
+  }
+});
+
+app.post('/api/admin/event-tickets', authenticateUser, requireAdmin, (req, res) => {
+  try {
+    const { title, eventType, venue, eventDate, accessLevel, customId } = req.body;
+    if (!title || !eventType || !venue) {
+      return res.status(400).json({ error: 'Title, event type, and venue are required.' });
+    }
+    const id = customId?.trim() || `EVT-${eventType.slice(0, 4).toUpperCase()}-${Date.now().toString().slice(-4)}`;
+    db.prepare(`
+      INSERT INTO event_tickets (id, title, event_type, venue, event_date, access_level, created_by)
+      VALUES (?, ?, ?, ?, ?, ?, 'Yesuf Dergu (Lead Admin)')
+    `).run(id, title.trim(), eventType, venue.trim(), eventDate || '2026 Academic Year', accessLevel || 'General Admission');
+
+    res.status(201).json({ success: true, ticket: { id, title, eventType, venue, eventDate, accessLevel } });
+  } catch (err) {
+    console.error('[Admin] Error creating event ticket:', err);
+    res.status(500).json({ error: 'Failed to generate event ticket' });
+  }
+});
+
+app.delete('/api/admin/event-tickets/:id', authenticateUser, requireAdmin, (req, res) => {
+  try {
+    db.prepare('DELETE FROM event_tickets WHERE id = ?').run(req.params.id);
+    res.json({ success: true, message: 'Ticket deleted.' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete ticket' });
+  }
+});
+
+// Admin User Membership Approval Toggle
+app.patch('/api/admin/users/:id/membership', authenticateUser, requireAdmin, (req, res) => {
+  try {
+    const { status } = req.body; // 'APPROVED' or 'PENDING'
+    db.prepare('UPDATE users SET membership_status = ? WHERE id = ?').run(status || 'APPROVED', req.params.id);
+    res.json({ success: true, message: `Membership set to ${status}` });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update user membership' });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`=======================================================`);

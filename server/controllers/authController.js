@@ -102,20 +102,47 @@ export function getMe(req, res) {
   try {
     const user = req.user;
     
-    // Check if user has an official verified application
+    // Check if user has an official verified application in member_applications
     const application = db.prepare(`
       SELECT * FROM member_applications
       WHERE email = ?
       ORDER BY submitted_at DESC LIMIT 1
     `).get(user.email);
 
+    const isAdmin = user.role === 'ADMIN';
+    const isDbApproved = user.membership_status === 'APPROVED';
+    const isAppApproved = application && application.status === 'Approved';
+    const isApproved = isAdmin || isDbApproved || isAppApproved;
+
+    let membership;
+    if (isApproved) {
+      const passId = isAdmin 
+        ? 'CGC-WL-2026-PRES' 
+        : (application?.id || `CGC-WL-2026-${user.id.slice(-4).toUpperCase()}`);
+
+      membership = {
+        isApproved: true,
+        status: 'Approved',
+        id: passId,
+        primaryTrack: application?.primary_track || user.primary_track || 'cybersecurity',
+        accessLevel: isAdmin ? 'Executive Access' : 'Computer Lab 02 & Workshop Access',
+        issuedAt: application?.submitted_at ? application.submitted_at.slice(0, 10) : '2026-02-15'
+      };
+    } else {
+      membership = {
+        isApproved: false,
+        status: application ? application.status : 'Awaiting Application',
+        id: null,
+        message: 'Your official CGC Member Pass and scannable Lab QR Code are issued once your application is reviewed and approved by Lead Admin Yesuf Dergu.'
+      };
+    }
+
     return res.json({
-      user,
-      membership: application || {
-        status: 'Active Member',
-        id: `CGC-WL-2026-${user.id.slice(-4).toUpperCase()}`,
-        primaryTrack: user.primary_track || 'cybersecurity'
-      }
+      user: {
+        ...user,
+        isApprovedMember: isApproved
+      },
+      membership
     });
   } catch (err) {
     console.error('[Auth] getMe error:', err);

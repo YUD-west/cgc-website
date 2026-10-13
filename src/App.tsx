@@ -110,7 +110,7 @@ const AppContent: React.FC = () => {
       if (parts[1]) setVerificationPassId(decodeURIComponent(parts[1]));
       setActiveTab('verify');
     } else if (hash === '#team-up' || hash === '#co-creators') {
-      setActiveTab('co-creators');
+      setActiveTab('projects');
     }
   }, []);
 
@@ -177,10 +177,6 @@ const AppContent: React.FC = () => {
             onProposeProject={() => setIsProposalModalOpen(true)}
             customProposals={customProposals}
           />
-        )}
-
-        {activeTab === 'co-creators' && (
-          <CoCreatorPage />
         )}
 
         {activeTab === 'events' && (

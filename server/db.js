@@ -83,7 +83,27 @@ db.exec(`
     status TEXT NOT NULL DEFAULT 'Open',
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  -- 6. Flexible Event, Hackathon & Lecture QR Tickets (Admin Authorized Only)
+  CREATE TABLE IF NOT EXISTS event_tickets (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    event_type TEXT NOT NULL,
+    venue TEXT NOT NULL,
+    event_date TEXT NOT NULL,
+    access_level TEXT NOT NULL,
+    created_by TEXT NOT NULL DEFAULT 'Yesuf Dergu (Lead Admin)',
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);
+
+// Safely ensure supplementary columns exist on users table
+try { db.exec("ALTER TABLE users ADD COLUMN department TEXT;"); } catch (e) {}
+try { db.exec("ALTER TABLE users ADD COLUMN year_of_study TEXT;"); } catch (e) {}
+try { db.exec("ALTER TABLE users ADD COLUMN phone TEXT;"); } catch (e) {}
+try { db.exec("ALTER TABLE users ADD COLUMN telegram TEXT;"); } catch (e) {}
+try { db.exec("ALTER TABLE users ADD COLUMN primary_track TEXT DEFAULT 'cybersecurity';"); } catch (e) {}
+try { db.exec("ALTER TABLE users ADD COLUMN membership_status TEXT DEFAULT 'PENDING';"); } catch (e) {}
 
 // Seed Lead Admin & Sample Co-Creator Opportunities
 export function seedDatabase() {
@@ -93,8 +113,8 @@ export function seedDatabase() {
     const hash = bcrypt.hashSync('admin123', salt);
 
     db.prepare(`
-      INSERT INTO users (id, email, password_hash, full_name, role, department, phone, telegram, primary_track)
-      VALUES (?, ?, ?, ?, 'ADMIN', ?, ?, ?, 'cybersecurity')
+      INSERT INTO users (id, email, password_hash, full_name, role, department, phone, telegram, primary_track, membership_status)
+      VALUES (?, ?, ?, ?, 'ADMIN', ?, ?, ?, 'cybersecurity', 'APPROVED')
     `).run(
       'usr_admin_yesuf',
       'yesufdergu464@gmail.com',
@@ -105,6 +125,21 @@ export function seedDatabase() {
       '@SatoshiFlash'
     );
     console.log('[DB] Seeded Lead Admin Yesuf Dergu (yesufdergu464@gmail.com).');
+  } else {
+    db.prepare("UPDATE users SET membership_status = 'APPROVED' WHERE email = 'yesufdergu464@gmail.com'").run();
+  }
+
+  // Seed sample event tickets if empty
+  const ticketCount = db.prepare('SELECT count(*) as count FROM event_tickets').get()?.count || 0;
+  if (ticketCount === 0) {
+    db.prepare(`
+      INSERT INTO event_tickets (id, title, event_type, venue, event_date, access_level, created_by)
+      VALUES 
+      ('EVT-HACK-2026-WL', 'Woliso Inter-Department Innovation Hackathon 2026', 'Hackathon', 'Computer Lab 02 & Main Hall', 'March 28, 2026', 'Full Hacker Clearance & Workstation Access', 'Yesuf Dergu (Lead Admin)'),
+      ('EVT-LECT-2026-01', 'Git, Linux & Modern Web Architecture Masterclass', 'Lecture', 'Orientation Hall B', 'March 14, 2026', 'General Attendee Entry', 'Yesuf Dergu (Lead Admin)'),
+      ('EVT-CHAL-2026-01', 'CGC Weekend Cryptography & Ethical Defense Sprint', 'Coding Challenge', 'Computer Lab 02', 'April 05, 2026', 'Participant Terminal Clearance', 'Yesuf Dergu (Lead Admin)')
+    `).run();
+    console.log('[DB] Seeded initial event tickets.');
   }
 
   // Seed sample co-creator posts if empty

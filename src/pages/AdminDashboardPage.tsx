@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { CGCLogo } from '../components/Logo/CGCLogo';
+import { QRCodeView } from '../components/QRCodeView';
 import { 
   ShieldCheck, 
   Users, 
@@ -13,20 +14,35 @@ import {
   RotateCw, 
   FileText,
   Check,
-  X
+  X,
+  QrCode,
+  Plus,
+  Trash2,
+  Printer,
+  Download
 } from 'lucide-react';
 
 export const AdminDashboardPage: React.FC = () => {
   const { token, isAdmin } = useAuth();
   
   const [metrics, setMetrics] = useState<any | null>(null);
-  const [activeTab, setActiveTab] = useState<'students' | 'applications' | 'proposals' | 'rsvps'>('students');
+  const [activeTab, setActiveTab] = useState<'students' | 'applications' | 'qr-studio' | 'proposals' | 'rsvps'>('students');
   
   // Data states
   const [students, setStudents] = useState<any[]>([]);
   const [applications, setApplications] = useState<any[]>([]);
   const [proposals, setProposals] = useState<any[]>([]);
   const [rsvps, setRsvps] = useState<any[]>([]);
+  const [eventTickets, setEventTickets] = useState<any[]>([]);
+
+  // Flexible Event Ticket Form State
+  const [ticketTitle, setTicketTitle] = useState('Woliso Inter-Department Innovation Hackathon 2026');
+  const [ticketType, setTicketType] = useState('Hackathon');
+  const [ticketVenue, setTicketVenue] = useState('Computer Lab 02 & Main Hall');
+  const [ticketDate, setTicketDate] = useState('March 28, 2026');
+  const [ticketAccess, setTicketAccess] = useState('Full Hacker Clearance & Workstation Access');
+  const [ticketCustomId, setTicketCustomId] = useState('EVT-HACK-2026-WL');
+  const [generatingTicket, setGeneratingTicket] = useState(false);
 
   // Search & filter
   const [searchQuery, setSearchQuery] = useState('');
@@ -80,6 +96,15 @@ export const AdminDashboardPage: React.FC = () => {
         setRsvps(rData.rsvps || []);
       }
 
+      // 6. Fetch Event Tickets (Flexible QR Studio)
+      const tRes = await fetch('/api/admin/event-tickets', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (tRes.ok) {
+        const tData = await tRes.json();
+        setEventTickets(tData.tickets || []);
+      }
+
     } catch (err) {
       console.error('Error fetching admin dashboard data', err);
     } finally {
@@ -90,6 +115,76 @@ export const AdminDashboardPage: React.FC = () => {
   useEffect(() => {
     fetchAdminData();
   }, [token, searchQuery]);
+
+  const handleToggleUserMembership = async (userId: string, newStatus: string) => {
+    if (!token) return;
+    try {
+      const res = await fetch(`/api/admin/users/${userId}/membership`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (res.ok) {
+        setActionMessage(`Student status updated to ${newStatus}. Official QR code ${newStatus === 'APPROVED' ? 'activated' : 'deactivated'}.`);
+        fetchAdminData();
+        setTimeout(() => setActionMessage(null), 3500);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleCreateEventTicket = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!token || !ticketTitle.trim() || !ticketVenue.trim()) return;
+    try {
+      setGeneratingTicket(true);
+      const res = await fetch('/api/admin/event-tickets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          title: ticketTitle,
+          eventType: ticketType,
+          venue: ticketVenue,
+          eventDate: ticketDate,
+          accessLevel: ticketAccess,
+          customId: ticketCustomId
+        })
+      });
+      if (res.ok) {
+        setActionMessage(`Event QR Ticket [${ticketCustomId}] successfully issued.`);
+        fetchAdminData();
+        setTimeout(() => setActionMessage(null), 3000);
+      }
+    } catch (err) {
+      console.error('Error generating event ticket:', err);
+    } finally {
+      setGeneratingTicket(false);
+    }
+  };
+
+  const handleDeleteEventTicket = async (ticketId: string) => {
+    if (!token) return;
+    try {
+      const res = await fetch(`/api/admin/event-tickets/${ticketId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        setActionMessage(`Event Ticket ${ticketId} deleted.`);
+        fetchAdminData();
+        setTimeout(() => setActionMessage(null), 3000);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleUpdateAppStatus = async (appId: string, newStatus: string) => {
     if (!token) return;
@@ -242,6 +337,17 @@ export const AdminDashboardPage: React.FC = () => {
             Project Proposals ({proposals.length})
           </button>
           <button
+            onClick={() => setActiveTab('qr-studio')}
+            className={`py-3 px-4 text-xs font-bold uppercase tracking-wider border-b-2 whitespace-nowrap transition-all flex items-center gap-1.5 ${
+              activeTab === 'qr-studio'
+                ? 'border-indigo-500 text-indigo-400'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <QrCode className="w-3.5 h-3.5" />
+            <span>Event QR Studio ({eventTickets.length})</span>
+          </button>
+          <button
             onClick={() => setActiveTab('rsvps')}
             className={`py-3 px-4 text-xs font-bold uppercase tracking-wider border-b-2 whitespace-nowrap transition-all ${
               activeTab === 'rsvps'
@@ -253,7 +359,7 @@ export const AdminDashboardPage: React.FC = () => {
           </button>
         </div>
 
-        {/* TAB 1: REGISTERED STUDENTS */}
+        {/* TAB 1: REGISTERED STUDENTS & APPROVALS */}
         {activeTab === 'students' && (
           <div className="space-y-4">
             <div className="relative w-full sm:w-72">
@@ -274,26 +380,283 @@ export const AdminDashboardPage: React.FC = () => {
                     <th className="py-3 px-3">Student Name</th>
                     <th className="py-3 px-3">Email</th>
                     <th className="py-3 px-3">Department & Year</th>
-                    <th className="py-3 px-3">Telegram</th>
-                    <th className="py-3 px-3">Registered Date</th>
+                    <th className="py-3 px-3">Membership & QR Status</th>
+                    <th className="py-3 px-3">Executive Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/60">
-                  {students.map((st) => (
-                    <tr key={st.id} className="hover:bg-slate-900/40">
-                      <td className="py-3 px-3 font-bold text-white">{st.full_name}</td>
-                      <td className="py-3 px-3 font-mono text-slate-300">{st.email}</td>
-                      <td className="py-3 px-3">
-                        <div className="text-white">{st.department || 'Informatics'}</div>
-                        <div className="text-[10px] text-slate-400">{st.year_of_study || '2nd Year'}</div>
-                      </td>
-                      <td className="py-3 px-3 text-blue-400 font-mono">{st.telegram || '—'}</td>
-                      <td className="py-3 px-3 text-slate-400">{st.created_at?.slice(0, 10)}</td>
-                    </tr>
-                  ))}
+                  {students.map((st) => {
+                    const isApproved = st.role === 'ADMIN' || st.membership_status === 'APPROVED';
+                    return (
+                      <tr key={st.id} className="hover:bg-slate-900/40">
+                        <td className="py-3 px-3 font-bold text-white">{st.full_name}</td>
+                        <td className="py-3 px-3 font-mono text-slate-300">{st.email}</td>
+                        <td className="py-3 px-3">
+                          <div className="text-white">{st.department || 'Informatics'}</div>
+                          <div className="text-[10px] text-slate-400">{st.year_of_study || '2nd Year'}</div>
+                        </td>
+                        <td className="py-3 px-3">
+                          {st.role === 'ADMIN' ? (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                              Executive Admin
+                            </span>
+                          ) : isApproved ? (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 w-fit">
+                              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                              Approved (QR Active)
+                            </span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20 w-fit">
+                              Provisional (No QR)
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3 px-3">
+                          {st.role !== 'ADMIN' && (
+                            isApproved ? (
+                              <button
+                                onClick={() => handleToggleUserMembership(st.id, 'PENDING')}
+                                className="px-2.5 py-1 rounded bg-slate-800 hover:bg-rose-900/30 text-slate-400 hover:text-rose-400 text-[11px] border border-slate-700/60 transition"
+                              >
+                                Revoke Pass
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => handleToggleUserMembership(st.id, 'APPROVED')}
+                                className="px-3 py-1 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-[11px] shadow-sm transition flex items-center gap-1"
+                              >
+                                <Check className="w-3 h-3" />
+                                <span>Approve & Issue QR</span>
+                              </button>
+                            )
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
+          </div>
+        )}
+
+        {/* TAB: EVENT QR STUDIO */}
+        {activeTab === 'qr-studio' && (
+          <div className="space-y-8 animate-fade-in">
+            {/* Header info */}
+            <div className="pb-4 border-b border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[10px] font-bold uppercase tracking-wider mb-1">
+                  <QrCode className="w-3 h-3" />
+                  Executive Event Pass Engine
+                </div>
+                <h3 className="text-lg font-bold text-white">Event, Hackathon & Lecture QR Ticket Studio</h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Issue verifiable entrance passes and workstation badges for coding sprints, hackathons, and guest lectures at Ambo University, Woliso Campus.
+                </p>
+              </div>
+            </div>
+
+            {/* Form & Live Badge Preview */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+              {/* Left Column: Generator Form */}
+              <form onSubmit={handleCreateEventTicket} className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 space-y-4 text-xs">
+                <h4 className="font-bold text-white text-sm flex items-center gap-2">
+                  <Plus className="w-4 h-4 text-blue-400" />
+                  <span>Configure Event Pass</span>
+                </h4>
+
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1">Event / Ticket Title *</label>
+                  <input
+                    type="text"
+                    required
+                    value={ticketTitle}
+                    onChange={(e) => setTicketTitle(e.target.value)}
+                    placeholder="e.g. Cursor Hackathon 2026 Finals"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-slate-300 font-semibold mb-1">Event Category *</label>
+                    <select
+                      value={ticketType}
+                      onChange={(e) => {
+                        setTicketType(e.target.value);
+                        setTicketCustomId(`EVT-${e.target.value.slice(0, 4).toUpperCase()}-${Date.now().toString().slice(-4)}`);
+                      }}
+                      className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white focus:outline-none focus:border-blue-500"
+                    >
+                      <option value="Hackathon">🏆 Hackathon</option>
+                      <option value="Lecture">🎓 Lecture / Masterclass</option>
+                      <option value="Coding Challenge">💻 Coding Challenge</option>
+                      <option value="Special Event">🎟️ Special Event</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-300 font-semibold mb-1">Pass ID / Code *</label>
+                    <input
+                      type="text"
+                      required
+                      value={ticketCustomId}
+                      onChange={(e) => setTicketCustomId(e.target.value)}
+                      placeholder="e.g. EVT-HACK-2026-WL"
+                      className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white font-mono placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-slate-300 font-semibold mb-1">Venue *</label>
+                    <input
+                      type="text"
+                      required
+                      value={ticketVenue}
+                      onChange={(e) => setTicketVenue(e.target.value)}
+                      placeholder="e.g. Computer Lab 02"
+                      className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-300 font-semibold mb-1">Date *</label>
+                    <input
+                      type="text"
+                      required
+                      value={ticketDate}
+                      onChange={(e) => setTicketDate(e.target.value)}
+                      placeholder="e.g. March 28, 2026"
+                      className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1">Access Clearance *</label>
+                  <input
+                    type="text"
+                    required
+                    value={ticketAccess}
+                    onChange={(e) => setTicketAccess(e.target.value)}
+                    placeholder="e.g. Full Hacker Workstation & Lab 02 Clearance"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={generatingTicket}
+                    className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-glow-blue disabled:opacity-50 transition"
+                  >
+                    {generatingTicket ? 'Issuing Ticket...' : 'Issue & Authorize Event QR Pass'}
+                  </button>
+                </div>
+              </form>
+
+              {/* Right Column: Live Printable Badge Preview */}
+              <div className="p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-slate-900 via-[#10192e] to-[#142340] border border-blue-500/40 shadow-2xl relative space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                  <CGCLogo variant="full" size="sm" showTagline={false} />
+                  <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                    {ticketType.toUpperCase()} PASS
+                  </span>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <span className="text-[10px] text-slate-500 uppercase font-semibold">Event Name</span>
+                    <h4 className="text-base font-bold text-white">{ticketTitle}</h4>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <span className="text-[10px] text-slate-500 uppercase font-semibold">Venue</span>
+                      <div className="text-slate-200 font-semibold">{ticketVenue}</div>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-500 uppercase font-semibold">Date</span>
+                      <div className="text-slate-200 font-semibold">{ticketDate}</div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-[10px] text-slate-500 uppercase font-semibold">Clearance</span>
+                    <div className="text-emerald-400 font-mono font-semibold">{ticketAccess}</div>
+                  </div>
+                </div>
+
+                {/* Scannable QR Code */}
+                <div className="py-3 flex flex-col items-center justify-center bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+                  <QRCodeView
+                    value={typeof window !== 'undefined' ? `${window.location.origin}/#verify/${ticketCustomId}` : `http://localhost:3000/#verify/${ticketCustomId}`}
+                    size={110}
+                    label="Official Event Entry QR"
+                  />
+                  <span className="text-[11px] font-mono text-blue-400 mt-1 font-bold">{ticketCustomId}</span>
+                </div>
+
+                <div className="pt-2 border-t border-slate-800 flex items-center justify-between gap-2">
+                  <span className="text-[10px] text-slate-500 font-mono">Issuer: Yesuf Dergu (Lead Admin)</span>
+                  <button
+                    onClick={() => window.print()}
+                    className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 flex items-center gap-1.5 transition"
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                    <span>Print Badge</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Issued Event Tickets Table */}
+            <div className="pt-6 border-t border-slate-800 space-y-3">
+              <h4 className="text-sm font-bold text-white">Active Authorized Event Tickets ({eventTickets.length})</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs text-slate-300">
+                  <thead className="text-[10px] uppercase text-slate-500 border-b border-slate-800 bg-slate-900/40">
+                    <tr>
+                      <th className="py-2.5 px-3">Ticket ID</th>
+                      <th className="py-2.5 px-3">Event Title</th>
+                      <th className="py-2.5 px-3">Category</th>
+                      <th className="py-2.5 px-3">Venue & Date</th>
+                      <th className="py-2.5 px-3">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800/60">
+                    {eventTickets.map((t) => (
+                      <tr key={t.id} className="hover:bg-slate-900/40">
+                        <td className="py-2.5 px-3 font-mono text-blue-400 font-bold">{t.id}</td>
+                        <td className="py-2.5 px-3 text-white font-semibold">{t.title}</td>
+                        <td className="py-2.5 px-3">
+                          <span className="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-300 border border-slate-700">
+                            {t.event_type}
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-3 text-slate-400">
+                          <div>{t.venue}</div>
+                          <div className="text-[10px] text-slate-500">{t.event_date}</div>
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <button
+                            onClick={() => handleDeleteEventTicket(t.id)}
+                            className="p-1 rounded bg-slate-800 hover:bg-rose-900/40 text-slate-400 hover:text-rose-400 transition"
+                            title="Delete Ticket"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
           </div>
         )}
 

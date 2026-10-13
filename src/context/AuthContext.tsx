@@ -10,11 +10,13 @@ export interface User {
   phone?: string;
   telegram?: string;
   primaryTrack?: string;
+  isApprovedMember?: boolean;
 }
 
 export interface ClubMembership {
-  id: string;
+  id?: string;
   status: string;
+  isApproved?: boolean;
   primary_track?: string;
   department?: string;
   year_of_study?: string;

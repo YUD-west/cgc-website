@@ -133,6 +133,12 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, openBrandModal }) 
                 </button>
               </li>
               <li>
+                <button onClick={() => handleNav('verify')} className="hover:text-emerald-400 transition-colors flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Verify Member Pass</span>
+                </button>
+              </li>
+              <li>
                 <button onClick={() => handleNav('join')} className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors">
                   Apply for Membership →
                 </button>

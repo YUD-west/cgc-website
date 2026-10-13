@@ -65,12 +65,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navLinks = [
     { id: 'home', label: 'Home', icon: Sparkles },
-    { id: 'about', label: 'About CGC', icon: Shield },
     { id: 'explore', label: 'Tracks', icon: Compass },
-    { id: 'projects', label: 'Projects', icon: Layers },
-    { id: 'co-creators', label: 'Team Up', icon: Users },
-    { id: 'events', label: 'Events', icon: Calendar },
-    { id: 'contact', label: 'Contact', icon: Users },
+    { id: 'projects', label: 'Projects & Teams', icon: Layers },
+    { id: 'events', label: 'Events & Labs', icon: Calendar },
+    { id: 'about', label: 'About CGC', icon: Shield },
   ];
 
   const handleNavClick = (id: string) => {
@@ -157,29 +155,15 @@ export const Navbar: React.FC<NavbarProps> = ({
               </kbd>
             </button>
 
-            {/* Public Pass Verification Portal Shortcut */}
-            <button
-              onClick={() => handleNavClick('verify')}
-              className={`px-3 py-2 text-xs font-semibold rounded-xl border transition-colors flex items-center gap-1.5 ${
-                activeTab === 'verify'
-                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                  : 'text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-800 border-slate-700/60'
-              }`}
-              title="Verify a Member Pass ID or QR code"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="hidden sm:inline">Verify Pass</span>
-            </button>
-
             {/* PWA Install Button (if available) */}
             {installPrompt && (
               <button
                 onClick={handleInstallClick}
-                className="px-3 py-2 text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 border border-blue-400/40 rounded-xl shadow-sm transition-all flex items-center gap-1.5"
+                className="px-2.5 py-1.5 text-xs font-semibold text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 rounded-xl transition-all flex items-center gap-1.5"
                 title="Install Cyber Guardians Club App on your device"
               >
                 <Download className="w-3.5 h-3.5" />
-                <span>Install App</span>
+                <span className="hidden sm:inline">Install</span>
               </button>
             )}
 

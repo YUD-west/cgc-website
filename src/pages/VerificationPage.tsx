@@ -15,6 +15,19 @@ import {
 
 interface VerificationResult {
   verified: boolean;
+  isEventTicket?: boolean;
+  isPending?: boolean;
+  ticket?: {
+    id: string;
+    title: string;
+    eventType: string;
+    venue: string;
+    eventDate: string;
+    accessLevel: string;
+    createdBy: string;
+    status: string;
+    campus: string;
+  };
   member?: {
     id: string;
     fullName: string;
@@ -80,17 +93,17 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
   return (
     <div className="py-12 sm:py-16 max-w-3xl mx-auto px-4 sm:px-6 space-y-8 animate-fade-in">
       
-      {/* Header */}
+      {/* Human-Crafted Header & Sub-Header */}
       <div className="text-center space-y-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold">
           <ShieldCheck className="w-4 h-4 text-emerald-400" />
-          <span>Official Membership Verification Portal</span>
+          <span>Official Pass & Ticket Verification</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-          Verify CGC Student Member Pass
+          Verify Member Pass or Event Ticket
         </h1>
-        <p className="text-slate-400 text-xs sm:text-sm max-w-lg mx-auto">
-          Scan QR codes or enter a student's Member Pass ID to authenticate active club status for Computer Lab 02 access, hackathons, and campus workshops.
+        <p className="text-slate-400 text-xs sm:text-sm max-w-lg mx-auto leading-relaxed">
+          Authenticate student club memberships or special event credentials for hackathons, guest lectures, and coding challenges at Ambo University, Woliso Campus.
         </p>
       </div>
 
@@ -101,7 +114,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
             type="text"
             value={passIdInput}
             onChange={(e) => setPassIdInput(e.target.value)}
-            placeholder="e.g. CGC-WL-2026-PRES"
+            placeholder="e.g. CGC-WL-2026-PRES or EVT-HACK-2026-WL"
             className="w-full bg-[#111A2E] border border-slate-700/80 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 font-mono"
           />
         </div>
@@ -122,9 +135,53 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
       {/* Verification Output Card */}
       {result && (
         <div className="rounded-3xl border transition-all duration-300 shadow-2xl overflow-hidden animate-fade-in bg-[#111A2E]">
-          {result.verified && result.member ? (
+          {/* 1. Event / Hackathon / Lecture Ticket Verified */}
+          {result.verified && result.isEventTicket && result.ticket ? (
             <div>
-              {/* Green Verified Banner */}
+              <div className="bg-gradient-to-r from-blue-950/80 via-indigo-950/70 to-slate-900 border-b border-blue-500/30 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-500/20 border border-blue-400/40 flex items-center justify-center text-blue-400 shrink-0">
+                    <CheckCircle2 className="w-7 h-7" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-blue-400 font-mono">
+                        AUTHENTICATED EVENT TICKET
+                      </span>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                        {result.ticket.eventType}
+                      </span>
+                    </div>
+                    <h2 className="text-xl font-bold text-white mt-0.5">{result.ticket.title}</h2>
+                    <p className="text-xs text-slate-300 font-mono">{result.ticket.id}</p>
+                  </div>
+                </div>
+
+                <div className="text-right hidden sm:block">
+                  <div className="text-[10px] text-slate-400 uppercase font-mono">Venue</div>
+                  <div className="text-xs font-semibold text-slate-200">{result.ticket.venue}</div>
+                  <div className="text-[11px] text-blue-400">{result.ticket.eventDate}</div>
+                </div>
+              </div>
+
+              <div className="p-6 sm:p-8 space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                  <div className="p-3.5 rounded-xl bg-slate-900/70 border border-slate-800 space-y-1">
+                    <span className="text-[10px] uppercase font-semibold text-slate-500">Access Level</span>
+                    <div className="font-semibold text-emerald-400">{result.ticket.accessLevel}</div>
+                    <div className="text-slate-400 text-[11px]">Computer Lab 02 Clearance</div>
+                  </div>
+                  <div className="p-3.5 rounded-xl bg-slate-900/70 border border-slate-800 space-y-1">
+                    <span className="text-[10px] uppercase font-semibold text-slate-500">Authorized Issuer</span>
+                    <div className="font-semibold text-white">{result.ticket.createdBy}</div>
+                    <div className="text-slate-400 text-[11px]">Ambo University, Woliso Campus</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : result.verified && result.member ? (
+            /* 2. Official Member Pass Verified */
+            <div>
               <div className="bg-gradient-to-r from-emerald-950/80 via-emerald-900/60 to-slate-900 border-b border-emerald-500/30 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 shrink-0">

@@ -16,6 +16,8 @@ import {
   Layers
 } from 'lucide-react';
 
+import { CoCreatorPage } from './CoCreatorPage';
+
 interface ProjectsPageProps {
   onJoinTeam: (project: Project) => void;
   onProposeProject: () => void;
@@ -27,6 +29,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
   onProposeProject,
   customProposals = [],
 }) => {
+  const [tabMode, setTabMode] = useState<'projects' | 'teams'>('projects');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTrack, setSelectedTrack] = useState<string>('all');
   const [selectedOrigin, setSelectedOrigin] = useState<string>('all');
@@ -82,19 +85,49 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
           }
         />
 
-        {/* Ethical Transparency Note */}
-        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300 flex items-start sm:items-center gap-3 mb-8">
-          <Info className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5 sm:mt-0" />
-          <div>
-            <strong className="text-white">Student Innovation Notice:</strong> Projects represent real student problem statements, prototypes, and open source initiatives at Ambo University, Woliso Campus. Any newly proposed student idea is recorded directly in the campus innovation pipeline.
-          </div>
+        {/* Mode Selector: Campus Projects vs Co-Creator Matchmaking */}
+        <div className="flex items-center gap-2 mb-8 bg-[#111A2E] p-1.5 rounded-2xl border border-slate-800 w-fit">
+          <button
+            onClick={() => setTabMode('projects')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+              tabMode === 'projects'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            <span>Campus Projects ({allProjects.length})</span>
+          </button>
+          <button
+            onClick={() => setTabMode('teams')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+              tabMode === 'teams'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            <span>Find a Co-Creator (Cross-Faculty Teams)</span>
+          </button>
         </div>
 
-        {/* Filter & Search Bar */}
-        <div className="bg-[#111A2E] border border-slate-800 p-5 rounded-2xl shadow-card space-y-4 mb-8">
-          <div className="flex flex-col md:flex-row gap-4">
-            {/* Search Input */}
-            <div className="relative flex-1">
+        {tabMode === 'teams' ? (
+          <CoCreatorPage />
+        ) : (
+          <>
+            {/* Ethical Transparency Note */}
+            <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300 flex items-start sm:items-center gap-3 mb-8">
+              <Info className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5 sm:mt-0" />
+              <div>
+                <strong className="text-white">Student Innovation Notice:</strong> Projects represent real student problem statements, prototypes, and open source initiatives at Ambo University, Woliso Campus. Any newly proposed student idea is recorded directly in the campus innovation pipeline.
+              </div>
+            </div>
+
+            {/* Filter & Search Bar */}
+            <div className="bg-[#111A2E] border border-slate-800 p-5 rounded-2xl shadow-card space-y-4 mb-8">
+              <div className="flex flex-col md:flex-row gap-4">
+                {/* Search Input */}
+                <div className="relative flex-1">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
@@ -223,6 +256,8 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
               </button>
             </div>
           </div>
+        )}
+          </>
         )}
 
       </div>
