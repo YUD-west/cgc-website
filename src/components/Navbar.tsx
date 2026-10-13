@@ -12,7 +12,6 @@ import {
   Calendar, 
   Users, 
   Compass,
-  Zap,
   User as UserIcon,
   LogOut,
   ShieldCheck
@@ -23,7 +22,6 @@ interface NavbarProps {
   setActiveTab: (tab: string) => void;
   openCommandPalette: () => void;
   onOpenAuth: () => void;
-  onOpenSubscriptionModal: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -31,7 +29,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   openCommandPalette,
   onOpenAuth,
-  onOpenSubscriptionModal,
 }) => {
   const { user, isAdmin, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -82,13 +79,9 @@ export const Navbar: React.FC<NavbarProps> = ({
               </span>
             </div>
             <div className="hidden md:flex items-center gap-3 text-slate-400">
-              <button
-                onClick={onOpenSubscriptionModal}
-                className="text-[11px] text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1 transition-colors"
-              >
-                <Zap className="w-3 h-3" />
-                <span>Pay Membership (Telebirr & CBE Birr)</span>
-              </button>
+              <span className="text-[11px] font-mono text-emerald-400 font-semibold">
+                Free Student Community • "Ideas into Impact"
+              </span>
             </div>
           </div>
         </div>
@@ -112,7 +105,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   key={link.id}
                   onClick={() => handleNavClick(link.id)}
-                  className={`px-3 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 relative ${
+                  className={`px-3.5 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 relative ${
                     isActive
                       ? 'text-white bg-slate-800/90 shadow-sm border border-slate-700/60'
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/40'
@@ -125,15 +118,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </button>
               );
             })}
-
-            {/* Pay / Subscribe Trigger */}
-            <button
-              onClick={onOpenSubscriptionModal}
-              className="px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-emerald-400 hover:text-emerald-300 hover:bg-emerald-950/30 flex items-center gap-1 transition-colors"
-            >
-              <Zap className="w-3.5 h-3.5" />
-              <span>Subscribe</span>
-            </button>
           </nav>
 
           {/* Actions: Command Search + Auth / Dashboard */}
@@ -146,7 +130,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Search className="w-3.5 h-3.5 text-slate-400" />
               <span>Search...</span>
-              <kbd className="hidden xl:inline-flex items-center px-1 py-0.2 text-[10px] font-mono bg-slate-900 border border-slate-700 rounded text-slate-400">
+              <kbd className="hidden xl:inline-flex items-center px-1.5 py-0.2 text-[10px] font-mono bg-slate-900 border border-slate-700 rounded text-slate-400">
                 ⌘K
               </kbd>
             </button>
@@ -179,7 +163,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }`}
                 >
                   <UserIcon className="w-3.5 h-3.5 text-blue-400" />
-                  <span>My Pass</span>
+                  <span>My Member Pass</span>
                 </button>
 
                 {/* Logout */}
@@ -208,7 +192,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       : 'bg-blue-600 hover:bg-blue-500 text-white'
                   }`}
                 >
-                  <span>Join CGC</span>
+                  <span>Join CGC (Free)</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -243,14 +227,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span>{link.label}</span>
               </button>
             ))}
-            
-            <button
-              onClick={() => { setMobileMenuOpen(false); onOpenSubscriptionModal(); }}
-              className="w-full text-left py-2.5 px-3 rounded-lg text-sm font-bold text-emerald-400 flex items-center justify-between hover:bg-slate-800"
-            >
-              <span>Pay Membership (Telebirr & CBE)</span>
-              <Zap className="w-4 h-4" />
-            </button>
           </div>
 
           <div className="pt-4 border-t border-slate-800 space-y-2">
@@ -260,7 +236,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={() => handleNavClick('dashboard')}
                   className="w-full py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs"
                 >
-                  My Member Pass & Dashboard
+                  My Member Pass
                 </button>
                 {isAdmin && (
                   <button
@@ -289,7 +265,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={() => handleNavClick('join')}
                   className="py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs"
                 >
-                  Join CGC
+                  Join CGC (Free)
                 </button>
               </div>
             )}

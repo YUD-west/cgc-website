@@ -102,18 +102,20 @@ export function getMe(req, res) {
   try {
     const user = req.user;
     
-    // Fetch user's active subscription if any
-    const activeSub = db.prepare(`
-      SELECT s.*, p.name as plan_name, p.slug as plan_slug, p.interval as plan_interval, p.price_etb, p.price_usd
-      FROM subscriptions s
-      JOIN subscription_plans p ON s.plan_id = p.id
-      WHERE s.user_id = ? AND s.status = 'ACTIVE'
-      ORDER BY s.created_at DESC LIMIT 1
-    `).get(user.id);
+    // Check if user has an official verified application
+    const application = db.prepare(`
+      SELECT * FROM member_applications
+      WHERE email = ?
+      ORDER BY submitted_at DESC LIMIT 1
+    `).get(user.email);
 
     return res.json({
       user,
-      activeSubscription: activeSub || null
+      membership: application || {
+        status: 'Active Member',
+        id: `CGC-WL-2026-${user.id.slice(-4).toUpperCase()}`,
+        primaryTrack: user.primary_track || 'cybersecurity'
+      }
     });
   } catch (err) {
     console.error('[Auth] getMe error:', err);

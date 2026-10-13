@@ -9,26 +9,22 @@ export interface User {
   yearOfStudy?: string;
   phone?: string;
   telegram?: string;
+  primaryTrack?: string;
 }
 
-export interface ActiveSubscription {
+export interface ClubMembership {
   id: string;
-  plan_id: string;
-  plan_name: string;
-  plan_slug: string;
-  plan_interval: 'MONTHLY' | 'YEARLY';
-  price_etb: number;
-  price_usd: number;
-  status: 'ACTIVE' | 'PENDING' | 'CANCELLED' | 'EXPIRED';
-  current_period_start: string;
-  current_period_end: string;
-  cancel_at_period_end: number;
+  status: string;
+  primary_track?: string;
+  department?: string;
+  year_of_study?: string;
+  submitted_at?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  activeSubscription: ActiveSubscription | null;
+  membership: ClubMembership | null;
   isLoading: boolean;
   isAdmin: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
@@ -44,7 +40,7 @@ const TOKEN_KEY = 'cgc_auth_token_v1';
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(() => localStorage.getItem(TOKEN_KEY));
-  const [activeSubscription, setActiveSubscription] = useState<ActiveSubscription | null>(null);
+  const [membership, setMembership] = useState<ClubMembership | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const fetchCurrentUser = async (authToken: string) => {
@@ -55,13 +51,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (res.ok) {
         const data = await res.json();
         setUser(data.user);
-        setActiveSubscription(data.activeSubscription);
+        setMembership(data.membership || null);
       } else {
-        // Token expired or invalid
         localStorage.removeItem(TOKEN_KEY);
         setToken(null);
         setUser(null);
-        setActiveSubscription(null);
+        setMembership(null);
       }
     } catch (err) {
       console.error('Failed to authenticate token with server', err);
@@ -113,6 +108,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem(TOKEN_KEY, data.token);
       setToken(data.token);
       setUser(data.user);
+      await fetchCurrentUser(data.token);
       return { success: true };
     } catch (err: any) {
       return { success: false, error: err.message || 'Network error' };
@@ -123,7 +119,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem(TOKEN_KEY);
     setToken(null);
     setUser(null);
-    setActiveSubscription(null);
+    setMembership(null);
   };
 
   const refreshUser = async () => {
@@ -137,7 +133,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         user,
         token,
-        activeSubscription,
+        membership,
         isLoading,
         isAdmin: user?.role === 'ADMIN',
         login,

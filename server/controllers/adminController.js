@@ -2,84 +2,52 @@ import { db } from '../db.js';
 
 export function getMetrics(req, res) {
   try {
-    // 1. Active Subscribers
-    const activeSubs = db.prepare("SELECT COUNT(*) as count FROM subscriptions WHERE status = 'ACTIVE'").get();
+    // 1. Total Registered Students
+    const studentCount = db.prepare("SELECT COUNT(*) as count FROM users WHERE role = 'USER'").get();
 
-    // 2. Revenue calculations
-    const revenueETB = db.prepare("SELECT SUM(amount) as total FROM payments WHERE status = 'SUCCESS' AND currency = 'ETB'").get();
-    const revenueUSD = db.prepare("SELECT SUM(amount) as total FROM payments WHERE status = 'SUCCESS' AND currency = 'USD'").get();
+    // 2. Member Applications
+    const totalApps = db.prepare('SELECT COUNT(*) as count FROM member_applications').get();
+    const pendingApps = db.prepare("SELECT COUNT(*) as count FROM member_applications WHERE status = 'Reviewing' OR status = 'Pending'").get();
 
-    // 3. Total registered members
-    const userCount = db.prepare("SELECT COUNT(*) as count FROM users WHERE role = 'USER'").get();
+    // 3. Student Project Proposals
+    const proposalCount = db.prepare('SELECT COUNT(*) as count FROM project_proposals').get();
 
-    // 4. Pending Applications
-    const pendingApps = db.prepare("SELECT COUNT(*) as count FROM member_applications WHERE status = 'Pending'").get();
-
-    // 5. Recent Payments Count
-    const totalPayments = db.prepare('SELECT COUNT(*) as count FROM payments').get();
+    // 4. Workshop & Event RSVPs
+    const rsvpCount = db.prepare('SELECT COUNT(*) as count FROM event_rsvps').get();
 
     return res.json({
-      activeSubscribers: activeSubs.count,
-      totalUsers: userCount.count,
-      totalPayments: totalPayments.count,
+      totalStudents: studentCount.count,
+      totalApplications: totalApps.count,
       pendingApplications: pendingApps.count,
-      totalRevenueETB: revenueETB.total || 0,
-      totalRevenueUSD: revenueUSD.total || 0
+      totalProposals: proposalCount.count,
+      totalRsvps: rsvpCount.count
     });
   } catch (err) {
     console.error('[Admin] Metrics error:', err);
-    return res.status(500).json({ error: 'Failed to compute admin metrics' });
+    return res.status(500).json({ error: 'Failed to compute club metrics' });
   }
 }
 
-export function getAllPayments(req, res) {
+export function getAllStudents(req, res) {
   try {
-    const { status, query, limit = 50 } = req.query;
+    const { query, limit = 50 } = req.query;
 
-    let sql = `
-      SELECT p.*, u.email as user_email, u.full_name as user_name, pl.name as plan_name
-      FROM payments p
-      JOIN users u ON p.user_id = u.id
-      JOIN subscription_plans pl ON p.plan_id = pl.id
-      WHERE 1=1
-    `;
+    let sql = 'SELECT id, email, full_name, role, department, year_of_study, telegram, phone, primary_track, created_at FROM users WHERE role = "USER"';
     const params = [];
 
-    if (status && status !== 'ALL') {
-      sql += ' AND p.status = ?';
-      params.push(status);
-    }
-
     if (query) {
-      sql += ' AND (p.internal_ref LIKE ? OR u.email LIKE ? OR u.full_name LIKE ?)';
+      sql += ' AND (full_name LIKE ? OR email LIKE ? OR department LIKE ?)';
       params.push(`%${query}%`, `%${query}%`, `%${query}%`);
     }
 
-    sql += ' ORDER BY p.created_at DESC LIMIT ?';
+    sql += ' ORDER BY created_at DESC LIMIT ?';
     params.push(Number(limit));
 
-    const payments = db.prepare(sql).all(...params);
-    return res.json({ payments });
+    const students = db.prepare(sql).all(...params);
+    return res.json({ students });
   } catch (err) {
-    console.error('[Admin] Payments list error:', err);
-    return res.status(500).json({ error: 'Failed to retrieve payments' });
-  }
-}
-
-export function getAllSubscriptions(req, res) {
-  try {
-    const subs = db.prepare(`
-      SELECT s.*, u.email as user_email, u.full_name as user_name, u.department, pl.name as plan_name, pl.interval as plan_interval
-      FROM subscriptions s
-      JOIN users u ON s.user_id = u.id
-      JOIN subscription_plans pl ON s.plan_id = pl.id
-      ORDER BY s.created_at DESC LIMIT 50
-    `).all();
-
-    return res.json({ subscriptions: subs });
-  } catch (err) {
-    console.error('[Admin] Subscriptions list error:', err);
-    return res.status(500).json({ error: 'Failed to retrieve subscriptions' });
+    console.error('[Admin] Students list error:', err);
+    return res.status(500).json({ error: 'Failed to retrieve students' });
   }
 }
 
@@ -88,8 +56,8 @@ export function getMemberApplications(req, res) {
     const apps = db.prepare('SELECT * FROM member_applications ORDER BY submitted_at DESC LIMIT 100').all();
     return res.json({ applications: apps });
   } catch (err) {
-    console.error('[Admin] Member applications error:', err);
-    return res.status(500).json({ error: 'Failed to retrieve member applications' });
+    console.error('[Admin] Applications error:', err);
+    return res.status(500).json({ error: 'Failed to retrieve applications' });
   }
 }
 
@@ -98,7 +66,7 @@ export function updateApplicationStatus(req, res) {
     const { id } = req.params;
     const { status } = req.body;
 
-    if (!['Approved', 'Rejected', 'Pending'].includes(status)) {
+    if (!['Approved', 'Reviewing', 'Rejected'].includes(status)) {
       return res.status(400).json({ error: 'Invalid application status.' });
     }
 
@@ -110,12 +78,22 @@ export function updateApplicationStatus(req, res) {
   }
 }
 
-export function getWebhookEvents(req, res) {
+export function getProposals(req, res) {
   try {
-    const events = db.prepare('SELECT * FROM payment_events ORDER BY created_at DESC LIMIT 30').all();
-    return res.json({ events });
+    const proposals = db.prepare('SELECT * FROM project_proposals ORDER BY submitted_at DESC LIMIT 50').all();
+    return res.json({ proposals });
   } catch (err) {
-    console.error('[Admin] Webhook events error:', err);
-    return res.status(500).json({ error: 'Failed to retrieve webhook audit events' });
+    console.error('[Admin] Proposals error:', err);
+    return res.status(500).json({ error: 'Failed to retrieve proposals' });
+  }
+}
+
+export function getRsvps(req, res) {
+  try {
+    const rsvps = db.prepare('SELECT * FROM event_rsvps ORDER BY submitted_at DESC LIMIT 50').all();
+    return res.json({ rsvps });
+  } catch (err) {
+    console.error('[Admin] RSVPs error:', err);
+    return res.status(500).json({ error: 'Failed to retrieve RSVPs' });
   }
 }

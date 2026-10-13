@@ -16,7 +16,6 @@ import { JoinTeamModal } from './components/Modals/JoinTeamModal';
 import { RsvpModal } from './components/Modals/RsvpModal';
 import { BrandModal } from './components/Modals/BrandModal';
 import { ProposalModal } from './components/Modals/ProposalModal';
-import { SubscriptionModal } from './components/Modals/SubscriptionModal';
 import { AuthModal } from './components/AuthModal';
 import { CommandPalette } from './components/CommandPalette';
 
@@ -24,7 +23,7 @@ import { Project, ClubEvent, StudentProjectProposal } from './types';
 import { getStoredProposals } from './utils/storage';
 
 const AppContent: React.FC = () => {
-  const { user, token, refreshUser, isAdmin } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('home');
 
   // Modals state
@@ -34,32 +33,9 @@ const AppContent: React.FC = () => {
   const [isProposalModalOpen, setIsProposalModalOpen] = useState<boolean>(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
-  const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState<boolean>(false);
 
   // Dynamic user proposals from localStorage
   const [customProposals, setCustomProposals] = useState<Project[]>([]);
-
-  // Check for return checkout URL (e.g. /checkout/return?tx_ref=...)
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const txRef = params.get('tx_ref');
-    if (txRef && token) {
-      // Auto-verify payment on return
-      fetch(`/api/payments/verify/${encodeURIComponent(txRef)}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.verified) {
-            refreshUser();
-            setActiveTab('dashboard');
-            window.history.replaceState({}, '', window.location.pathname);
-            alert('🎉 Payment verified successfully! Your CGC membership is now active.');
-          }
-        })
-        .catch(err => console.error('Auto-verify error on return', err));
-    }
-  }, [token]);
 
   // Load any stored student proposals
   useEffect(() => {
@@ -85,6 +61,22 @@ const AppContent: React.FC = () => {
   }, []);
 
   const handleProposalSubmitted = (newProp: StudentProjectProposal) => {
+    // 1. Post to persistent SQLite database
+    fetch('/api/proposals', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: newProp.title,
+        problemStatement: newProp.problemStatement,
+        proposedSolution: newProp.proposedSolution,
+        trackId: newProp.trackId,
+        proposerName: newProp.proposerName,
+        proposerDepartment: newProp.proposerDepartment,
+        neededRoles: newProp.neededRoles.join(', ')
+      })
+    }).catch(err => console.warn('Could not sync proposal to backend', err));
+
+    // 2. Add to active state
     const asProject: Project = {
       id: newProp.id,
       title: newProp.title,
@@ -126,7 +118,6 @@ const AppContent: React.FC = () => {
         setActiveTab={handleNavigate}
         openCommandPalette={() => setIsCommandPaletteOpen(true)}
         onOpenAuth={() => setIsAuthModalOpen(true)}
-        onOpenSubscriptionModal={() => setIsSubscriptionModalOpen(true)}
       />
 
       {/* Main Body */}
@@ -177,8 +168,8 @@ const AppContent: React.FC = () => {
 
         {activeTab === 'dashboard' && (
           <UserDashboardPage
-            onOpenSubscriptionModal={() => setIsSubscriptionModalOpen(true)}
             onNavigate={handleNavigate}
+            onProposeProject={() => setIsProposalModalOpen(true)}
           />
         )}
 
@@ -213,15 +204,6 @@ const AppContent: React.FC = () => {
         isOpen={isProposalModalOpen}
         onClose={() => setIsProposalModalOpen(false)}
         onProposalSubmitted={handleProposalSubmitted}
-      />
-
-      <SubscriptionModal
-        isOpen={isSubscriptionModalOpen}
-        onClose={() => setIsSubscriptionModalOpen(false)}
-        onOpenAuth={() => {
-          setIsSubscriptionModalOpen(false);
-          setIsAuthModalOpen(true);
-        }}
       />
 
       <AuthModal
