@@ -18,6 +18,7 @@ import { BrandModal } from './components/Modals/BrandModal';
 import { ProposalModal } from './components/Modals/ProposalModal';
 import { AuthModal } from './components/AuthModal';
 import { CommandPalette } from './components/CommandPalette';
+import { CGCBot } from './components/CGCBot';
 
 import { Project, ClubEvent, StudentProjectProposal } from './types';
 import { getStoredProposals } from './utils/storage';
@@ -220,6 +221,12 @@ const AppContent: React.FC = () => {
         isOpen={isCommandPaletteOpen}
         onClose={() => setIsCommandPaletteOpen(false)}
         onNavigate={handleNavigate}
+      />
+
+      {/* AI Live Assistant Widget */}
+      <CGCBot
+        onNavigate={handleNavigate}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
       />
     </div>
   );
