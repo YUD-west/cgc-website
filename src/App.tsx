@@ -11,6 +11,8 @@ import { JoinPage } from './pages/JoinPage';
 import { ContactPage } from './pages/ContactPage';
 import { UserDashboardPage } from './pages/UserDashboardPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
+import { VerificationPage } from './pages/VerificationPage';
+import { CoCreatorPage } from './pages/CoCreatorPage';
 
 import { JoinTeamModal } from './components/Modals/JoinTeamModal';
 import { RsvpModal } from './components/Modals/RsvpModal';
@@ -98,7 +100,28 @@ const AppContent: React.FC = () => {
     setCustomProposals((prev) => [asProject, ...prev]);
   };
 
+  const [verificationPassId, setVerificationPassId] = useState<string>('CGC-WL-2026-PRES');
+
+  // Check URL hash for direct links (e.g. #verify/CGC-WL-2026-PRES or #team-up)
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash.startsWith('#verify')) {
+      const parts = hash.split('/');
+      if (parts[1]) setVerificationPassId(decodeURIComponent(parts[1]));
+      setActiveTab('verify');
+    } else if (hash === '#team-up' || hash === '#co-creators') {
+      setActiveTab('co-creators');
+    }
+  }, []);
+
   const handleNavigate = (tab: string) => {
+    if (tab.startsWith('verify')) {
+      const parts = tab.split('/');
+      if (parts[1]) setVerificationPassId(decodeURIComponent(parts[1]));
+      setActiveTab('verify');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     if (tab === 'admin' && !isAdmin) {
       setIsAuthModalOpen(true);
       return;
@@ -156,6 +179,10 @@ const AppContent: React.FC = () => {
           />
         )}
 
+        {activeTab === 'co-creators' && (
+          <CoCreatorPage />
+        )}
+
         {activeTab === 'events' && (
           <EventsPage
             onRsvp={(e) => setSelectedEventForRsvp(e)}
@@ -171,6 +198,13 @@ const AppContent: React.FC = () => {
           <UserDashboardPage
             onNavigate={handleNavigate}
             onProposeProject={() => setIsProposalModalOpen(true)}
+          />
+        )}
+
+        {activeTab === 'verify' && (
+          <VerificationPage
+            initialPassId={verificationPassId}
+            onNavigateHome={() => handleNavigate('home')}
           />
         )}
 

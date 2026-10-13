@@ -1,0 +1,24 @@
+{
+  "name": "Cyber Guardians Club — CGC Woliso",
+  "short_name": "CGC Woliso",
+  "description": "Ambo University, Woliso Campus Student Technology & Innovation Hub. Access your verified Digital Member Pass and lab resources offline.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B1120",
+  "theme_color": "#0F172A",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' fill='none'%3E%3Crect width='192' height='192' rx='38' fill='%230F172A'/%3E%3Cpath d='M64 64H88V80H72V112H88V128H64C59.5817 128 56 124.418 56 120V72C56 67.5817 59.5817 64 64 64Z' fill='%232563EB'/%3E%3Cpath d='M128 64H104V128H128C132.418 128 136 124.418 136 120V96H116V80H136V72C136 67.5817 132.418 64 128 64Z' fill='%2310B981'/%3E%3Ccircle cx='96' cy='96' r='8' fill='%2338BDF8'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='none'%3E%3Crect width='512' height='512' rx='102' fill='%230F172A'/%3E%3Cpath d='M170 170H234V212H192V298H234V340H170C158 340 148 330 148 318V192C148 180 158 170 170 170Z' fill='%232563EB'/%3E%3Cpath d='M340 170H276V340H340C352 340 362 330 362 318V256H308V212H362V192C362 180 352 170 340 170Z' fill='%2310B981'/%3E%3Ccircle cx='256' cy='256' r='20' fill='%2338BDF8'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

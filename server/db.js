@@ -69,14 +69,28 @@ db.exec(`
     ticket_id TEXT UNIQUE NOT NULL,
     submitted_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  -- 5. Cross-Disciplinary Co-Creator Board (Agriculture, CS, Business, Sciences)
+  CREATE TABLE IF NOT EXISTS co_creators (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    faculty TEXT NOT NULL,
+    needed_skills TEXT NOT NULL,
+    contact_telegram TEXT,
+    contact_email TEXT,
+    proposer_name TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'Open',
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);
 
-// Seed Lead Admin (Yesuf Dergu)
+// Seed Lead Admin & Sample Co-Creator Opportunities
 export function seedDatabase() {
   const adminUser = db.prepare('SELECT * FROM users WHERE email = ?').get('yesufdergu464@gmail.com');
   if (!adminUser) {
     const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync('Admin@CGC2026!', salt);
+    const hash = bcrypt.hashSync('admin123', salt);
 
     db.prepare(`
       INSERT INTO users (id, email, password_hash, full_name, role, department, phone, telegram, primary_track)
@@ -91,5 +105,66 @@ export function seedDatabase() {
       '@SatoshiFlash'
     );
     console.log('[DB] Seeded Lead Admin Yesuf Dergu (yesufdergu464@gmail.com).');
+  }
+
+  // Seed sample co-creator posts if empty
+  const count = db.prepare('SELECT count(*) as count FROM co_creators').get()?.count || 0;
+  if (count === 0) {
+    const seedPosts = [
+      {
+        id: 'team_01',
+        title: 'Teff Rust & Crop Disease Detection Mobile Scanner',
+        description: 'We have collected 800+ field photographs of teff blight from Woliso agricultural test fields. We need 1 IT/CS student to build a mobile interface with TensorFlow Lite.',
+        faculty: 'Agriculture',
+        needed_skills: 'Mobile Dev (Flutter or React Native), Machine Learning',
+        contact_telegram: '@TeffAI_Lead',
+        contact_email: 'chala.kebede@ambou.edu.et',
+        proposer_name: 'Chala Kebede (3rd Year Agri-Economics)',
+        status: 'Open'
+      },
+      {
+        id: 'team_02',
+        title: 'Woliso Campus Peer Bookstore & Shared Equipment Marketplace',
+        description: 'Students struggle to find textbooks, lab coats, and calculator rentals. I have mapped the supply chain and pricing structure; seeking a frontend web developer to launch the MVP.',
+        faculty: 'Business & Economics',
+        needed_skills: 'React / Next.js, UI/UX Design, Telegram Bot',
+        contact_telegram: '@Hana_BizDev',
+        contact_email: 'hana.alemu@ambou.edu.et',
+        proposer_name: 'Hana Alemu (2nd Year Management)',
+        status: 'Open'
+      },
+      {
+        id: 'team_03',
+        title: 'Campus Micro-Weather & Soil Moisture IoT Node',
+        description: 'Building low-cost solar-powered ESP32 sensor nodes to measure soil moisture and humidity across university demonstration plots. Need 1 backend engineer to build an ingestion API.',
+        faculty: 'Natural Sciences',
+        needed_skills: 'Node.js / Express, SQLite / PostgreSQL, Data Visualization',
+        contact_telegram: '@Tolasa_IoT',
+        contact_email: 'tolasa.d@ambou.edu.et',
+        proposer_name: 'Tolasa Desta (Applied Physics)',
+        status: 'Open'
+      },
+      {
+        id: 'team_04',
+        title: 'University Anonymous Campus Mental Health & Peer Support Bot',
+        description: 'Designing a private, encrypted Telegram bot for students to connect anonymously with peer counselors and study support volunteers during exam season.',
+        faculty: 'Computer Science & IT',
+        needed_skills: 'Python Telegram Bot, Confidential Data Handling, Psychology Advisor',
+        contact_telegram: '@SatoshiFlash',
+        contact_email: 'yesufdergu464@gmail.com',
+        proposer_name: 'Yesuf Dergu (Lead Admin)',
+        status: 'Open'
+      }
+    ];
+
+    const stmt = db.prepare(`
+      INSERT INTO co_creators (id, title, description, faculty, needed_skills, contact_telegram, contact_email, proposer_name, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    for (const post of seedPosts) {
+      stmt.run(post.id, post.title, post.description, post.faculty, post.needed_skills, post.contact_telegram, post.contact_email, post.proposer_name, post.status);
+    }
+    console.log('[DB] Seeded 4 cross-faculty co-creator collaboration posts.');
   }
 }
