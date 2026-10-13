@@ -16,8 +16,11 @@ dist-ssr
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Database
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+cgc_database.sqlite*
 
 # Editor
 .vscode/*

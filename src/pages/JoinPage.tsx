@@ -84,11 +84,29 @@ export const JoinPage: React.FC<JoinPageProps> = ({ onNavigate }) => {
       learningGoals: learningGoals.trim() || 'General software & security skill advancement',
       projectIdea: projectIdea.trim() || undefined,
       whyJoin: whyJoin.trim(),
-      status: 'Approved',
+      status: 'Received',
       submittedAt: new Date().toISOString(),
     };
 
-    // Honest storage persistence: Save to localStorage registry
+    // 1. Save to persistent server database
+    fetch('/api/applications', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fullName: newApp.fullName,
+        email: newApp.email,
+        phone: newApp.phone,
+        department: newApp.department,
+        yearOfStudy: newApp.yearOfStudy,
+        primaryTrack: newApp.primaryTrack,
+        skillLevel: newApp.skillLevel,
+        learningGoals: newApp.learningGoals,
+        projectIdea: newApp.projectIdea,
+        whyJoin: newApp.whyJoin
+      })
+    }).catch(err => console.warn('Could not sync application to server', err));
+
+    // 2. Local pass generation & storage fallback
     saveApplication(newApp);
     setApplicationReceipt(newApp);
     setSubmitted(true);

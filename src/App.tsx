@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { HomePage } from './pages/HomePage';
@@ -8,17 +9,22 @@ import { ProjectsPage } from './pages/ProjectsPage';
 import { EventsPage } from './pages/EventsPage';
 import { JoinPage } from './pages/JoinPage';
 import { ContactPage } from './pages/ContactPage';
+import { UserDashboardPage } from './pages/UserDashboardPage';
+import { AdminDashboardPage } from './pages/AdminDashboardPage';
 
 import { JoinTeamModal } from './components/Modals/JoinTeamModal';
 import { RsvpModal } from './components/Modals/RsvpModal';
 import { BrandModal } from './components/Modals/BrandModal';
 import { ProposalModal } from './components/Modals/ProposalModal';
+import { SubscriptionModal } from './components/Modals/SubscriptionModal';
+import { AuthModal } from './components/AuthModal';
 import { CommandPalette } from './components/CommandPalette';
 
 import { Project, ClubEvent, StudentProjectProposal } from './types';
 import { getStoredProposals } from './utils/storage';
 
-export const App: React.FC = () => {
+const AppContent: React.FC = () => {
+  const { user, token, refreshUser, isAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('home');
 
   // Modals state
@@ -27,9 +33,33 @@ export const App: React.FC = () => {
   const [isBrandModalOpen, setIsBrandModalOpen] = useState<boolean>(false);
   const [isProposalModalOpen, setIsProposalModalOpen] = useState<boolean>(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState<boolean>(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState<boolean>(false);
 
   // Dynamic user proposals from localStorage
   const [customProposals, setCustomProposals] = useState<Project[]>([]);
+
+  // Check for return checkout URL (e.g. /checkout/return?tx_ref=...)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const txRef = params.get('tx_ref');
+    if (txRef && token) {
+      // Auto-verify payment on return
+      fetch(`/api/payments/verify/${encodeURIComponent(txRef)}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.verified) {
+            refreshUser();
+            setActiveTab('dashboard');
+            window.history.replaceState({}, '', window.location.pathname);
+            alert('🎉 Payment verified successfully! Your CGC membership is now active.');
+          }
+        })
+        .catch(err => console.error('Auto-verify error on return', err));
+    }
+  }, [token]);
 
   // Load any stored student proposals
   useEffect(() => {
@@ -76,6 +106,14 @@ export const App: React.FC = () => {
   };
 
   const handleNavigate = (tab: string) => {
+    if (tab === 'admin' && !isAdmin) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+    if (tab === 'dashboard' && !user) {
+      setIsAuthModalOpen(true);
+      return;
+    }
     setActiveTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -87,6 +125,8 @@ export const App: React.FC = () => {
         activeTab={activeTab}
         setActiveTab={handleNavigate}
         openCommandPalette={() => setIsCommandPaletteOpen(true)}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
+        onOpenSubscriptionModal={() => setIsSubscriptionModalOpen(true)}
       />
 
       {/* Main Body */}
@@ -134,6 +174,15 @@ export const App: React.FC = () => {
         {activeTab === 'join' && <JoinPage onNavigate={handleNavigate} />}
 
         {activeTab === 'contact' && <ContactPage />}
+
+        {activeTab === 'dashboard' && (
+          <UserDashboardPage
+            onOpenSubscriptionModal={() => setIsSubscriptionModalOpen(true)}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {activeTab === 'admin' && <AdminDashboardPage />}
       </main>
 
       {/* Footer */}
@@ -166,12 +215,39 @@ export const App: React.FC = () => {
         onProposalSubmitted={handleProposalSubmitted}
       />
 
+      <SubscriptionModal
+        isOpen={isSubscriptionModalOpen}
+        onClose={() => setIsSubscriptionModalOpen(false)}
+        onOpenAuth={() => {
+          setIsSubscriptionModalOpen(false);
+          setIsAuthModalOpen(true);
+        }}
+      />
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onSuccess={() => {
+          if (activeTab === 'home') {
+            setActiveTab('dashboard');
+          }
+        }}
+      />
+
       <CommandPalette
         isOpen={isCommandPaletteOpen}
         onClose={() => setIsCommandPaletteOpen(false)}
         onNavigate={handleNavigate}
       />
     </div>
+  );
+};
+
+export const App: React.FC = () => {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 };
 
