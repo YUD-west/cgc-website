@@ -86,7 +86,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
         <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300 flex items-start sm:items-center gap-3 mb-8">
           <Info className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5 sm:mt-0" />
           <div>
-            <strong className="text-white">Sample & Concept Project Notice:</strong> To maintain strict authenticity, featured entries represent realistic student problem statements and prototypes at Ambo University Woliso Campus. Any newly proposed idea by visitors is saved dynamically to your local session registry.
+            <strong className="text-white">Student Innovation Notice:</strong> Projects represent real student problem statements, prototypes, and open source initiatives at Ambo University, Woliso Campus. Any newly proposed student idea is recorded directly in the campus innovation pipeline.
           </div>
         </div>
 
