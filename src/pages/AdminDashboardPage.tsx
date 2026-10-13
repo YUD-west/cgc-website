@@ -21,6 +21,7 @@ import {
   Printer,
   Download
 } from 'lucide-react';
+import { downloadBadgeAsPNG } from '../utils/exportBadge';
 
 export const AdminDashboardPage: React.FC = () => {
   const { token, isAdmin } = useAuth();
@@ -204,6 +205,58 @@ export const AdminDashboardPage: React.FC = () => {
       }
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleDownloadEventTicketPNG = async (t?: any) => {
+    try {
+      const ticketToExport = t || {
+        id: ticketCustomId,
+        title: ticketTitle,
+        event_type: ticketType,
+        venue: ticketVenue,
+        event_date: ticketDate,
+        access_level: ticketAccess
+      };
+
+      await downloadBadgeAsPNG({
+        memberId: ticketToExport.id,
+        fullName: 'Authorized Attendee',
+        email: 'cgc.woliso@ambo.edu.et',
+        department: 'Ambo University Woliso Campus',
+        track: ticketToExport.event_type || 'Innovation Event',
+        role: `${(ticketToExport.event_type || 'EVENT').toUpperCase()} PASS`,
+        accessLevel: ticketToExport.access_level || ticketToExport.accessLevel || 'Full Authorized Event Access',
+        isEventTicket: true,
+        eventTitle: ticketToExport.title,
+        eventVenue: ticketToExport.venue,
+        eventDate: ticketToExport.event_date || ticketToExport.eventDate
+      });
+      setActionMessage(`Downloaded badge PNG for ${ticketToExport.id}`);
+      setTimeout(() => setActionMessage(null), 3000);
+    } catch (e) {
+      console.error('Download ticket error:', e);
+    }
+  };
+
+  const handleDownloadStudentBadge = async (st: any) => {
+    try {
+      const passId = st.role === 'ADMIN' ? 'CGC-WL-2026-PRES' : `CGC-WL-2026-${st.id.slice(-4).toUpperCase()}`;
+      await downloadBadgeAsPNG({
+        memberId: passId,
+        fullName: st.full_name,
+        email: st.email,
+        department: st.department || 'Informatics & Technology',
+        yearOfStudy: st.year_of_study || '2nd Year Student',
+        track: st.primary_track || 'Cybersecurity & Systems',
+        role: st.role === 'ADMIN' ? 'Lead Administrator & Club President' : 'Official Verified Member',
+        accessLevel: st.role === 'ADMIN' ? 'Full Executive Lab 02 & Systems Clearance' : 'Full Lab 02 Workstation & Innovation Hall Clearance',
+        issuedAt: '2026'
+      });
+      setActionMessage(`Downloaded official ID badge for ${st.full_name}`);
+      setTimeout(() => setActionMessage(null), 3000);
+    } catch (e) {
+      console.error('Download student badge error:', e);
     }
   };
 
@@ -412,24 +465,37 @@ export const AdminDashboardPage: React.FC = () => {
                           )}
                         </td>
                         <td className="py-3 px-3">
-                          {st.role !== 'ADMIN' && (
-                            isApproved ? (
+                          <div className="flex items-center gap-2">
+                            {isApproved && (
                               <button
-                                onClick={() => handleToggleUserMembership(st.id, 'PENDING')}
-                                className="px-2.5 py-1 rounded bg-slate-800 hover:bg-rose-900/30 text-slate-400 hover:text-rose-400 text-[11px] border border-slate-700/60 transition"
+                                onClick={() => handleDownloadStudentBadge(st)}
+                                className="p-1.5 rounded-lg bg-slate-800 hover:bg-emerald-900/30 text-slate-300 hover:text-emerald-400 border border-slate-700/60 transition flex items-center gap-1 text-[11px]"
+                                title="Download Official PNG ID Badge"
                               >
-                                Revoke Pass
+                                <Download className="w-3.5 h-3.5 text-emerald-400" />
+                                <span className="hidden sm:inline">Badge</span>
                               </button>
-                            ) : (
-                              <button
-                                onClick={() => handleToggleUserMembership(st.id, 'APPROVED')}
-                                className="px-3 py-1 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-[11px] shadow-sm transition flex items-center gap-1"
-                              >
-                                <Check className="w-3 h-3" />
-                                <span>Approve & Issue QR</span>
-                              </button>
-                            )
-                          )}
+                            )}
+
+                            {st.role !== 'ADMIN' && (
+                              isApproved ? (
+                                <button
+                                  onClick={() => handleToggleUserMembership(st.id, 'PENDING')}
+                                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-rose-900/30 text-slate-400 hover:text-rose-400 text-[11px] border border-slate-700/60 transition"
+                                >
+                                  Revoke
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleToggleUserMembership(st.id, 'APPROVED')}
+                                  className="px-3 py-1 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-[11px] shadow-sm transition flex items-center gap-1"
+                                >
+                                  <Check className="w-3 h-3" />
+                                  <span>Approve & Issue QR</span>
+                                </button>
+                              )
+                            )}
+                          </div>
                         </td>
                       </tr>
                     );
@@ -602,13 +668,23 @@ export const AdminDashboardPage: React.FC = () => {
 
                 <div className="pt-2 border-t border-slate-800 flex items-center justify-between gap-2">
                   <span className="text-[10px] text-slate-500 font-mono">Issuer: Yesuf Dergu (Lead Admin)</span>
-                  <button
-                    onClick={() => window.print()}
-                    className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 flex items-center gap-1.5 transition"
-                  >
-                    <Printer className="w-3.5 h-3.5" />
-                    <span>Print Badge</span>
-                  </button>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => handleDownloadEventTicketPNG()}
+                      className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-sm active:scale-95"
+                      title="Download high-res PNG event pass"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download PNG</span>
+                    </button>
+                    <button
+                      onClick={() => window.print()}
+                      className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 flex items-center gap-1.5 transition"
+                    >
+                      <Printer className="w-3.5 h-3.5" />
+                      <span>Print</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -642,13 +718,22 @@ export const AdminDashboardPage: React.FC = () => {
                           <div className="text-[10px] text-slate-500">{t.event_date}</div>
                         </td>
                         <td className="py-2.5 px-3">
-                          <button
-                            onClick={() => handleDeleteEventTicket(t.id)}
-                            className="p-1 rounded bg-slate-800 hover:bg-rose-900/40 text-slate-400 hover:text-rose-400 transition"
-                            title="Delete Ticket"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              onClick={() => handleDownloadEventTicketPNG(t)}
+                              className="p-1 rounded bg-slate-800 hover:bg-emerald-900/30 text-slate-400 hover:text-emerald-400 transition"
+                              title="Download Ticket PNG"
+                            >
+                              <Download className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteEventTicket(t.id)}
+                              className="p-1 rounded bg-slate-800 hover:bg-rose-900/30 text-slate-400 hover:text-rose-400 transition"
+                              title="Delete Ticket"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}

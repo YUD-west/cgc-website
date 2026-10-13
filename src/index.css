@@ -63,3 +63,23 @@
     box-shadow: 0 0 15px -3px rgba(37, 99, 235, 0.25);
   }
 }
+
+/* Print Styles for Physical ID Lanyard Card Printing */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 12pt;
+  }
+
+  nav, footer, .print-hidden, [role="dialog"] > div > div:first-child {
+    display: none !important;
+  }
+
+  #cgc-printable-badge {
+    margin: 20px auto !important;
+    max-width: 320px !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+  }
+}

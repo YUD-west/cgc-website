@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { CGCLogo } from '../components/Logo/CGCLogo';
 import { QRCodeView } from '../components/QRCodeView';
+import { MemberBadgeModal } from '../components/Modals/MemberBadgeModal';
+import { downloadBadgeAsPNG, BadgeData } from '../utils/exportBadge';
 import { 
   CheckCircle2, 
   Terminal, 
@@ -15,7 +17,9 @@ import {
   Send,
   ExternalLink,
   Download,
-  QrCode
+  QrCode,
+  Printer,
+  Smartphone
 } from 'lucide-react';
 
 interface UserDashboardProps {
@@ -40,6 +44,32 @@ export const UserDashboardPage: React.FC<UserDashboardProps> = ({
 
   const isApproved = Boolean(user.role === 'ADMIN' || membership?.isApproved || (membership?.status === 'Approved' && membership?.id));
   const memberId = isApproved ? (membership?.id || (user.role === 'ADMIN' ? 'CGC-WL-2026-PRES' : `CGC-WL-2026-${user.id.slice(-4).toUpperCase()}`)) : null;
+
+  const [isBadgeModalOpen, setIsBadgeModalOpen] = useState(false);
+  const [isDirectDownloading, setIsDirectDownloading] = useState(false);
+
+  const badgeData: BadgeData = {
+    memberId: memberId || 'CGC-WL-2026-STU',
+    fullName: user.fullName,
+    email: user.email,
+    department: user.department || 'Informatics & Technology',
+    yearOfStudy: user.yearOfStudy || 'Undergraduate',
+    track: user.primaryTrack || 'Cybersecurity & Systems',
+    role: user.role === 'ADMIN' ? 'Lead Administrator & Club President' : 'Official Verified Member',
+    accessLevel: user.role === 'ADMIN' ? 'Full Executive Lab 02 & Systems Clearance' : 'Full Lab 02 Workstation & Innovation Hall Clearance',
+    issuedAt: '2026'
+  };
+
+  const handleDirectDownload = async () => {
+    try {
+      setIsDirectDownloading(true);
+      await downloadBadgeAsPNG(badgeData);
+    } catch (e) {
+      console.error('Direct badge download failed:', e);
+    } finally {
+      setIsDirectDownloading(false);
+    }
+  };
 
   // Cache pass offline for instant PWA loading (only if approved)
   useEffect(() => {
@@ -150,25 +180,41 @@ export const UserDashboardPage: React.FC<UserDashboardProps> = ({
             </div>
 
             {/* Pass Action Buttons */}
-            <div className="space-y-2 pt-2 border-t border-slate-800/80">
+            <div className="space-y-2.5 pt-2.5 border-t border-slate-800/80">
               <div className="grid grid-cols-2 gap-2">
                 <button
-                  onClick={() => onNavigate(`verify/${memberId}`)}
-                  className="w-full py-2 px-2.5 rounded-xl bg-blue-600/90 hover:bg-blue-600 text-white text-[11px] font-semibold flex items-center justify-center gap-1 transition"
+                  onClick={handleDirectDownload}
+                  disabled={isDirectDownloading}
+                  className="w-full py-2.5 px-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-[11px] font-semibold flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20 transition active:scale-95 disabled:opacity-50"
+                  title="Save high-res PNG image directly to your phone gallery"
                 >
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Verify Live</span>
+                  {isDirectDownloading ? (
+                    <span className="animate-spin w-3 h-3 border-2 border-white border-t-transparent rounded-full" />
+                  ) : (
+                    <Download className="w-3.5 h-3.5" />
+                  )}
+                  <span>Save to Phone</span>
                 </button>
+
                 <button
-                  onClick={() => window.print()}
-                  className="w-full py-2 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold border border-slate-700 flex items-center justify-center gap-1 transition"
+                  onClick={() => setIsBadgeModalOpen(true)}
+                  className="w-full py-2.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold border border-slate-700 flex items-center justify-center gap-1.5 transition active:scale-95"
+                  title="Preview and print official lanyard badge or PDF"
                 >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Save Pass</span>
+                  <Printer className="w-3.5 h-3.5 text-sky-400" />
+                  <span>Print Lanyard</span>
                 </button>
               </div>
-              <div className="text-center text-[10px] text-slate-500 font-mono">
-                Official Executive Clearance • Computer Lab 02
+
+              <div className="flex items-center justify-between text-[10px] text-slate-400 pt-0.5">
+                <button
+                  onClick={() => onNavigate(`verify/${memberId}`)}
+                  className="hover:text-sky-400 flex items-center gap-1 transition"
+                >
+                  <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                  <span>Test Door Scanner</span>
+                </button>
+                <span className="font-mono text-slate-500">Lab 02 Clearance</span>
               </div>
             </div>
           </div>
@@ -288,6 +334,16 @@ export const UserDashboardPage: React.FC<UserDashboardProps> = ({
         </div>
 
       </div>
+
+      {/* Official Member Badge & Lanyard Modal */}
+      {isApproved && (
+        <MemberBadgeModal
+          isOpen={isBadgeModalOpen}
+          onClose={() => setIsBadgeModalOpen(false)}
+          badgeData={badgeData}
+          onNavigateToVerify={(id) => onNavigate(`verify/${id}`)}
+        />
+      )}
 
     </div>
   );
