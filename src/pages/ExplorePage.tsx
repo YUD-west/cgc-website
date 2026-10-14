@@ -62,10 +62,8 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
       <section className="pt-12 sm:pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
-            badge="Innovation Areas"
-            badgeColor="blue"
-            title="Explore Our 5 Learning Tracks"
-            description="Deep-dive into our specialization areas. Every track combines structured conceptual study with real project building in Ambo University Woliso Campus laboratories."
+            title="Learning Tracks & Specializations"
+            description="Specialization tracks combining hands-on technical study with real project building in Woliso Campus computer labs."
           />
 
           {/* Track Selector Tabs */}

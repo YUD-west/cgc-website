@@ -121,14 +121,11 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
         {/* Clean Header & Actions */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-slate-800">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-semibold mb-2">
-              <span>Ambo University • Woliso Campus</span>
-            </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Campus Innovation Projects & Teams
+              Campus Innovation Projects
             </h1>
             <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-2xl leading-relaxed">
-              Real problem statements turned into practical technology. Non-technical students, entrepreneurs, agriculture thinkers, and developers collaborate here to ship real solutions.
+              Student-engineered software, network tools, and cross-faculty initiatives. Open for all departments and skill levels.
             </p>
           </div>
 

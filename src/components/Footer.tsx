@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CGCLogo } from './Logo/CGCLogo';
 import { 
   Github, 
@@ -9,7 +9,10 @@ import {
   ShieldCheck, 
   Palette,
   ExternalLink,
-  UserCheck
+  UserCheck,
+  Download,
+  Smartphone,
+  Check
 } from 'lucide-react';
 import { LEAD_ADMIN, CO_ADMIN, OFFICIAL_COMMUNITY } from '../data/team';
 
@@ -19,14 +22,71 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ setActiveTab, openBrandModal }) => {
+  const [installPrompt, setInstallPrompt] = useState<any>(null);
+  const [installed, setInstalled] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: any) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (installPrompt) {
+      installPrompt.prompt();
+      const result = await installPrompt.userChoice;
+      if (result.outcome === 'accepted') {
+        setInstalled(true);
+        setInstallPrompt(null);
+      }
+    } else {
+      // Fallback: browser instruction
+      alert('To install CGC on your phone or PC: open browser settings (three dots) and tap "Install app" or "Add to Home Screen".');
+    }
+  };
+
   const handleNav = (tab: string) => {
     setActiveTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <footer className="bg-[#0B1120] border-t border-slate-800 text-slate-400 pt-16 pb-12">
+    <footer className="bg-[#080D1A] border-t border-slate-800 text-slate-400 pt-12 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Sleek Bottom Download App Banner */}
+        <div className="mb-12 p-6 sm:p-8 rounded-2xl bg-[#0F172A] border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+          <div className="space-y-1.5 text-center md:text-left">
+            <h3 className="text-base sm:text-lg font-bold text-white flex items-center justify-center md:justify-start gap-2">
+              <Smartphone className="w-5 h-5 text-blue-400" />
+              <span>Install CGC App on Your Device</span>
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-400 max-w-xl leading-relaxed">
+              Fast, offline-ready progressive web app. Access your official member pass, campus event tickets, and team co-creator board directly from your home screen.
+            </p>
+          </div>
+
+          <button
+            onClick={handleInstallClick}
+            className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs sm:text-sm transition-all shadow-md flex items-center gap-2 shrink-0 active:scale-95"
+          >
+            {installed ? (
+              <>
+                <Check className="w-4 h-4 text-emerald-300" />
+                <span>Installed on Device</span>
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4" />
+                <span>Download / Install App</span>
+              </>
+            )}
+          </button>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 pb-12 border-b border-slate-800/80">
           
           {/* Col 1 & 2: CGC Brand & Official Admin info */}

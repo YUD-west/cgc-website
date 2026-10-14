@@ -42,10 +42,8 @@ export const EventsPage: React.FC<EventsPageProps> = ({ onRsvp, onNavigate }) =>
         
         {/* Section Header */}
         <SectionHeader
-          badge="Learning & Gatherings"
-          badgeColor="green"
-          title="Events & Hackathons in Woliso Campus"
-          description="Hands-on technical workshops, algorithmic hackathons, and cross-department innovation mixers at Ambo University Woliso Campus."
+          title="Campus Events & Hackathons"
+          description="Hands-on technical workshops, competitive hackathons, and laboratory sessions at Ambo University, Woliso Campus."
         />
 
         {/* Tab Controls: Upcoming vs Past vs Gallery */}

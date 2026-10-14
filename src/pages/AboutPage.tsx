@@ -76,8 +76,6 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
       <section className="relative pt-12 sm:pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
-            badge="About The Club"
-            badgeColor="blue"
             title="A Student-Led Innovation Movement"
             description="Cyber Guardians Club (CGC) is an autonomous, student-governed technology and innovation collective established at Ambo University, Woliso Campus, Ethiopia."
           />
@@ -114,8 +112,6 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
       */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
-          badge="Club Governance"
-          badgeColor="green"
           title="Leadership & Community Administration"
           description="CGC is founded and operated by passionate undergraduates committed to open-source culture and practical engineering."
         />
