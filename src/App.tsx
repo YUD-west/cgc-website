@@ -14,6 +14,7 @@ import { UserDashboardPage } from './pages/UserDashboardPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import { VerificationPage } from './pages/VerificationPage';
 import { CoCreatorPage } from './pages/CoCreatorPage';
+import { HandbookPage } from './pages/HandbookPage';
 
 import { JoinTeamModal } from './components/Modals/JoinTeamModal';
 import { RsvpModal } from './components/Modals/RsvpModal';
@@ -112,6 +113,8 @@ const AppContent: React.FC = () => {
       setActiveTab('verify');
     } else if (hash === '#team-up' || hash === '#co-creators') {
       setActiveTab('projects');
+    } else if (hash === '#handbook') {
+      setActiveTab('handbook');
     }
   }, []);
 
@@ -217,6 +220,10 @@ const AppContent: React.FC = () => {
         )}
 
         {activeTab === 'admin' && <AdminDashboardPage />}
+        
+        {activeTab === 'handbook' && (
+          <HandbookPage onNavigate={handleNavigate} />
+        )}
       </main>
 
       {/* Footer */}

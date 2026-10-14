@@ -193,6 +193,12 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, openBrandModal }) 
                 </button>
               </li>
               <li>
+                <button onClick={() => handleNav('handbook')} className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 text-left">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                  <span>Lab Handbook & Cheat Sheets</span>
+                </button>
+              </li>
+              <li>
                 <button onClick={() => handleNav('verify')} className="hover:text-emerald-400 transition-colors flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Verify Member Pass</span>

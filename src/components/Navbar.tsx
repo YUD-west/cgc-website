@@ -15,7 +15,8 @@ import {
   User as UserIcon,
   LogOut,
   ShieldCheck,
-  Download
+  Download,
+  BookOpen
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -68,6 +69,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'explore', label: 'Tracks', icon: Compass },
     { id: 'projects', label: 'Projects & Teams', icon: Layers },
     { id: 'events', label: 'Events & Labs', icon: Calendar },
+    { id: 'handbook', label: 'Handbook', icon: BookOpen },
     { id: 'about', label: 'About CGC', icon: Shield },
   ];
 

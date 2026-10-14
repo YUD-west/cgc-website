@@ -9,11 +9,14 @@ import {
   Cpu, 
   Code2, 
   Rocket, 
-  FileText 
+  FileText,
+  BookOpen,
+  Terminal
 } from 'lucide-react';
 import { TRACKS } from '../data/tracks';
 import { INITIAL_PROJECTS } from '../data/projects';
 import { EVENTS } from '../data/events';
+import { HANDBOOK_SECTIONS } from '../data/handbook';
 
 interface CommandPaletteProps {
   isOpen: boolean;
@@ -66,6 +69,17 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       t.description.toLowerCase().includes(query.toLowerCase())
   );
 
+  const filteredHandbook = HANDBOOK_SECTIONS.filter(
+    (h) =>
+      h.title.toLowerCase().includes(query.toLowerCase()) ||
+      h.subtitle.toLowerCase().includes(query.toLowerCase()) ||
+      h.commands.some(
+        (c) =>
+          c.command.toLowerCase().includes(query.toLowerCase()) ||
+          c.description.toLowerCase().includes(query.toLowerCase())
+      )
+  );
+
   const handleSelect = (tab: string) => {
     onNavigate(tab);
     onClose();
@@ -81,7 +95,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           <input
             type="text"
             autoFocus
-            placeholder="Search projects, tracks, workshops, or pages..."
+            placeholder="Search projects, tracks, workshops, commands..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-full py-4 bg-transparent text-white placeholder-slate-500 text-sm focus:outline-none"
@@ -104,12 +118,19 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 px-2 block mb-1.5">
               Pages
             </span>
-            <div className="grid grid-cols-2 gap-1.5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
               <button
                 onClick={() => handleSelect('join')}
                 className="flex items-center justify-between p-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 text-xs text-left border border-emerald-500/20"
               >
-                <span>Join CGC (Membership Form)</span>
+                <span>Join CGC (Free)</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => handleSelect('handbook')}
+                className="flex items-center justify-between p-2 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 text-xs text-left border border-cyan-500/20"
+              >
+                <span>Lab Handbook</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
               <button
@@ -123,14 +144,14 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                 onClick={() => handleSelect('events')}
                 className="flex items-center justify-between p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs text-left border border-slate-800"
               >
-                <span>Workshops & Events</span>
+                <span>Events & Labs</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => handleSelect('about')}
                 className="flex items-center justify-between p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs text-left border border-slate-800"
               >
-                <span>About CGC & Mission</span>
+                <span>About CGC</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -212,6 +233,35 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                       </span>
                     </div>
                     <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-blue-400" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Lab Handbook & Cheats */}
+          {query.trim().length > 0 && filteredHandbook.length > 0 && (
+            <div>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 px-2 block mb-1.5">
+                Lab Cheat Sheets ({filteredHandbook.length})
+              </span>
+              <div className="space-y-1">
+                {filteredHandbook.map((h) => (
+                  <button
+                    key={h.id}
+                    onClick={() => handleSelect('handbook')}
+                    className="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-slate-800 text-left text-xs transition-colors group"
+                  >
+                    <div>
+                      <span className="font-semibold text-cyan-300 group-hover:text-cyan-200 block flex items-center gap-1.5">
+                        <Terminal className="w-3.5 h-3.5" />
+                        {h.title}
+                      </span>
+                      <span className="text-[11px] text-slate-400">
+                        {h.subtitle}
+                      </span>
+                    </div>
+                    <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-400" />
                   </button>
                 ))}
               </div>
