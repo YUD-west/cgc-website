@@ -16,7 +16,9 @@ export const PassPreviewWidget: React.FC<PassPreviewWidgetProps> = ({ onNavigate
   ];
 
   return (
-    <div className="rounded-3xl bg-[#0F172A] border border-slate-800 p-6 sm:p-8 shadow-sm">
+    <div className="rounded-3xl bg-[#0E1628]/90 backdrop-blur-md border border-slate-700/60 p-6 sm:p-8 shadow-xl relative overflow-hidden">
+      {/* Subtle atmospheric ambient emerald glow inside card */}
+      <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-emerald-500/10 blur-[80px] rounded-full pointer-events-none" />
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         
         {/* Left: Explanation */}

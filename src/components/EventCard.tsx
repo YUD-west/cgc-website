@@ -41,7 +41,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   };
 
   return (
-    <div className="group bg-[#0F172A] hover:bg-[#142038] border border-slate-800 hover:border-slate-700 rounded-2xl p-5 transition-all duration-200 flex flex-col justify-between shadow-sm">
+    <div className="group bg-[#0E1628]/90 hover:bg-[#132038]/95 backdrop-blur-md border border-slate-700/60 hover:border-emerald-500/50 hover:shadow-glow-green rounded-2xl p-5 transition-all duration-300 flex flex-col justify-between shadow-card hover:-translate-y-0.5">
       <div>
         {/* Category & Mode Bar */}
         <div className="flex items-center justify-between gap-2 mb-2.5">

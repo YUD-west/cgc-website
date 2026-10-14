@@ -91,13 +91,19 @@ export const HomePage: React.FC<HomePageProps> = ({
       <section className="relative pt-6 sm:pt-12 pb-12 overflow-hidden flex items-center border-b border-slate-800/80">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center">
           
-          {/* Main Direct Heading — Clean & Confident */}
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.08]">
-            Ideas into <span className="text-blue-500">Impact.</span>
+          {/* Radiant Hero Ambient Backlight */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[32rem] sm:w-[42rem] h-60 bg-gradient-to-r from-blue-600/35 via-sky-500/20 to-emerald-500/30 blur-[95px] rounded-full pointer-events-none -z-10" />
+
+          {/* Main Direct Heading — Vibrant & Alive */}
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.08] relative">
+            Ideas into{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-emerald-400">
+              Impact.
+            </span>
           </h1>
 
           {/* Sub-heading directly under heading */}
-          <p className="mt-3 text-base sm:text-xl text-blue-400 font-medium">
+          <p className="mt-3 text-base sm:text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-sky-200 to-emerald-300">
             Cyber Guardians Club • Ambo University, Woliso Campus
           </p>
 
@@ -125,20 +131,20 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           {/* Small Compact Stats Bar */}
-          <div className="mt-12 pt-6 border-t border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
-            <div className="p-3.5 rounded-2xl bg-[#0F172A] border border-slate-800 hover:border-slate-700 transition-colors">
+          <div className="mt-12 pt-6 border-t border-slate-800/80 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
+            <div className="p-3.5 rounded-2xl bg-[#0E1628]/85 backdrop-blur-md border border-slate-700/60 hover:border-blue-500/40 transition-all shadow-sm">
               <div className="text-sm sm:text-base font-bold text-white">4 Disciplines</div>
               <div className="text-[11px] text-slate-400 mt-0.5">IT, Agri, Biz, Health</div>
             </div>
-            <div className="p-3.5 rounded-2xl bg-[#0F172A] border border-slate-800 hover:border-slate-700 transition-colors">
+            <div className="p-3.5 rounded-2xl bg-[#0E1628]/85 backdrop-blur-md border border-slate-700/60 hover:border-blue-500/40 transition-all shadow-sm">
               <div className="text-sm sm:text-base font-bold text-blue-400">Computer Lab 02</div>
               <div className="text-[11px] text-slate-400 mt-0.5">Terminal workstations</div>
             </div>
-            <div className="p-3.5 rounded-2xl bg-[#0F172A] border border-slate-800 hover:border-slate-700 transition-colors">
+            <div className="p-3.5 rounded-2xl bg-[#0E1628]/85 backdrop-blur-md border border-slate-700/60 hover:border-emerald-500/40 transition-all shadow-sm">
               <div className="text-sm sm:text-base font-bold text-emerald-400">100% Free</div>
               <div className="text-[11px] text-slate-400 mt-0.5">Open university club</div>
             </div>
-            <div className="p-3.5 rounded-2xl bg-[#0F172A] border border-slate-800 hover:border-slate-700 transition-colors">
+            <div className="p-3.5 rounded-2xl bg-[#0E1628]/85 backdrop-blur-md border border-slate-700/60 hover:border-blue-500/40 transition-all shadow-sm">
               <div className="text-sm sm:text-base font-bold text-white">Student-Led</div>
               <div className="text-[11px] text-slate-400 mt-0.5">Peer mentorship</div>
             </div>
@@ -178,7 +184,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             return (
               <div
                 key={idx}
-                className="p-4 sm:p-5 rounded-2xl bg-[#0F172A] border border-slate-800 hover:border-slate-700 hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between shadow-sm"
+                className="p-4 sm:p-5 rounded-2xl bg-[#0E1628]/90 backdrop-blur-md border border-slate-700/60 hover:border-blue-500/50 hover:shadow-glow-blue hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between shadow-card"
               >
                 <div>
                   <div className={`w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center mb-3 ${stream.accent}`}>
@@ -224,7 +230,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div
               key={photo.id}
               onClick={() => setSelectedPhoto(photo)}
-              className="group relative rounded-2xl overflow-hidden border border-slate-800 bg-[#0F172A] cursor-pointer hover:border-slate-700 hover:-translate-y-0.5 transition-all duration-200 shadow-sm"
+              className="group relative rounded-2xl overflow-hidden border border-slate-700/60 bg-[#0E1628]/90 backdrop-blur-md cursor-pointer hover:border-blue-500/50 hover:shadow-glow-blue hover:-translate-y-0.5 transition-all duration-300 shadow-card"
             >
               <div className="aspect-[4/3] overflow-hidden bg-slate-900">
                 <img

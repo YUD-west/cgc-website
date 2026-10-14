@@ -136,7 +136,9 @@ export const InteractivePathway: React.FC<InteractivePathwayProps> = ({ onNaviga
   const activePathway = PATHWAYS.find((p) => p.id === activePathwayId) || PATHWAYS[0];
 
   return (
-    <div className="rounded-3xl bg-[#0F172A] border border-slate-800 p-6 sm:p-8 shadow-sm">
+    <div className="rounded-3xl bg-[#0E1628]/90 backdrop-blur-md border border-slate-700/60 p-6 sm:p-8 shadow-xl relative overflow-hidden">
+      {/* Subtle atmospheric ambient glow inside card */}
+      <div className="absolute -top-20 -right-20 w-64 h-64 bg-blue-500/10 blur-[80px] rounded-full pointer-events-none" />
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">

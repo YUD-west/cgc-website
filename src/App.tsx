@@ -136,17 +136,28 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F172A] text-slate-100 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-cgc-vibrant text-slate-100 flex flex-col font-sans selection:bg-blue-600 selection:text-white relative overflow-x-hidden">
+      {/* Vibrant Ambient Glow Orbs in Official CGC Colors (Electric Blue + Emerald Green) */}
+      <div className="fixed -top-24 -left-24 w-96 h-96 rounded-full bg-blue-600/25 blur-[120px] pointer-events-none animate-orb-1 z-0" />
+      <div className="fixed top-1/4 -right-24 w-96 h-96 rounded-full bg-emerald-500/20 blur-[130px] pointer-events-none animate-orb-2 z-0" />
+      <div className="fixed top-2/3 -left-28 w-80 h-80 rounded-full bg-sky-500/15 blur-[140px] pointer-events-none z-0" />
+      <div className="fixed -bottom-32 right-1/4 w-[28rem] h-[28rem] rounded-full bg-blue-600/20 blur-[150px] pointer-events-none z-0" />
+
+      {/* Subtle fine cyber grid texture overlay */}
+      <div className="fixed inset-0 bg-grid-pattern opacity-35 pointer-events-none z-0" />
+
       {/* Header Navigation */}
-      <Navbar
-        activeTab={activeTab}
-        setActiveTab={handleNavigate}
-        openCommandPalette={() => setIsCommandPaletteOpen(true)}
-        onOpenAuth={() => setIsAuthModalOpen(true)}
-      />
+      <div className="relative z-20">
+        <Navbar
+          activeTab={activeTab}
+          setActiveTab={handleNavigate}
+          openCommandPalette={() => setIsCommandPaletteOpen(true)}
+          onOpenAuth={() => setIsAuthModalOpen(true)}
+        />
+      </div>
 
       {/* Main Body */}
-      <main className="flex-grow">
+      <main className="flex-grow relative z-10">
         {activeTab === 'home' && (
           <HomePage
             onNavigate={handleNavigate}

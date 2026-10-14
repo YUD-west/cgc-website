@@ -74,7 +74,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   };
 
   return (
-    <div className="group bg-[#0F172A] hover:bg-[#142038] rounded-2xl border border-slate-800 hover:border-slate-700 transition-all duration-200 flex flex-col justify-between p-5 shadow-sm relative">
+    <div className="group bg-[#0E1628]/90 hover:bg-[#132038]/95 backdrop-blur-md rounded-2xl border border-slate-700/60 hover:border-blue-500/50 hover:shadow-glow-blue transition-all duration-300 flex flex-col justify-between p-5 shadow-card relative hover:-translate-y-0.5">
       <div>
         {/* Meta Bar */}
         <div className="flex items-center justify-between gap-2 mb-2.5">
