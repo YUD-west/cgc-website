@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { X, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
-import { TrackId, StudentProjectProposal } from '../../types';
+import { X, CheckCircle2, AlertCircle, ArrowRight, Lightbulb, Users, Sparkles } from 'lucide-react';
+import { StudentProjectProposal, TrackId } from '../../types';
 import { saveProposal, generateId } from '../../utils/storage';
 
 interface ProposalModalProps {
@@ -17,45 +17,78 @@ export const ProposalModal: React.FC<ProposalModalProps> = ({
   const [title, setTitle] = useState('');
   const [proposerName, setProposerName] = useState('');
   const [proposerEmail, setProposerEmail] = useState('');
-  const [proposerDepartment, setProposerDepartment] = useState('Information Technology');
-  const [trackId, setTrackId] = useState<TrackId>('software-web');
+  const [proposerDepartment, setProposerDepartment] = useState('Faculty of Agriculture');
+  const [category, setCategory] = useState('Agriculture & Sciences');
+  const [proposerRole, setProposerRole] = useState('Entrepreneur / Concept Lead');
   const [problemStatement, setProblemStatement] = useState('');
   const [proposedSolution, setProposedSolution] = useState('');
-  const [neededRoles, setNeededRoles] = useState('Frontend Developer, UI Designer');
+  const [neededRoles, setNeededRoles] = useState('Beginners Eager to Learn, Mobile Developer, Business Lead');
+  const [targetLevel, setTargetLevel] = useState('Beginners Welcome');
+
   const [submitted, setSubmitted] = useState(false);
   const [proposalId, setProposalId] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !proposerName.trim() || !proposerEmail.trim() || !problemStatement.trim()) {
-      setError('Please fill in all required fields.');
+      setError('Please fill in the project title, your name, email, and the problem statement.');
       return;
     }
 
-    const newId = generateId('PROP');
-    const proposal: StudentProjectProposal = {
-      id: newId,
-      title: title.trim(),
-      proposerName: proposerName.trim(),
-      proposerEmail: proposerEmail.trim(),
-      proposerDepartment,
-      trackId,
-      problemStatement: problemStatement.trim(),
-      proposedSolution: proposedSolution.trim(),
-      neededRoles: neededRoles
-        .split(',')
-        .map((r) => r.trim())
-        .filter(Boolean),
-      submittedAt: new Date().toISOString(),
-    };
+    try {
+      setLoading(true);
+      setError('');
+      const newId = generateId('PROP');
 
-    saveProposal(proposal);
-    onProposalSubmitted(proposal);
-    setProposalId(newId);
-    setSubmitted(true);
+      // Post to backend database
+      await fetch('/api/proposals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: title.trim(),
+          problemStatement: problemStatement.trim(),
+          proposedSolution: proposedSolution.trim(),
+          category,
+          proposerName: proposerName.trim(),
+          proposerEmail: proposerEmail.trim(),
+          proposerDepartment,
+          proposerRole,
+          neededRoles,
+          targetLevel,
+          trackId: category === 'Cybersecurity' ? 'cybersecurity' : 'software-web'
+        })
+      });
+
+      const proposal: StudentProjectProposal = {
+        id: newId,
+        title: title.trim(),
+        proposerName: proposerName.trim(),
+        proposerEmail: proposerEmail.trim(),
+        proposerDepartment,
+        trackId: 'software-web',
+        problemStatement: problemStatement.trim(),
+        proposedSolution: proposedSolution.trim(),
+        neededRoles: neededRoles
+          .split(',')
+          .map((r) => r.trim())
+          .filter(Boolean),
+        submittedAt: new Date().toISOString(),
+      };
+
+      saveProposal(proposal);
+      onProposalSubmitted(proposal);
+      setProposalId(newId);
+      setSubmitted(true);
+    } catch (err: any) {
+      console.error('Proposal submit error:', err);
+      setError('Failed to submit proposal to server. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleReset = () => {
@@ -70,195 +103,218 @@ export const ProposalModal: React.FC<ProposalModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#111A2E] border border-slate-700 w-full max-w-2xl rounded-2xl p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+      <div className="bg-[#111A2E] border border-slate-700 w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto">
         <button
           onClick={handleReset}
-          className="absolute top-5 right-5 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800"
+          className="absolute top-5 right-5 text-slate-400 hover:text-white p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 transition"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
         </button>
 
         {submitted ? (
-          <div className="text-center py-6">
-            <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="text-center py-8 space-y-4">
+            <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto">
               <CheckCircle2 className="w-8 h-8" />
             </div>
             <h3 className="text-2xl font-bold text-white">Project Proposal Submitted!</h3>
-            <p className="mt-2 text-slate-300 text-sm max-w-md mx-auto">
-              Your concept has been recorded in the CGC Woliso project registry with ID:
+            <p className="text-slate-300 text-xs sm:text-sm max-w-md mx-auto leading-relaxed">
+              Your concept has been recorded in the CGC Woliso project registry with tracking code:
             </p>
-            <div className="mt-3 inline-block font-mono bg-slate-900 border border-slate-800 text-blue-400 px-4 py-2 rounded-lg text-sm font-semibold">
+            <div className="inline-block font-mono bg-slate-900 border border-slate-800 text-blue-400 px-4 py-2 rounded-xl text-sm font-bold">
               {proposalId}
             </div>
-            <p className="mt-4 text-xs text-slate-400 max-w-sm mx-auto">
-              Our project review committee will review your idea, assist with scoping, and help assemble student collaborators across departments.
+            <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+              Lead Admin Yesuf Dergu and the project committee will review your proposal. Once approved, your open roles will be published to the campus Co-Creator board so other students can join your team!
             </p>
-            <div className="mt-6">
+            <div className="pt-4">
               <button
                 onClick={handleReset}
-                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold text-sm transition-colors"
+                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow-md transition"
               >
-                Done & Return to Projects
+                Back to Projects
               </button>
             </div>
           </div>
         ) : (
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-                Student-Led Innovation
-              </span>
+            {/* Modal Header */}
+            <div className="mb-6">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[11px] font-bold uppercase tracking-wider mb-2">
+                <Lightbulb className="w-3.5 h-3.5" />
+                <span>Open to All Campus Streams</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-extrabold text-white">Propose a Campus Project</h3>
+              <p className="text-xs text-slate-400 mt-1">
+                Whether you have a technical solution, a business idea, an agricultural challenge, or a community initiative — submit your idea here to recruit student teammates and incubate in Computer Lab 02.
+              </p>
             </div>
-            <h3 className="text-2xl font-extrabold text-white">Propose a Project Idea</h3>
-            <p className="text-slate-300 text-sm mt-1">
-              Have an idea or a local problem you want to solve? Pitch it to CGC. We help you find teammates, technical mentors, and code resources.
-            </p>
 
             {error && (
-              <div className="mt-4 p-3 rounded-lg bg-red-950/60 border border-red-800/80 text-red-200 text-xs flex items-center gap-2">
+              <div className="mb-4 p-3.5 rounded-xl bg-red-950/70 border border-red-800 text-red-200 text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 <span>{error}</span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
-                  Project Title *
-                </label>
+                <label className="block text-slate-300 font-semibold mb-1">Project Name / Working Title *</label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g., Woliso Campus Lost & Found System"
+                  placeholder="e.g. Woliso Local Market Price Tracker or Automated Crop Blight Scanner"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
-                    Your Full Name *
-                  </label>
+                  <label className="block text-slate-300 font-semibold mb-1">Domain / Category *</label>
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                  >
+                    <option value="Agriculture & Sciences">🌾 Agriculture & Food Security</option>
+                    <option value="Business & Entrepreneurship">💼 Business & Campus Marketplace</option>
+                    <option value="Software & AI">💻 Software, Web & Mobile Tools</option>
+                    <option value="Health & Community">🩺 Health & Social Impact</option>
+                    <option value="Cybersecurity & Systems">🔒 Cybersecurity & Network Safety</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1">Your Role on This Project *</label>
+                  <select
+                    value={proposerRole}
+                    onChange={(e) => setProposerRole(e.target.value)}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                  >
+                    <option value="Entrepreneur / Concept Lead">💼 Entrepreneur & Concept Lead</option>
+                    <option value="Agricultural / Domain Specialist">🌾 Agricultural / Domain Specialist</option>
+                    <option value="Technical Developer / Builder">💻 Technical Builder / Developer</option>
+                    <option value="UI/UX Designer / Creative">🎨 UI/UX Designer & Content</option>
+                    <option value="Researcher / Health Specialist">🩺 Researcher & Problem Expert</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-slate-300 font-semibold mb-1">
+                  What Problem on Campus or in the Community Are You Solving? *
+                </label>
+                <textarea
+                  rows={3}
+                  required
+                  placeholder="Describe the challenge clearly in plain language (e.g. Local Woliso farmers lack real-time market prices, leading to unfair crop broker margins...)"
+                  value={problemStatement}
+                  onChange={(e) => setProblemStatement(e.target.value)}
+                  className="w-full p-3 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none resize-none leading-relaxed"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-300 font-semibold mb-1">
+                  Proposed Solution Concept (Simple Explanation)
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder="Explain how technology, data, or teamwork can solve this problem..."
+                  value={proposedSolution}
+                  onChange={(e) => setProposedSolution(e.target.value)}
+                  className="w-full p-3 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none resize-none leading-relaxed"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1">Who Do You Need on Your Team?</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Beginners, Frontend Developer, Marketing Lead"
+                    value={neededRoles}
+                    onChange={(e) => setNeededRoles(e.target.value)}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+                  />
+                  <span className="text-[10px] text-slate-500 mt-1 block">Comma-separated team roles</span>
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1">Experience Level Welcomed</label>
+                  <select
+                    value={targetLevel}
+                    onChange={(e) => setTargetLevel(e.target.value)}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                  >
+                    <option value="Beginners Welcome">🌱 Beginners Welcome (Learn together)</option>
+                    <option value="All Levels Welcome">🤝 All Levels Welcome</option>
+                    <option value="Intermediate">⚡ Intermediate (Some skills helpful)</option>
+                    <option value="Advanced">🚀 Advanced Builders</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 border-t border-slate-800">
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1">Your Full Name *</label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g., Chala Bekele"
+                    placeholder="e.g. Bonsa Tadesse"
                     value={proposerName}
                     onChange={(e) => setProposerName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
                   />
                 </div>
+
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
-                    University / Contact Email *
-                  </label>
+                  <label className="block text-slate-300 font-semibold mb-1">Your Email Address *</label>
                   <input
                     type="email"
                     required
-                    placeholder="e.g., student@ambou.edu.et"
+                    placeholder="student@ambou.edu.et"
                     value={proposerEmail}
                     onChange={(e) => setProposerEmail(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
                   />
                 </div>
-              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
-                    Your Department *
-                  </label>
+                  <label className="block text-slate-300 font-semibold mb-1">Your Faculty / Stream *</label>
                   <select
                     value={proposerDepartment}
                     onChange={(e) => setProposerDepartment(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
                   >
-                    <option value="Information Technology">Information Technology</option>
-                    <option value="Computer Science">Computer Science</option>
-                    <option value="Information Systems">Information Systems</option>
-                    <option value="Agricultural Sciences">Agricultural Sciences</option>
-                    <option value="Business & Economics">Business & Economics</option>
-                    <option value="Social Sciences">Social Sciences</option>
-                    <option value="Other Faculty">Other Faculty</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
-                    Primary Track *
-                  </label>
-                  <select
-                    value={trackId}
-                    onChange={(e) => setTrackId(e.target.value as TrackId)}
-                    className="w-full px-3.5 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:border-blue-500 focus:outline-none"
-                  >
-                    <option value="cybersecurity">Cybersecurity & Digital Defense</option>
-                    <option value="programming">Programming & Algorithms</option>
-                    <option value="ai-ml">AI & Machine Learning</option>
-                    <option value="software-web">Software & Web Engineering</option>
-                    <option value="entrepreneurship">Tech Entrepreneurship</option>
+                    <option value="Faculty of Agriculture">🌾 Faculty of Agriculture</option>
+                    <option value="Business & Economics">💼 Business & Economics</option>
+                    <option value="Information Technology">💻 Information Technology</option>
+                    <option value="Computer Science">🖥️ Computer Science</option>
+                    <option value="Health & Social Sciences">🩺 Health & Social Sciences</option>
+                    <option value="Natural Sciences">🔬 Natural Sciences</option>
+                    <option value="Other Department">🏛️ Other Stream</option>
                   </select>
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
-                  What specific problem does this solve? *
-                </label>
-                <textarea
-                  rows={2}
-                  required
-                  placeholder="Describe the real issue on campus or in the local community..."
-                  value={problemStatement}
-                  onChange={(e) => setProblemStatement(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
-                  Proposed Solution & Tech Approach
-                </label>
-                <textarea
-                  rows={2}
-                  placeholder="How will your team build it? (e.g., Python CLI, mobile app, web dashboard)..."
-                  value={proposedSolution}
-                  onChange={(e) => setProposedSolution(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
-                  Roles You Need (comma separated)
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g., Python Backend, UI Designer, Tester"
-                  value={neededRoles}
-                  onChange={(e) => setNeededRoles(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-
-              <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-800">
-                <button
-                  type="button"
-                  onClick={handleReset}
-                  className="px-4 py-2.5 text-sm font-medium text-slate-400 hover:text-white"
-                >
-                  Cancel
-                </button>
+              <div className="pt-3">
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-lg shadow-md transition-colors"
+                  disabled={loading}
+                  className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                  Submit Proposal
+                  {loading ? (
+                    <span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+                  ) : (
+                    <>
+                      <span>Submit Project Proposal</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
               </div>
             </form>

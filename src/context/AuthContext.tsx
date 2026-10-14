@@ -10,6 +10,8 @@ export interface User {
   phone?: string;
   telegram?: string;
   primaryTrack?: string;
+  memberRole?: string;
+  experienceLevel?: string;
   isApprovedMember?: boolean;
 }
 

@@ -12,7 +12,7 @@ export function authenticateUser(req, res, next) {
   const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = db.prepare('SELECT id, email, full_name, role, department, phone, telegram FROM users WHERE id = ?').get(decoded.userId);
+    const user = db.prepare('SELECT id, email, full_name, role, department, year_of_study, phone, telegram, member_role, experience_level, primary_track, membership_status FROM users WHERE id = ?').get(decoded.userId);
 
     if (!user) {
       return res.status(401).json({ error: 'User account not found or has been revoked.' });

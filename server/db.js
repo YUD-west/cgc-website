@@ -95,6 +95,21 @@ db.exec(`
     created_by TEXT NOT NULL DEFAULT 'Yesuf Dergu (Lead Admin)',
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  -- 7. Campus Innovation Projects (Dynamic Database-driven Project Board)
+  CREATE TABLE IF NOT EXISTS campus_projects (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    category TEXT NOT NULL,
+    proposer_name TEXT NOT NULL,
+    proposer_faculty TEXT NOT NULL,
+    target_level TEXT DEFAULT 'All Levels Welcome',
+    needed_roles TEXT NOT NULL,
+    status TEXT DEFAULT 'Active',
+    impact_goal TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);
 
 // Safely ensure supplementary columns exist on users table
@@ -104,6 +119,13 @@ try { db.exec("ALTER TABLE users ADD COLUMN phone TEXT;"); } catch (e) {}
 try { db.exec("ALTER TABLE users ADD COLUMN telegram TEXT;"); } catch (e) {}
 try { db.exec("ALTER TABLE users ADD COLUMN primary_track TEXT DEFAULT 'cybersecurity';"); } catch (e) {}
 try { db.exec("ALTER TABLE users ADD COLUMN membership_status TEXT DEFAULT 'PENDING';"); } catch (e) {}
+try { db.exec("ALTER TABLE users ADD COLUMN member_role TEXT DEFAULT 'Technical Builder';"); } catch (e) {}
+try { db.exec("ALTER TABLE users ADD COLUMN experience_level TEXT DEFAULT 'Beginner';"); } catch (e) {}
+
+// Safely ensure supplementary columns exist on project_proposals table
+try { db.exec("ALTER TABLE project_proposals ADD COLUMN target_level TEXT DEFAULT 'All Levels Welcome';"); } catch (e) {}
+try { db.exec("ALTER TABLE project_proposals ADD COLUMN proposer_role TEXT DEFAULT 'Concept Lead';"); } catch (e) {}
+try { db.exec("ALTER TABLE project_proposals ADD COLUMN category TEXT DEFAULT 'Campus Innovation';"); } catch (e) {}
 
 // Seed Lead Admin & Sample Co-Creator Opportunities
 export function seedDatabase() {
@@ -201,5 +223,19 @@ export function seedDatabase() {
       stmt.run(post.id, post.title, post.description, post.faculty, post.needed_skills, post.contact_telegram, post.contact_email, post.proposer_name, post.status);
     }
     console.log('[DB] Seeded 4 cross-faculty co-creator collaboration posts.');
+  }
+
+  // Seed sample campus projects if empty
+  const projectCount = db.prepare('SELECT count(*) as count FROM campus_projects').get()?.count || 0;
+  if (projectCount === 0) {
+    db.prepare(`
+      INSERT INTO campus_projects (id, title, description, category, proposer_name, proposer_faculty, target_level, needed_roles, status, impact_goal)
+      VALUES 
+      ('PRJ-AGRI-01', 'Woliso Local Harvest & Market Price Link', 'A mobile and SMS bulletin connecting local farmers around Woliso with direct buyers, reducing middleman price inflation.', 'Agriculture & Sciences', 'Bonsa Tadesse', 'Faculty of Agriculture', 'Beginners Welcome', 'Field Researchers, Business Strategist, Mobile Developer, Beginners', 'Active', 'Empowering 500+ Woliso farmers with daily commodity prices'),
+      ('PRJ-BIZ-02', 'Ambo Campus Textbook & Equipment Exchange', 'Peer-to-peer student marketplace to rent, borrow, and exchange university textbooks and lab tools safely on campus.', 'Business & Entrepreneurship', 'Hawi Bekele', 'Business & Economics', 'Beginners Welcome', 'Marketing Lead, Logistics Coordinator, Web Developer', 'Active', 'Saving students 40% on semester course materials'),
+      ('PRJ-HLTH-03', 'Woliso Blood Emergency Donor Matching System', 'Quick SMS & Web dispatch tool notifying verified student donors during critical blood shortages at Woliso General Hospital.', 'Health & Community', 'Dr. Rahel Assefa', 'Health & Social Sciences', 'All Levels Welcome', 'Healthcare Coordinator, Backend Developer, UI Designer', 'Open for Contributors', 'Zero delay emergency blood matching for local clinics'),
+      ('PRJ-TECH-04', 'CGC Lab 02 Physical Clearance & Network Fortress', 'IoT automated door clearance and ethical firewall system securing student workstations in Computer Lab 02.', 'Cybersecurity & Systems', 'Yesuf Dergu', 'Information Technology', 'Intermediate / Advanced', 'Network Engineer, Hardware IoT Tinkerer, Linux Sysadmin', 'Active', 'Automated entry and 24/7 security monitoring for student teams')
+    `).run();
+    console.log('[DB] Seeded 4 initial dynamic campus projects.');
   }
 }

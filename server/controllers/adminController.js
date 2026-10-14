@@ -149,7 +149,7 @@ export function updateProposalStatus(req, res) {
 
     db.prepare('UPDATE project_proposals SET status = ? WHERE id = ?').run(status, id);
 
-    // If approved or incubating, automatically publish to co-creator board so other students can join
+    // If approved or incubating, automatically publish to co-creator board and campus_projects
     const collabId = `collab_${proposal.id}`;
     if ((status === 'Approved' || status === 'Incubating') && publishToCoCreator) {
       const existing = db.prepare('SELECT id FROM co_creators WHERE id = ?').get(collabId);
@@ -169,8 +169,30 @@ export function updateProposalStatus(req, res) {
       } else {
         db.prepare("UPDATE co_creators SET status = 'Open' WHERE id = ?").run(collabId);
       }
+
+      // Also register or update in campus_projects table
+      const existingProject = db.prepare('SELECT id FROM campus_projects WHERE id = ?').get(proposal.id);
+      if (!existingProject) {
+        db.prepare(`
+          INSERT INTO campus_projects (id, title, description, category, proposer_name, proposer_faculty, target_level, needed_roles, status, impact_goal)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Active', ?)
+        `).run(
+          proposal.id,
+          proposal.title,
+          proposal.problem_statement,
+          proposal.category || 'Campus Innovation',
+          proposal.proposer_name,
+          proposal.proposer_department || 'Ambo University',
+          proposal.target_level || 'All Levels Welcome',
+          proposal.needed_roles || 'Cross-Faculty Collaborators',
+          proposal.proposed_solution || 'Student-led innovation initiative in Lab 02'
+        );
+      } else {
+        db.prepare("UPDATE campus_projects SET status = 'Active' WHERE id = ?").run(proposal.id);
+      }
     } else if (status === 'Rejected') {
       db.prepare("UPDATE co_creators SET status = 'Closed' WHERE id = ?").run(collabId);
+      db.prepare("UPDATE campus_projects SET status = 'Rejected' WHERE id = ?").run(proposal.id);
     }
 
     return res.json({ success: true, id, status, message: `Proposal marked as ${status}` });

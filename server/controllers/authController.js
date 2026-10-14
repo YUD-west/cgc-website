@@ -11,7 +11,9 @@ export const registerSchema = z.object({
   department: z.string().optional(),
   yearOfStudy: z.string().optional(),
   phone: z.string().optional(),
-  telegram: z.string().optional()
+  telegram: z.string().optional(),
+  memberRole: z.string().optional(),
+  experienceLevel: z.string().optional()
 });
 
 export const loginSchema = z.object({
@@ -21,7 +23,7 @@ export const loginSchema = z.object({
 
 export async function register(req, res) {
   try {
-    const { email, password, fullName, department, yearOfStudy, phone, telegram } = req.validatedBody;
+    const { email, password, fullName, department, yearOfStudy, phone, telegram, memberRole, experienceLevel } = req.validatedBody;
     const cleanEmail = email.toLowerCase().trim();
 
     // Check duplicate
@@ -35,9 +37,20 @@ export async function register(req, res) {
     const userId = `usr_${Date.now()}_${Math.random().toString(36).substring(7)}`;
 
     db.prepare(`
-      INSERT INTO users (id, email, password_hash, full_name, role, department, year_of_study, phone, telegram)
-      VALUES (?, ?, ?, ?, 'USER', ?, ?, ?, ?)
-    `).run(userId, cleanEmail, passwordHash, fullName.trim(), department || 'Informatics', yearOfStudy || '2nd Year', phone || null, telegram || null);
+      INSERT INTO users (id, email, password_hash, full_name, role, department, year_of_study, phone, telegram, member_role, experience_level)
+      VALUES (?, ?, ?, ?, 'USER', ?, ?, ?, ?, ?, ?)
+    `).run(
+      userId,
+      cleanEmail,
+      passwordHash,
+      fullName.trim(),
+      department || 'Informatics & IT',
+      yearOfStudy || '2nd Year',
+      phone || null,
+      telegram || null,
+      memberRole || 'Technical Builder',
+      experienceLevel || 'Beginner'
+    );
 
     const token = jwt.sign({ userId, role: 'USER' }, JWT_SECRET, { expiresIn: '7d' });
 
@@ -49,10 +62,12 @@ export async function register(req, res) {
         email: cleanEmail,
         fullName: fullName.trim(),
         role: 'USER',
-        department: department || 'Informatics',
+        department: department || 'Informatics & IT',
         yearOfStudy: yearOfStudy || '2nd Year',
         phone: phone || null,
-        telegram: telegram || null
+        telegram: telegram || null,
+        memberRole: memberRole || 'Technical Builder',
+        experienceLevel: experienceLevel || 'Beginner'
       }
     });
   } catch (err) {

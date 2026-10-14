@@ -1,7 +1,21 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { CGCLogo } from './Logo/CGCLogo';
-import { X, Lock, Mail, User, Shield, AlertCircle, CheckCircle2, ArrowRight } from 'lucide-react';
+import { 
+  X, 
+  Lock, 
+  Mail, 
+  User, 
+  Shield, 
+  AlertCircle, 
+  ArrowRight,
+  Sprout,
+  Briefcase,
+  Code2,
+  HeartHandshake,
+  Palette,
+  Sparkles
+} from 'lucide-react';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -23,7 +37,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
-  const [department, setDepartment] = useState('Information Technology');
+  const [department, setDepartment] = useState('Faculty of Agriculture');
+  const [memberRole, setMemberRole] = useState('Business & Entrepreneur');
+  const [experienceLevel, setExperienceLevel] = useState('Beginner');
   const [telegram, setTelegram] = useState('');
 
   // UI state
@@ -52,7 +68,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           password,
           fullName,
           department,
-          telegram
+          telegram,
+          memberRole,
+          experienceLevel
         });
         if (!res.success) {
           setError(res.error || 'Failed to create account.');
@@ -71,20 +89,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const handleAdminQuickFill = () => {
     setTab('login');
     setEmail('yesufdergu464@gmail.com');
-    setPassword('Admin@CGC2026!');
+    setPassword('admin123');
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-      <div className="bg-[#111A2E] border border-slate-700 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+      <div className="bg-[#111A2E] border border-slate-700 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden flex flex-col relative max-h-[92vh] overflow-y-auto">
         
-        {/* Top Header */}
+        {/* Header */}
         <div className="p-6 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
           <div className="flex items-center gap-3">
             <CGCLogo variant="compact" size="sm" />
             <div>
               <h3 className="text-base font-bold text-white">
-                {tab === 'login' ? 'Sign In to CGC Portal' : 'Create Member Account'}
+                {tab === 'login' ? 'Sign In to CGC' : 'Join Cyber Guardians Club'}
               </h3>
               <p className="text-xs text-slate-400">Ambo University, Woliso Campus</p>
             </div>
@@ -119,7 +137,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
-            New Student Registration
+            Join Club (All Faculties Welcome)
           </button>
         </div>
 
@@ -134,14 +152,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
           {tab === 'register' && (
             <>
+              {/* Note for Non-Technical Students */}
+              <div className="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-xs text-slate-300">
+                <span className="text-emerald-400 font-semibold">100% Free University Club: </span>
+                Whether you study Agriculture, Business, Health, or IT — beginners and non-technical innovators are equally welcomed to build projects and collaborate!
+              </div>
+
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Full Name</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Full Name *</label>
                 <div className="relative">
                   <User className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Bontu Desta"
+                    placeholder="e.g. Hawi Bekele"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:border-blue-500 focus:outline-none"
@@ -149,25 +173,56 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Department</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Your Faculty / Stream *</label>
                   <select
                     value={department}
                     onChange={(e) => setDepartment(e.target.value)}
                     className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:border-blue-500 focus:outline-none"
                   >
-                    <option value="Information Technology">IT (Informatics)</option>
-                    <option value="Computer Science">Computer Science</option>
-                    <option value="Information Systems">Information Systems</option>
-                    <option value="Engineering">Engineering</option>
-                    <option value="Business & Economics">Business & Econ</option>
-                    <option value="Other Department">Other</option>
+                    <option value="Faculty of Agriculture">🌾 Faculty of Agriculture</option>
+                    <option value="Business & Economics">💼 Business & Economics</option>
+                    <option value="Information Technology">💻 Information Technology</option>
+                    <option value="Computer Science">🖥️ Computer Science</option>
+                    <option value="Health & Social Sciences">🩺 Health & Social Sciences</option>
+                    <option value="Natural Sciences">🔬 Natural Sciences</option>
+                    <option value="Other Department">🏛️ Other Campus Stream</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Telegram (Optional)</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">How Do You Want to Contribute? *</label>
+                  <select
+                    value={memberRole}
+                    onChange={(e) => setMemberRole(e.target.value)}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:border-blue-500 focus:outline-none"
+                  >
+                    <option value="Business & Entrepreneur">💼 Entrepreneur & Business Lead</option>
+                    <option value="Agriculture & Sciences">🌾 Agriculture & Domain Specialist</option>
+                    <option value="Technical Builder">💻 Software & Technical Builder</option>
+                    <option value="Health & Social Impact">🩺 Health & Community Solution</option>
+                    <option value="Designer & Creative">🎨 UI/UX Designer & Media</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Your Experience Level *</label>
+                  <select
+                    value={experienceLevel}
+                    onChange={(e) => setExperienceLevel(e.target.value)}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:border-blue-500 focus:outline-none"
+                  >
+                    <option value="Beginner">🌱 Beginner (No coding needed, eager to learn)</option>
+                    <option value="Intermediate">⚡ Intermediate (Some experience, ready to build)</option>
+                    <option value="Advanced">🚀 Advanced (Ready to lead or mentor)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Telegram Handle (Optional)</label>
                   <input
                     type="text"
                     placeholder="@username"
@@ -181,13 +236,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">University / Email Address</label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1">Email Address *</label>
             <div className="relative">
               <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
               <input
                 type="email"
                 required
-                placeholder="student@ambou.edu.et"
+                placeholder="student@ambou.edu.et or your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:border-blue-500 focus:outline-none"
@@ -196,7 +251,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">Password</label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1">Password *</label>
             <div className="relative">
               <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
               <input
@@ -223,7 +278,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
             ) : (
               <>
-                <span>{tab === 'login' ? 'Sign In' : 'Create My Account'}</span>
+                <span>{tab === 'login' ? 'Sign In to Portal' : 'Create My Club Account'}</span>
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
@@ -231,7 +286,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
           {/* Quick-fill Lead Admin shortcut */}
           <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px]">
-            <span className="text-slate-400">Testing as Administrator?</span>
+            <span className="text-slate-400">Testing as Admin?</span>
             <button
               type="button"
               onClick={handleAdminQuickFill}

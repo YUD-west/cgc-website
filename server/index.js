@@ -75,10 +75,36 @@ app.post('/api/applications', (req, res) => {
   }
 });
 
+// ---------------- DYNAMIC CAMPUS PROJECTS BOARD ----------------
+app.get('/api/projects', (req, res) => {
+  try {
+    const list = db.prepare('SELECT * FROM campus_projects ORDER BY created_at DESC').all();
+    res.json({ success: true, projects: list });
+  } catch (err) {
+    console.error('[Projects] Error fetching projects:', err);
+    res.status(500).json({ error: 'Failed to fetch campus projects' });
+  }
+});
+
 // ---------------- STUDENT PROJECT PROPOSALS ----------------
 app.post('/api/proposals', (req, res) => {
   try {
-    const { title, problemStatement, proposedSolution, trackId, proposerName, proposerEmail, proposerDepartment, neededRoles } = req.body;
+    const { 
+      title, 
+      problemStatement: rawProblem, 
+      description,
+      proposedSolution, 
+      trackId, 
+      category, 
+      proposerName, 
+      proposerEmail, 
+      proposerDepartment, 
+      proposerRole, 
+      neededRoles, 
+      targetLevel 
+    } = req.body;
+    
+    const problemStatement = rawProblem || description;
     
     if (!title || !problemStatement || !proposerName) {
       return res.status(400).json({ error: 'Title, problem statement, and proposer name are required.' });
@@ -87,9 +113,22 @@ app.post('/api/proposals', (req, res) => {
     const id = `PRJ-PROP-${Date.now().toString().slice(-4)}`;
 
     db.prepare(`
-      INSERT INTO project_proposals (id, title, problem_statement, proposed_solution, track_id, proposer_name, proposer_email, proposer_department, needed_roles)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(id, title.trim(), problemStatement.trim(), proposedSolution?.trim() || null, trackId || 'software-development', proposerName.trim(), proposerEmail?.trim() || null, proposerDepartment || 'Information Technology', neededRoles || 'Developers, Designers');
+      INSERT INTO project_proposals (id, title, problem_statement, proposed_solution, track_id, category, proposer_name, proposer_email, proposer_department, proposer_role, needed_roles, target_level, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Incubating')
+    `).run(
+      id,
+      title.trim(),
+      problemStatement.trim(),
+      proposedSolution?.trim() || 'Incubating in Computer Lab 02',
+      trackId || 'software-web',
+      category || 'Campus Innovation',
+      proposerName.trim(),
+      proposerEmail?.trim() || null,
+      proposerDepartment || 'Informatics & IT',
+      proposerRole || 'Concept Lead',
+      neededRoles || 'Developers, Designers, Researchers',
+      targetLevel || 'All Levels Welcome'
+    );
 
     res.status(201).json({
       success: true,
