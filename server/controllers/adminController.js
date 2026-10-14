@@ -66,15 +66,117 @@ export function updateApplicationStatus(req, res) {
     const { id } = req.params;
     const { status } = req.body;
 
-    if (!['Approved', 'Reviewing', 'Rejected'].includes(status)) {
+    const validStatuses = ['Approved', 'Innovation Lead', 'Reviewing', 'Rejected'];
+    if (!validStatuses.includes(status)) {
       return res.status(400).json({ error: 'Invalid application status.' });
     }
 
+    const app = db.prepare('SELECT * FROM member_applications WHERE id = ?').get(id);
+    if (!app) {
+      return res.status(404).json({ error: 'Application not found' });
+    }
+
     db.prepare('UPDATE member_applications SET status = ? WHERE id = ?').run(status, id);
-    return res.json({ success: true, id, status });
+
+    // If approved or innovation lead, activate member account and issue official pass
+    if (status === 'Approved' || status === 'Innovation Lead') {
+      db.prepare("UPDATE users SET membership_status = 'APPROVED' WHERE lower(email) = lower(?)").run(app.email);
+
+      // If applicant submitted a change-making project idea, incubate it and give others a chance to join
+      if (app.project_idea && app.project_idea.trim().length > 10) {
+        const propId = `PRJ-PROP-${app.id.slice(-4)}`;
+        const existingProp = db.prepare('SELECT id FROM project_proposals WHERE id = ?').get(propId);
+        if (!existingProp) {
+          db.prepare(`
+            INSERT INTO project_proposals (id, title, problem_statement, proposed_solution, track_id, proposer_name, proposer_email, proposer_department, needed_roles, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Incubating')
+          `).run(
+            propId,
+            `${app.full_name}'s Innovation Initiative`,
+            app.project_idea,
+            app.learning_goals || 'Incubating in Computer Lab 02',
+            app.primary_track || 'software-development',
+            app.full_name,
+            app.email,
+            app.department,
+            'Co-Founders, Technical Implementers, Researchers'
+          );
+
+          // Publish to campus co-creators board so other students can team up with them
+          const collabId = `collab_${app.id}`;
+          const existingCollab = db.prepare('SELECT id FROM co_creators WHERE id = ?').get(collabId);
+          if (!existingCollab) {
+            db.prepare(`
+              INSERT INTO co_creators (id, title, description, faculty, needed_skills, contact_email, proposer_name, status)
+              VALUES (?, ?, ?, ?, ?, ?, ?, 'Open')
+            `).run(
+              collabId,
+              `${app.full_name}'s Initiative: ${app.project_idea.slice(0, 45)}...`,
+              app.project_idea,
+              app.department,
+              'Open to cross-faculty collaborators (IT, Agriculture, Business, Health)',
+              app.email,
+              app.full_name
+            );
+          }
+        }
+      }
+    } else if (status === 'Rejected') {
+      db.prepare("UPDATE users SET membership_status = 'REJECTED' WHERE lower(email) = lower(?)").run(app.email);
+    }
+
+    return res.json({ success: true, id, status, message: `Application updated to ${status}` });
   } catch (err) {
     console.error('[Admin] Update app status error:', err);
     return res.status(500).json({ error: 'Failed to update application status' });
+  }
+}
+
+export function updateProposalStatus(req, res) {
+  try {
+    const { id } = req.params;
+    const { status, publishToCoCreator = true } = req.body; // 'Approved', 'Incubating', 'Reviewing', 'Rejected'
+
+    const validStatuses = ['Approved', 'Incubating', 'Reviewing', 'Rejected'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Invalid proposal status.' });
+    }
+
+    const proposal = db.prepare('SELECT * FROM project_proposals WHERE id = ?').get(id);
+    if (!proposal) {
+      return res.status(404).json({ error: 'Proposal not found' });
+    }
+
+    db.prepare('UPDATE project_proposals SET status = ? WHERE id = ?').run(status, id);
+
+    // If approved or incubating, automatically publish to co-creator board so other students can join
+    const collabId = `collab_${proposal.id}`;
+    if ((status === 'Approved' || status === 'Incubating') && publishToCoCreator) {
+      const existing = db.prepare('SELECT id FROM co_creators WHERE id = ?').get(collabId);
+      if (!existing) {
+        db.prepare(`
+          INSERT INTO co_creators (id, title, description, faculty, needed_skills, contact_email, proposer_name, status)
+          VALUES (?, ?, ?, ?, ?, ?, ?, 'Open')
+        `).run(
+          collabId,
+          proposal.title,
+          `${proposal.problem_statement} Solution: ${proposal.proposed_solution || 'Prototyping in Lab 02'}`,
+          proposal.proposer_department || 'Information Technology',
+          proposal.needed_roles || 'Developers, Designers, Domain Researchers',
+          proposal.proposer_email || 'cgc.woliso@ambo.edu.et',
+          proposal.proposer_name
+        );
+      } else {
+        db.prepare("UPDATE co_creators SET status = 'Open' WHERE id = ?").run(collabId);
+      }
+    } else if (status === 'Rejected') {
+      db.prepare("UPDATE co_creators SET status = 'Closed' WHERE id = ?").run(collabId);
+    }
+
+    return res.json({ success: true, id, status, message: `Proposal marked as ${status}` });
+  } catch (err) {
+    console.error('[Admin] Update proposal error:', err);
+    return res.status(500).json({ error: 'Failed to update proposal status' });
   }
 }
 

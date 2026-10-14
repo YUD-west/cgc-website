@@ -19,7 +19,13 @@ import {
   Plus,
   Trash2,
   Printer,
-  Download
+  Download,
+  Lightbulb,
+  Sparkles,
+  Award,
+  UserCheck,
+  ChevronRight,
+  Briefcase
 } from 'lucide-react';
 import { downloadBadgeAsPNG } from '../utils/exportBadge';
 
@@ -28,6 +34,10 @@ export const AdminDashboardPage: React.FC = () => {
   
   const [metrics, setMetrics] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState<'students' | 'applications' | 'qr-studio' | 'proposals' | 'rsvps'>('students');
+  
+  // Custom filter states
+  const [appFilter, setAppFilter] = useState<'ALL' | 'WITH_IDEA' | 'PENDING' | 'APPROVED'>('ALL');
+  const [proposalFilter, setProposalFilter] = useState<'ALL' | 'PENDING' | 'APPROVED' | 'REJECTED'>('ALL');
   
   // Data states
   const [students, setStudents] = useState<any[]>([]);
@@ -199,9 +209,40 @@ export const AdminDashboardPage: React.FC = () => {
         body: JSON.stringify({ status: newStatus })
       });
       if (res.ok) {
-        setActionMessage(`Application ${appId} marked as ${newStatus}.`);
+        setActionMessage(
+          newStatus === 'Approved'
+            ? `Application approved! Official digital member pass & QR code issued.`
+            : newStatus === 'Innovation Lead'
+            ? `Special Approval: Fast-tracked as Innovation Lead! Project idea incubated & open for co-creators.`
+            : `Application marked as ${newStatus}.`
+        );
         fetchAdminData();
-        setTimeout(() => setActionMessage(null), 3000);
+        setTimeout(() => setActionMessage(null), 4000);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleUpdateProposalStatus = async (proposalId: string, newStatus: string) => {
+    if (!token) return;
+    try {
+      const res = await fetch(`/api/admin/proposals/${proposalId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: newStatus, publishToCoCreator: true })
+      });
+      if (res.ok) {
+        setActionMessage(
+          newStatus === 'Approved'
+            ? `Proposal approved! Published to Campus Co-Creator Board so students from all faculties can join the team.`
+            : `Proposal marked as ${newStatus}.`
+        );
+        fetchAdminData();
+        setTimeout(() => setActionMessage(null), 4000);
       }
     } catch (err) {
       console.error(err);
@@ -747,108 +788,421 @@ export const AdminDashboardPage: React.FC = () => {
 
         {/* TAB 2: APPLICATIONS */}
         {activeTab === 'applications' && (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="text-[10px] uppercase text-slate-500 border-b border-slate-800 bg-slate-900/40">
-                <tr>
-                  <th className="py-3 px-3">Date</th>
-                  <th className="py-3 px-3">Student Name</th>
-                  <th className="py-3 px-3">Department & Year</th>
-                  <th className="py-3 px-3">Track & Level</th>
-                  <th className="py-3 px-3">Why Join</th>
-                  <th className="py-3 px-3">Status</th>
-                  <th className="py-3 px-3">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/60">
-                {applications.map((app) => (
-                  <tr key={app.id} className="hover:bg-slate-900/40">
-                    <td className="py-3 px-3 text-slate-400">{app.submitted_at?.slice(0, 10)}</td>
-                    <td className="py-3 px-3">
-                      <div className="text-white font-bold">{app.full_name}</div>
-                      <div className="text-[10px] text-slate-400">{app.email}</div>
-                    </td>
-                    <td className="py-3 px-3">
-                      <div>{app.department}</div>
-                      <div className="text-[10px] text-slate-400">{app.year_of_study}</div>
-                    </td>
-                    <td className="py-3 px-3">
-                      <span className="text-blue-400 font-semibold">{app.primary_track}</span>
-                      <span className="text-[10px] text-slate-400 block">{app.skill_level}</span>
-                    </td>
-                    <td className="py-3 px-3 max-w-xs truncate text-slate-300" title={app.why_join}>
-                      {app.why_join}
-                    </td>
-                    <td className="py-3 px-3">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        app.status === 'Approved'
-                          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                          : app.status === 'Rejected'
-                          ? 'bg-red-500/10 text-red-400 border border-red-500/20'
-                          : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                      }`}>
-                        {app.status}
-                      </span>
-                    </td>
-                    <td className="py-3 px-3">
-                      <div className="flex items-center gap-1.5">
-                        {app.status !== 'Approved' && (
-                          <button
-                            onClick={() => handleUpdateAppStatus(app.id, 'Approved')}
-                            className="p-1 rounded bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white transition-colors"
-                            title="Approve Member"
-                          >
-                            <Check className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                        {app.status !== 'Rejected' && (
-                          <button
-                            onClick={() => handleUpdateAppStatus(app.id, 'Rejected')}
-                            className="p-1 rounded bg-red-600/20 hover:bg-red-600 text-red-300 hover:text-white transition-colors"
-                            title="Reject"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                      </div>
-                    </td>
+          <div className="space-y-4">
+            {/* Filter Pills */}
+            <div className="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-slate-800">
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => setAppFilter('ALL')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                    appFilter === 'ALL'
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'
+                  }`}
+                >
+                  All Applications ({applications.length})
+                </button>
+                <button
+                  onClick={() => setAppFilter('WITH_IDEA')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition ${
+                    appFilter === 'WITH_IDEA'
+                      ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
+                      : 'bg-amber-500/10 text-amber-300 border border-amber-500/20 hover:bg-amber-500/20'
+                  }`}
+                >
+                  <Lightbulb className="w-3.5 h-3.5" />
+                  <span>Has Innovation Idea ({applications.filter((a) => a.project_idea?.trim()).length})</span>
+                </button>
+                <button
+                  onClick={() => setAppFilter('PENDING')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                    appFilter === 'PENDING'
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'
+                  }`}
+                >
+                  ⏳ Needs Review ({applications.filter((a) => a.status === 'Reviewing' || a.status === 'Pending').length})
+                </button>
+                <button
+                  onClick={() => setAppFilter('APPROVED')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                    appFilter === 'APPROVED'
+                      ? 'bg-emerald-600 text-white shadow-sm'
+                      : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'
+                  }`}
+                >
+                  ✓ Approved ({applications.filter((a) => a.status === 'Approved' || a.status === 'Innovation Lead').length})
+                </button>
+              </div>
+
+              <span className="text-[11px] text-slate-400">
+                Ambo University Woliso Campus Cohort Registry
+              </span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs text-slate-300">
+                <thead className="text-[10px] uppercase text-slate-500 border-b border-slate-800 bg-slate-900/40">
+                  <tr>
+                    <th className="py-3 px-3">Date</th>
+                    <th className="py-3 px-3">Student Name</th>
+                    <th className="py-3 px-3">Department & Year</th>
+                    <th className="py-3 px-3">Track & Level</th>
+                    <th className="py-3 px-3">Innovation Vision & Statement</th>
+                    <th className="py-3 px-3">Pass & QR Status</th>
+                    <th className="py-3 px-3">Executive Decision</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-800/60">
+                  {applications
+                    .filter((app) => {
+                      if (appFilter === 'WITH_IDEA') return Boolean(app.project_idea && app.project_idea.trim().length > 3);
+                      if (appFilter === 'PENDING') return app.status === 'Reviewing' || app.status === 'Pending';
+                      if (appFilter === 'APPROVED') return app.status === 'Approved' || app.status === 'Innovation Lead';
+                      return true;
+                    })
+                    .map((app) => {
+                      const hasIdea = Boolean(app.project_idea && app.project_idea.trim().length > 3);
+                      const isApproved = app.status === 'Approved' || app.status === 'Innovation Lead';
+
+                      return (
+                        <tr key={app.id} className="hover:bg-slate-900/40 transition-colors">
+                          <td className="py-3 px-3 text-slate-400 whitespace-nowrap">{app.submitted_at?.slice(0, 10)}</td>
+                          <td className="py-3 px-3">
+                            <div className="text-white font-bold">{app.full_name}</div>
+                            <div className="text-[10px] text-slate-400 font-mono">{app.email}</div>
+                            {app.phone && <div className="text-[10px] text-slate-500">{app.phone}</div>}
+                          </td>
+                          <td className="py-3 px-3">
+                            <div className="text-white font-medium">{app.department}</div>
+                            <div className="text-[10px] text-slate-400">{app.year_of_study}</div>
+                          </td>
+                          <td className="py-3 px-3">
+                            <span className="text-blue-400 font-semibold">{app.primary_track}</span>
+                            <span className="text-[10px] text-slate-400 block">{app.skill_level}</span>
+                          </td>
+                          <td className="py-3 px-3 max-w-md">
+                            {hasIdea ? (
+                              <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs space-y-1 mb-1">
+                                <div className="flex items-center gap-1 text-[10px] font-bold text-amber-400 uppercase tracking-wide">
+                                  <Sparkles className="w-3 h-3" />
+                                  <span>Change-Making Project Idea</span>
+                                </div>
+                                <p className="line-clamp-2 text-slate-200" title={app.project_idea}>
+                                  "{app.project_idea}"
+                                </p>
+                              </div>
+                            ) : null}
+                            <div className="text-slate-300 text-[11px] line-clamp-2" title={app.why_join}>
+                              <span className="text-slate-500 font-semibold">Why: </span>
+                              {app.why_join}
+                            </div>
+                            {app.learning_goals && (
+                              <div className="text-[10px] text-slate-400 line-clamp-1 mt-0.5" title={app.learning_goals}>
+                                <span className="text-slate-500">Goals: </span>
+                                {app.learning_goals}
+                              </div>
+                            )}
+                          </td>
+                          <td className="py-3 px-3 whitespace-nowrap">
+                            <span
+                              className={`px-2.5 py-1 rounded text-[10px] font-bold inline-flex items-center gap-1 ${
+                                app.status === 'Innovation Lead'
+                                  ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                                  : app.status === 'Approved'
+                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                  : app.status === 'Rejected'
+                                  ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                                  : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                              }`}
+                            >
+                              {app.status === 'Innovation Lead' ? (
+                                <>
+                                  <Award className="w-3 h-3" />
+                                  <span>Innovation Lead</span>
+                                </>
+                              ) : isApproved ? (
+                                <>
+                                  <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                                  <span>Approved (QR Pass Active)</span>
+                                </>
+                              ) : app.status === 'Rejected' ? (
+                                <>
+                                  <X className="w-3 h-3 text-rose-400" />
+                                  <span>Rejected</span>
+                                </>
+                              ) : (
+                                <span>⏳ Reviewing</span>
+                              )}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3">
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              {!isApproved ? (
+                                <>
+                                  <button
+                                    onClick={() => handleUpdateAppStatus(app.id, 'Approved')}
+                                    className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-[11px] shadow-sm transition flex items-center gap-1"
+                                    title="Approve Member & Activate Official QR Pass"
+                                  >
+                                    <Check className="w-3.5 h-3.5" />
+                                    <span>Approve Pass</span>
+                                  </button>
+
+                                  {hasIdea && (
+                                    <button
+                                      onClick={() => handleUpdateAppStatus(app.id, 'Innovation Lead')}
+                                      className="px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-[11px] shadow-sm transition flex items-center gap-1"
+                                      title="Designate as Innovation Lead & Incubate Project on Co-Creator Board"
+                                    >
+                                      <Sparkles className="w-3 h-3" />
+                                      <span>Fast-Track Lead</span>
+                                    </button>
+                                  )}
+
+                                  <button
+                                    onClick={() => handleUpdateAppStatus(app.id, 'Rejected')}
+                                    className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/30 text-slate-400 hover:text-rose-400 border border-slate-700/60 transition"
+                                    title="Reject Application"
+                                  >
+                                    <X className="w-3.5 h-3.5" />
+                                  </button>
+                                </>
+                              ) : (
+                                <>
+                                  <button
+                                    onClick={() =>
+                                      handleDownloadStudentBadge({
+                                        id: app.id,
+                                        full_name: app.full_name,
+                                        email: app.email,
+                                        department: app.department,
+                                        year_of_study: app.year_of_study,
+                                        primary_track: app.primary_track,
+                                        role: app.status === 'Innovation Lead' ? 'Innovation Lead' : 'Official Verified Member'
+                                      })
+                                    }
+                                    className="p-1.5 rounded-lg bg-slate-800 hover:bg-emerald-900/30 text-slate-300 hover:text-emerald-400 border border-slate-700/60 transition flex items-center gap-1 text-[11px]"
+                                    title="Download Official ID Badge PNG"
+                                  >
+                                    <Download className="w-3.5 h-3.5 text-emerald-400" />
+                                    <span>Badge</span>
+                                  </button>
+
+                                  <button
+                                    onClick={() => handleUpdateAppStatus(app.id, 'Rejected')}
+                                    className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-rose-900/30 text-slate-400 hover:text-rose-400 text-[10px] border border-slate-700/60 transition"
+                                  >
+                                    Revoke
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
         {/* TAB 3: PROPOSALS */}
         {activeTab === 'proposals' && (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="text-[10px] uppercase text-slate-500 border-b border-slate-800 bg-slate-900/40">
-                <tr>
-                  <th className="py-3 px-3">Date</th>
-                  <th className="py-3 px-3">Project Title</th>
-                  <th className="py-3 px-3">Student Lead</th>
-                  <th className="py-3 px-3">Problem Statement</th>
-                  <th className="py-3 px-3">Needed Roles</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/60">
-                {proposals.map((pr) => (
-                  <tr key={pr.id} className="hover:bg-slate-900/40">
-                    <td className="py-3 px-3 text-slate-400">{pr.submitted_at?.slice(0, 10)}</td>
-                    <td className="py-3 px-3 font-bold text-white">{pr.title}</td>
-                    <td className="py-3 px-3">
-                      <div className="text-white">{pr.proposer_name}</div>
-                      <div className="text-[10px] text-slate-400">{pr.proposer_department}</div>
-                    </td>
-                    <td className="py-3 px-3 max-w-sm truncate text-slate-300" title={pr.problem_statement}>
-                      {pr.problem_statement}
-                    </td>
-                    <td className="py-3 px-3 text-blue-400">{pr.needed_roles}</td>
+          <div className="space-y-4">
+            {/* Header info */}
+            <div className="pb-3 border-b border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-purple-400" />
+                  <span>Student Project Proposals & Innovation Pipeline</span>
+                </h3>
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  Review student initiatives from across Ambo University. Approving a proposal activates it for Lab 02 incubation and immediately publishes open co-creator roles to give other students the chance to join.
+                </p>
+              </div>
+
+              {/* Filter Pills */}
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => setProposalFilter('ALL')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                    proposalFilter === 'ALL'
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'
+                  }`}
+                >
+                  All ({proposals.length})
+                </button>
+                <button
+                  onClick={() => setProposalFilter('PENDING')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                    proposalFilter === 'PENDING'
+                      ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
+                      : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'
+                  }`}
+                >
+                  ⏳ Awaiting Review ({proposals.filter((p) => !p.status || p.status === 'Reviewing' || p.status === 'Incubating').length})
+                </button>
+                <button
+                  onClick={() => setProposalFilter('APPROVED')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                    proposalFilter === 'APPROVED'
+                      ? 'bg-emerald-600 text-white shadow-sm'
+                      : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'
+                  }`}
+                >
+                  ✓ Approved ({proposals.filter((p) => p.status === 'Approved').length})
+                </button>
+                <button
+                  onClick={() => setProposalFilter('REJECTED')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                    proposalFilter === 'REJECTED'
+                      ? 'bg-rose-600 text-white shadow-sm'
+                      : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'
+                  }`}
+                >
+                  ✕ Rejected ({proposals.filter((p) => p.status === 'Rejected').length})
+                </button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs text-slate-300">
+                <thead className="text-[10px] uppercase text-slate-500 border-b border-slate-800 bg-slate-900/40">
+                  <tr>
+                    <th className="py-3 px-3">Date</th>
+                    <th className="py-3 px-3">Project Title</th>
+                    <th className="py-3 px-3">Student Proposer</th>
+                    <th className="py-3 px-3">Problem Statement & Proposed Solution</th>
+                    <th className="py-3 px-3">Co-Creator Roles Needed</th>
+                    <th className="py-3 px-3">Status</th>
+                    <th className="py-3 px-3">Executive Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-800/60">
+                  {proposals
+                    .filter((pr) => {
+                      if (proposalFilter === 'PENDING') return !pr.status || pr.status === 'Reviewing' || pr.status === 'Incubating';
+                      if (proposalFilter === 'APPROVED') return pr.status === 'Approved';
+                      if (proposalFilter === 'REJECTED') return pr.status === 'Rejected';
+                      return true;
+                    })
+                    .map((pr) => {
+                      const isApproved = pr.status === 'Approved';
+                      const isRejected = pr.status === 'Rejected';
+                      const rolesList = (pr.needed_roles || 'Developers, Designers').split(',').map((r: string) => r.trim()).filter(Boolean);
+
+                      return (
+                        <tr key={pr.id} className="hover:bg-slate-900/40 transition-colors">
+                          <td className="py-3 px-3 text-slate-400 whitespace-nowrap">{pr.submitted_at?.slice(0, 10)}</td>
+                          <td className="py-3 px-3">
+                            <div className="font-bold text-white text-sm">{pr.title}</div>
+                            <span className="text-[10px] text-blue-400 font-mono">{pr.id}</span>
+                          </td>
+                          <td className="py-3 px-3">
+                            <div className="text-white font-semibold">{pr.proposer_name}</div>
+                            <div className="text-[10px] text-slate-400">{pr.proposer_department}</div>
+                            {pr.proposer_email && (
+                              <div className="text-[10px] text-slate-500 font-mono">{pr.proposer_email}</div>
+                            )}
+                          </td>
+                          <td className="py-3 px-3 max-w-sm">
+                            <div className="text-slate-200 text-xs line-clamp-2" title={pr.problem_statement}>
+                              <strong className="text-slate-400">Problem: </strong>{pr.problem_statement}
+                            </div>
+                            {pr.proposed_solution && (
+                              <div className="text-emerald-300 text-[11px] line-clamp-2 mt-1 bg-emerald-950/20 p-1.5 rounded-lg border border-emerald-500/20" title={pr.proposed_solution}>
+                                <strong>Solution: </strong>{pr.proposed_solution}
+                              </div>
+                            )}
+                          </td>
+                          <td className="py-3 px-3">
+                            <div className="flex flex-wrap gap-1 max-w-xs">
+                              {rolesList.map((role: string, idx: number) => (
+                                <span
+                                  key={idx}
+                                  className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-blue-500/10 text-blue-300 border border-blue-500/20"
+                                >
+                                  {role}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td className="py-3 px-3 whitespace-nowrap">
+                            <span
+                              className={`px-2.5 py-1 rounded text-[10px] font-bold inline-flex items-center gap-1 ${
+                                isApproved
+                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                  : isRejected
+                                  ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                                  : 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
+                              }`}
+                            >
+                              {isApproved ? (
+                                <>
+                                  <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                                  <span>Approved & Recruiting</span>
+                                </>
+                              ) : isRejected ? (
+                                <>
+                                  <X className="w-3 h-3 text-rose-400" />
+                                  <span>Rejected</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Sparkles className="w-3 h-3 text-cyan-400" />
+                                  <span>Incubating in Lab 02</span>
+                                </>
+                              )}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3">
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              {!isApproved ? (
+                                <button
+                                  onClick={() => handleUpdateProposalStatus(pr.id, 'Approved')}
+                                  className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-[11px] shadow-sm transition flex items-center gap-1 whitespace-nowrap"
+                                  title="Approve Proposal & Automatically Publish Open Co-Creator Call so other students can join"
+                                >
+                                  <Check className="w-3.5 h-3.5" />
+                                  <span>Approve & Open Team Board</span>
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleUpdateProposalStatus(pr.id, 'Incubating')}
+                                  className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] border border-slate-700 transition"
+                                  title="Keep Incubating"
+                                >
+                                  Keep Incubating
+                                </button>
+                              )}
+
+                              {!isRejected ? (
+                                <button
+                                  onClick={() => handleUpdateProposalStatus(pr.id, 'Rejected')}
+                                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/30 text-slate-400 hover:text-rose-400 border border-slate-700/60 transition"
+                                  title="Reject Proposal"
+                                >
+                                  <X className="w-3.5 h-3.5" />
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleUpdateProposalStatus(pr.id, 'Approved')}
+                                  className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-emerald-900/30 text-slate-300 hover:text-emerald-400 text-[10px] border border-slate-700 transition"
+                                >
+                                  Re-Approve
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 

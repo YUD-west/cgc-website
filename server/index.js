@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'node:path';
+import fs from 'node:fs';
 import { db, seedDatabase } from './db.js';
 import { authenticateUser, requireAdmin, validateBody } from './middleware/auth.js';
 import { register, login, getMe, registerSchema, loginSchema } from './controllers/authController.js';
@@ -10,6 +12,7 @@ import {
   getMemberApplications, 
   updateApplicationStatus, 
   getProposals, 
+  updateProposalStatus,
   getRsvps 
 } from './controllers/adminController.js';
 
@@ -336,6 +339,7 @@ app.get('/api/admin/students', authenticateUser, requireAdmin, getAllStudents);
 app.get('/api/admin/applications', authenticateUser, requireAdmin, getMemberApplications);
 app.patch('/api/admin/applications/:id', authenticateUser, requireAdmin, updateApplicationStatus);
 app.get('/api/admin/proposals', authenticateUser, requireAdmin, getProposals);
+app.patch('/api/admin/proposals/:id', authenticateUser, requireAdmin, updateProposalStatus);
 app.get('/api/admin/rsvps', authenticateUser, requireAdmin, getRsvps);
 
 // Admin Flexible Event Tickets
@@ -386,6 +390,18 @@ app.patch('/api/admin/users/:id/membership', authenticateUser, requireAdmin, (re
     res.status(500).json({ error: 'Failed to update user membership' });
   }
 });
+
+// ---------------- PRODUCTION CLIENT SERVING (SPA FALLBACK) ----------------
+const distPath = path.resolve(process.cwd(), 'dist');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.use((req, res, next) => {
+    if (req.method === 'GET' && !req.path.startsWith('/api')) {
+      return res.sendFile(path.join(distPath, 'index.html'));
+    }
+    next();
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`=======================================================`);
