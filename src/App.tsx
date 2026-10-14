@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+import { MobileNavDock } from './components/MobileNavDock';
 import { HomePage } from './pages/HomePage';
 import { AboutPage } from './pages/AboutPage';
 import { ExplorePage } from './pages/ExplorePage';
@@ -211,6 +212,13 @@ const AppContent: React.FC = () => {
       <Footer
         setActiveTab={handleNavigate}
         openBrandModal={() => setIsBrandModalOpen(true)}
+      />
+
+      {/* Floating Mobile Navigation Dock */}
+      <MobileNavDock
+        activeTab={activeTab}
+        setActiveTab={handleNavigate}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
       />
 
       {/* Modals & Dialogs */}

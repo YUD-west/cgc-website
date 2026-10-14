@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { CGCLogo } from '../components/Logo/CGCLogo';
 import { ProjectCard } from '../components/ProjectCard';
 import { EventCard } from '../components/EventCard';
+import { LiveActivityBar } from '../components/LiveActivityBar';
+import { InteractivePathway } from '../components/InteractivePathway';
+import { PassPreviewWidget } from '../components/PassPreviewWidget';
 import { INITIAL_PROJECTS } from '../data/projects';
 import { EVENTS } from '../data/events';
 import { CAMPUS_EVENT_PHOTOS, CampusEventPhoto } from '../data/team';
@@ -19,7 +22,8 @@ import {
   ChevronRight,
   ShieldCheck,
   Terminal,
-  Cpu
+  Cpu,
+  Sparkles
 } from 'lucide-react';
 
 interface HomePageProps {
@@ -45,42 +49,49 @@ export const HomePage: React.FC<HomePageProps> = ({
   const academicStreams = [
     {
       title: 'Informatics & IT',
-      subheading: 'Web engineering, network defense & AI models',
+      subheading: 'Web systems, network defense, Linux & AI models',
       icon: Code2,
       accent: 'text-blue-400',
     },
     {
       title: 'Agriculture & Sciences',
-      subheading: 'Crop disease diagnostics, telemetry & weather data',
+      subheading: 'Crop diagnostics, field data, soil telemetry & weather',
       icon: Sprout,
       accent: 'text-emerald-400',
     },
     {
       title: 'Business & Economics',
-      subheading: 'Product validation, startup models & market research',
+      subheading: 'Startup models, product validation & market testing',
       icon: Briefcase,
       accent: 'text-amber-400',
     },
     {
       title: 'Health & Social Sciences',
-      subheading: 'Community healthcare tools & local digital adoption',
+      subheading: 'Community healthcare tools & regional accessibility',
       icon: HeartHandshake,
       accent: 'text-rose-400',
     }
   ];
 
   return (
-    <div className="space-y-16 sm:space-y-20 pb-20">
+    <div className="space-y-14 sm:space-y-20 pb-28 sm:pb-20">
       
+      {/* 
+        =======================================================
+        0. LIVE CAMPUS STATUS TICKER BAR
+        =======================================================
+      */}
+      <LiveActivityBar />
+
       {/* 
         =======================================================
         1. HERO SECTION: DIRECT HEADING, NO EYEBROW BADGE
         =======================================================
       */}
-      <section className="relative pt-12 sm:pt-16 pb-12 overflow-hidden flex items-center border-b border-slate-800/80">
+      <section className="relative pt-6 sm:pt-12 pb-12 overflow-hidden flex items-center border-b border-slate-800/80">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center">
           
-          {/* Main Direct Heading — Nothing written above it */}
+          {/* Main Direct Heading — Clean & Confident */}
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.08]">
             Ideas into <span className="text-blue-500">Impact.</span>
           </h1>
@@ -91,14 +102,14 @@ export const HomePage: React.FC<HomePageProps> = ({
           </p>
 
           <p className="mt-4 text-xs sm:text-base text-slate-300 leading-relaxed max-w-2xl mx-auto font-normal">
-            A student-led community connecting computing, agriculture, business, and health sciences to build practical software, defend networks, and solve regional challenges.
+            A student-led community uniting computing, agriculture, business, and health sciences to build real software, defend campus networks, and solve regional challenges.
           </p>
 
-          {/* Calls to Action */}
+          {/* Calls to Action with Motion Spring Effect */}
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               onClick={() => onNavigate('join')}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 active:scale-95"
             >
               <span>Join the Community</span>
               <ArrowRight className="w-4 h-4" />
@@ -106,7 +117,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
             <button
               onClick={() => onNavigate('projects')}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-semibold text-xs sm:text-sm border border-slate-700 transition-colors flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-semibold text-xs sm:text-sm border border-slate-700 transition-colors flex items-center justify-center gap-2 active:scale-95"
             >
               <span>Explore Student Projects</span>
               <ChevronRight className="w-4 h-4 text-slate-400" />
@@ -115,21 +126,21 @@ export const HomePage: React.FC<HomePageProps> = ({
 
           {/* Small Compact Stats Bar */}
           <div className="mt-12 pt-6 border-t border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
-            <div className="p-3 rounded-xl bg-[#0F172A] border border-slate-800">
+            <div className="p-3.5 rounded-2xl bg-[#0F172A] border border-slate-800 hover:border-slate-700 transition-colors">
               <div className="text-sm sm:text-base font-bold text-white">4 Disciplines</div>
               <div className="text-[11px] text-slate-400 mt-0.5">IT, Agri, Biz, Health</div>
             </div>
-            <div className="p-3 rounded-xl bg-[#0F172A] border border-slate-800">
+            <div className="p-3.5 rounded-2xl bg-[#0F172A] border border-slate-800 hover:border-slate-700 transition-colors">
               <div className="text-sm sm:text-base font-bold text-blue-400">Computer Lab 02</div>
-              <div className="text-[11px] text-slate-400 mt-0.5">Practical terminal labs</div>
+              <div className="text-[11px] text-slate-400 mt-0.5">Terminal workstations</div>
             </div>
-            <div className="p-3 rounded-xl bg-[#0F172A] border border-slate-800">
+            <div className="p-3.5 rounded-2xl bg-[#0F172A] border border-slate-800 hover:border-slate-700 transition-colors">
               <div className="text-sm sm:text-base font-bold text-emerald-400">100% Free</div>
               <div className="text-[11px] text-slate-400 mt-0.5">Open university club</div>
             </div>
-            <div className="p-3 rounded-xl bg-[#0F172A] border border-slate-800">
+            <div className="p-3.5 rounded-2xl bg-[#0F172A] border border-slate-800 hover:border-slate-700 transition-colors">
               <div className="text-sm sm:text-base font-bold text-white">Student-Led</div>
-              <div className="text-[11px] text-slate-400 mt-0.5">Peer learning & mentors</div>
+              <div className="text-[11px] text-slate-400 mt-0.5">Peer mentorship</div>
             </div>
           </div>
 
@@ -138,11 +149,20 @@ export const HomePage: React.FC<HomePageProps> = ({
 
       {/* 
         =======================================================
-        2. ACADEMIC DISCIPLINES: NO BADGE ABOVE HEADING
+        2. INTERACTIVE "CHOOSE YOUR PATH" MOTION MATRIX (NEW)
         =======================================================
       */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
+        <InteractivePathway onNavigate={onNavigate} />
+      </section>
+
+      {/* 
+        =======================================================
+        3. ACADEMIC DISCIPLINES: NO BADGE ABOVE HEADING
+        =======================================================
+      */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-6">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Academic Disciplines
           </h2>
@@ -158,7 +178,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             return (
               <div
                 key={idx}
-                className="p-4 sm:p-5 rounded-2xl bg-[#0F172A] border border-slate-800 hover:border-slate-700 transition-all flex flex-col justify-between"
+                className="p-4 sm:p-5 rounded-2xl bg-[#0F172A] border border-slate-800 hover:border-slate-700 hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between shadow-sm"
               >
                 <div>
                   <div className={`w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center mb-3 ${stream.accent}`}>
@@ -175,7 +195,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
       {/* 
         =======================================================
-        3. REAL CAMPUS GALLERY: NO BADGE ABOVE HEADING
+        4. REAL CAMPUS GALLERY: NO BADGE ABOVE HEADING
         =======================================================
       */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -204,7 +224,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div
               key={photo.id}
               onClick={() => setSelectedPhoto(photo)}
-              className="group relative rounded-2xl overflow-hidden border border-slate-800 bg-[#0F172A] cursor-pointer hover:border-slate-700 transition-all"
+              className="group relative rounded-2xl overflow-hidden border border-slate-800 bg-[#0F172A] cursor-pointer hover:border-slate-700 hover:-translate-y-0.5 transition-all duration-200 shadow-sm"
             >
               <div className="aspect-[4/3] overflow-hidden bg-slate-900">
                 <img
@@ -231,7 +251,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
       {/* 
         =======================================================
-        4. FEATURED PROJECTS: NO BADGE ABOVE HEADING
+        5. FEATURED PROJECTS: NO BADGE ABOVE HEADING
         =======================================================
       */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -248,7 +268,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="flex items-center gap-2 self-start sm:self-auto">
             <button
               onClick={onProposeProject}
-              className="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-colors"
+              className="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-colors active:scale-95"
             >
               + Propose a Project
             </button>
@@ -276,7 +296,16 @@ export const HomePage: React.FC<HomePageProps> = ({
 
       {/* 
         =======================================================
-        5. UPCOMING WORKSHOPS: NO BADGE ABOVE HEADING
+        6. INTERACTIVE MEMBER PASS SIMULATOR (NEW FEATURE)
+        =======================================================
+      */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <PassPreviewWidget onNavigate={onNavigate} />
+      </section>
+
+      {/* 
+        =======================================================
+        7. UPCOMING WORKSHOPS: NO BADGE ABOVE HEADING
         =======================================================
       */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -313,7 +342,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
       {/* 
         =======================================================
-        6. COMPACT WELCOME ACTION
+        8. COMPACT WELCOME ACTION
         =======================================================
       */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -327,14 +356,14 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               onClick={() => onNavigate('join')}
-              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 active:scale-95 shadow-md"
             >
               <span>Join CGC (Free Registration)</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => onNavigate('about')}
-              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs sm:text-sm font-semibold border border-slate-700 transition-colors"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs sm:text-sm font-semibold border border-slate-700 transition-colors active:scale-95"
             >
               About Leadership
             </button>
