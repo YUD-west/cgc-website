@@ -20,7 +20,7 @@ export const TRACKS: Track[] = [
     ],
     keyTools: ['Wireshark', 'Burp Suite', 'Nmap', 'Linux/Kali', 'Ghidra', 'Metasploit', 'OpenSSL'],
     practicalFocus: 'Audit student lab networks, configure open-source firewalls, run Woliso CTF competitions, and educate campus users against phishing and scams.',
-    sampleInitiatives: [
+    coreInitiatives: [
       'Woliso Campus Security Awareness Clinic',
       'Bi-weekly Hands-on CTF Challenges',
       'Open-source Phishing Simulation & Defense Toolkit'
@@ -44,7 +44,7 @@ export const TRACKS: Track[] = [
     ],
     keyTools: ['Python', 'C++', 'Java', 'Git / GitHub', 'LeetCode / Codeforces', 'Linux CLI'],
     practicalFocus: 'Weekly algorithmic sprints, pair-programming workshops, and preparing students for national and international coding contests.',
-    sampleInitiatives: [
+    coreInitiatives: [
       'CGC Algorithm League (Weekly Coding Sprints)',
       'Beginner-to-Intermediate Data Structures Cohort',
       'Peer Code Review & Technical Interview Prep'
@@ -69,7 +69,7 @@ export const TRACKS: Track[] = [
     ],
     keyTools: ['Python', 'PyTorch', 'Scikit-Learn', 'Pandas & NumPy', 'Hugging Face', 'Jupyter'],
     practicalFocus: 'Build lightweight models solving regional problems like crop pest identification, campus schedule automation, and bilingual text classification.',
-    sampleInitiatives: [
+    coreInitiatives: [
       'Local Crop Health Vision Model',
       'Afan Oromo / Amharic Sentiment & FAQ Classifier',
       'AI Study Circles & Paper Reading Groups'
@@ -94,7 +94,7 @@ export const TRACKS: Track[] = [
     ],
     keyTools: ['React / TypeScript', 'Node.js', 'PostgreSQL', 'Tailwind CSS', 'Docker', 'Figma'],
     practicalFocus: 'Develop and maintain live digital platforms for Woliso Campus students, student unions, and community service projects.',
-    sampleInitiatives: [
+    coreInitiatives: [
       'Woliso Campus Student Hub & Resource Portal',
       'CGC Open Registry & Project Collab Platform',
       'Campus Lost & Found Verified System'
@@ -119,7 +119,7 @@ export const TRACKS: Track[] = [
     ],
     keyTools: ['Notion', 'Figma', 'Pitch Deck Canvas', 'Analytics Tools', 'Stripe/Telebirr APIs'],
     practicalFocus: 'Connecting IT and informatics students with business, agriculture, and social science students to turn final-year projects and club prototypes into real startups.',
-    sampleInitiatives: [
+    coreInitiatives: [
       'Annual CGC Innovation Demo Day',
       'Inter-Departmental Startup Ideation Mixer',
       'Pitch Practice & Seed Grant Mentorship'

@@ -164,49 +164,38 @@ export function seedDatabase() {
     console.log('[DB] Seeded initial event tickets.');
   }
 
-  // Seed sample co-creator posts if empty
+  // Seed authentic CGC co-creator posts if empty
   const count = db.prepare('SELECT count(*) as count FROM co_creators').get()?.count || 0;
   if (count === 0) {
     const seedPosts = [
       {
-        id: 'team_01',
-        title: 'Teff Rust & Crop Disease Detection Mobile Scanner',
-        description: 'We have collected 800+ field photographs of teff blight from Woliso agricultural test fields. We need 1 IT/CS student to build a mobile interface with TensorFlow Lite.',
-        faculty: 'Agriculture',
-        needed_skills: 'Mobile Dev (Flutter or React Native), Machine Learning',
-        contact_telegram: '@TeffAI_Lead',
-        contact_email: 'chala.kebede@ambou.edu.et',
-        proposer_name: 'Chala Kebede (3rd Year Agri-Economics)',
-        status: 'Open'
-      },
-      {
-        id: 'team_02',
-        title: 'Woliso Campus Peer Bookstore & Shared Equipment Marketplace',
-        description: 'Students struggle to find textbooks, lab coats, and calculator rentals. I have mapped the supply chain and pricing structure; seeking a frontend web developer to launch the MVP.',
-        faculty: 'Business & Economics',
-        needed_skills: 'React / Next.js, UI/UX Design, Telegram Bot',
-        contact_telegram: '@Hana_BizDev',
-        contact_email: 'hana.alemu@ambou.edu.et',
-        proposer_name: 'Hana Alemu (2nd Year Management)',
-        status: 'Open'
-      },
-      {
-        id: 'team_03',
-        title: 'Campus Micro-Weather & Soil Moisture IoT Node',
-        description: 'Building low-cost solar-powered ESP32 sensor nodes to measure soil moisture and humidity across university demonstration plots. Need 1 backend engineer to build an ingestion API.',
-        faculty: 'Natural Sciences',
-        needed_skills: 'Node.js / Express, SQLite / PostgreSQL, Data Visualization',
-        contact_telegram: '@Tolasa_IoT',
-        contact_email: 'tolasa.d@ambou.edu.et',
-        proposer_name: 'Tolasa Desta (Applied Physics)',
-        status: 'Open'
-      },
-      {
-        id: 'team_04',
-        title: 'University Anonymous Campus Mental Health & Peer Support Bot',
-        description: 'Designing a private, encrypted Telegram bot for students to connect anonymously with peer counselors and study support volunteers during exam season.',
+        id: 'collab_01',
+        title: 'CGC Official Portal & Cross-Faculty Feature Squad',
+        description: 'Expanding the official CGC platform with toolkits for agriculture, business, and health student innovators. Seeking frontend contributors, UI designers, and student department coordinators.',
         faculty: 'Computer Science & IT',
-        needed_skills: 'Python Telegram Bot, Confidential Data Handling, Psychology Advisor',
+        needed_skills: 'React, TypeScript, Tailwind CSS, UI/UX Design, Student Outreach',
+        contact_telegram: '@SatoshiFlash',
+        contact_email: 'yesufdergu464@gmail.com',
+        proposer_name: 'Yesuf Dergu (Lead Admin)',
+        status: 'Open'
+      },
+      {
+        id: 'collab_02',
+        title: 'Woliso Campus AI & Cross-Disciplinary Machine Learning Cohort',
+        description: 'Forming a collaborative cohort of computing, agriculture, and business students to practice practical Python automation, local data curation, and regional challenge resolution.',
+        faculty: 'Agriculture',
+        needed_skills: 'Python, Machine Learning, Data Collection, Field Problem Solving',
+        contact_telegram: '@ame_kt',
+        contact_email: 'yesufdergu464@gmail.com',
+        proposer_name: 'Ameyu Kaba (Co-Admin)',
+        status: 'Open'
+      },
+      {
+        id: 'collab_03',
+        title: 'Computer Lab 02 Cybersecurity Defense & Packet Inspection Group',
+        description: 'Hands-on peer group setting up Wireshark packet analysis, Linux terminal hardening, and capture-the-flag (CTF) defense drills in Computer Lab 02. Beginners welcome!',
+        faculty: 'Computer Science & IT',
+        needed_skills: 'Linux CLI, Wireshark, Basic Networking, Curiosity',
         contact_telegram: '@SatoshiFlash',
         contact_email: 'yesufdergu464@gmail.com',
         proposer_name: 'Yesuf Dergu (Lead Admin)',
@@ -222,20 +211,20 @@ export function seedDatabase() {
     for (const post of seedPosts) {
       stmt.run(post.id, post.title, post.description, post.faculty, post.needed_skills, post.contact_telegram, post.contact_email, post.proposer_name, post.status);
     }
-    console.log('[DB] Seeded 4 cross-faculty co-creator collaboration posts.');
+    console.log('[DB] Seeded real CGC co-creator collaboration posts.');
   }
 
-  // Seed sample campus projects if empty
+  // Seed authentic campus projects if empty
   const projectCount = db.prepare('SELECT count(*) as count FROM campus_projects').get()?.count || 0;
   if (projectCount === 0) {
     db.prepare(`
       INSERT INTO campus_projects (id, title, description, category, proposer_name, proposer_faculty, target_level, needed_roles, status, impact_goal)
       VALUES 
-      ('PRJ-AGRI-01', 'Woliso Local Harvest & Market Price Link', 'A mobile and SMS bulletin connecting local farmers around Woliso with direct buyers, reducing middleman price inflation.', 'Agriculture & Sciences', 'Bonsa Tadesse', 'Faculty of Agriculture', 'Beginners Welcome', 'Field Researchers, Business Strategist, Mobile Developer, Beginners', 'Active', 'Empowering 500+ Woliso farmers with daily commodity prices'),
-      ('PRJ-BIZ-02', 'Ambo Campus Textbook & Equipment Exchange', 'Peer-to-peer student marketplace to rent, borrow, and exchange university textbooks and lab tools safely on campus.', 'Business & Entrepreneurship', 'Hawi Bekele', 'Business & Economics', 'Beginners Welcome', 'Marketing Lead, Logistics Coordinator, Web Developer', 'Active', 'Saving students 40% on semester course materials'),
-      ('PRJ-HLTH-03', 'Woliso Blood Emergency Donor Matching System', 'Quick SMS & Web dispatch tool notifying verified student donors during critical blood shortages at Woliso General Hospital.', 'Health & Community', 'Dr. Rahel Assefa', 'Health & Social Sciences', 'All Levels Welcome', 'Healthcare Coordinator, Backend Developer, UI Designer', 'Open for Contributors', 'Zero delay emergency blood matching for local clinics'),
-      ('PRJ-TECH-04', 'CGC Lab 02 Physical Clearance & Network Fortress', 'IoT automated door clearance and ethical firewall system securing student workstations in Computer Lab 02.', 'Cybersecurity & Systems', 'Yesuf Dergu', 'Information Technology', 'Intermediate / Advanced', 'Network Engineer, Hardware IoT Tinkerer, Linux Sysadmin', 'Active', 'Automated entry and 24/7 security monitoring for student teams')
+      ('PRJ-CGC-01', 'CGC Official Portal & Digital Member Pass', 'Official web platform, scannable QR verification pass, and cross-department collaboration engine for Ambo University Woliso Campus.', 'Software & Web', 'Yesuf Dergu', 'Information Technology', 'All Levels Welcome', 'Frontend UI Developer, Documentation & Community Liaison, Testing & QA Contributor', 'Active', 'Provide 500+ Ambo University Woliso Campus students with verified membership passes, project collaboration, and peer tech mentorship.'),
+      ('PRJ-HACK-02', 'Ambo University Cursor Hackathon Platform', 'Competitive hackathon innovation prototype demonstrated before university faculty and technical examiners at Ambo University. Engineered to solve student workflow and academic coordination needs.', 'Software & Web', 'Yesuf Dergu & Ameyu Kaba', 'Information Technology', 'All Levels Welcome', 'Full-Stack Developer, UI/UX Designer, Technical Pitch Lead', 'Active', 'Showcase Ambo University Woliso student engineering excellence to faculty examiners and national technology competitions.'),
+      ('PRJ-LAB-03', 'Computer Lab 02 Network Defense & Ethical Telemetry', 'A student-led network security lab initiative in Computer Lab 02. Students practice live packet inspection, isolate rogue ARP traffic, test ethical firewall configurations, and conduct capture-the-flag (CTF) defense drills on campus machines.', 'Cybersecurity & Systems', 'Yesuf Dergu', 'Information Technology (Cybersecurity SIG)', 'All Levels Welcome', 'Network Security Learner, Linux Terminal Administrator, CTF Challenge Author', 'Active', 'Turn Computer Lab 02 into a secure, practical defensive computing and packet-analysis workshop for student cyber teams.'),
+      ('PRJ-AI-04', 'Woliso Campus AI & Practical Computing Cohort', 'An open technical cohort co-led by IT students to train peers across Agriculture, Business, and Natural Sciences on Python automation, data analysis, and applied AI tools for local challenges in South West Shewa zone.', 'Artificial Intelligence & Data', 'Ameyu Kaba', 'Informatics & Computer Science', 'Beginners Welcome', 'Python Beginners, Agricultural Data Collector, Community Coordinator', 'Active', 'Empower non-technical and beginner students with actionable AI and data automation skills for academic research and local problem-solving.')
     `).run();
-    console.log('[DB] Seeded 4 initial dynamic campus projects.');
+    console.log('[DB] Seeded authentic CGC campus projects.');
   }
 }

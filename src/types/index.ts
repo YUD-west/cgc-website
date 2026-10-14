@@ -16,7 +16,7 @@ export interface Track {
   topics: string[];
   keyTools: string[];
   practicalFocus: string;
-  sampleInitiatives: string[];
+  coreInitiatives: string[];
 }
 
 export type ProjectStatus = 'Active' | 'Open for Contributors' | 'Incubating' | 'Completed';

@@ -155,11 +155,11 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
                 </p>
               </div>
 
-              {/* Sample Initiatives */}
+              {/* Core Cohort Initiatives */}
               <div>
                 <h3 className="text-sm font-bold text-white mb-3">Core Cohort Initiatives</h3>
                 <div className="space-y-2">
-                  {selectedTrack.sampleInitiatives.map((init, idx) => (
+                  {(selectedTrack.coreInitiatives || []).map((init, idx) => (
                     <div
                       key={idx}
                       className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs text-slate-200"

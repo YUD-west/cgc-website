@@ -310,11 +310,11 @@ app.get('/api/verify-pass/:passId', (req, res) => {
 app.get('/api/co-creators', (req, res) => {
   try {
     const { faculty } = req.query;
-    let query = 'SELECT * FROM co_creators';
+    let query = "SELECT * FROM co_creators WHERE status != 'Closed'";
     const params = [];
 
     if (faculty && faculty !== 'All') {
-      query += ' WHERE faculty = ?';
+      query += ' AND faculty = ?';
       params.push(faculty);
     }
     query += ' ORDER BY created_at DESC';
