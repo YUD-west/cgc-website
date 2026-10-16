@@ -154,7 +154,19 @@ export function getMe(req, res) {
 
     return res.json({
       user: {
-        ...user,
+        id: user.id,
+        email: user.email,
+        fullName: user.full_name || '',
+        full_name: user.full_name || '',
+        role: user.role,
+        department: user.department || 'Informatics & IT',
+        yearOfStudy: user.year_of_study || '2nd Year',
+        year_of_study: user.year_of_study || '2nd Year',
+        phone: user.phone || null,
+        telegram: user.telegram || null,
+        memberRole: user.member_role || 'Technical Builder',
+        experienceLevel: user.experience_level || 'Beginner',
+        primaryTrack: user.primary_track || 'cybersecurity',
         isApprovedMember: isApproved
       },
       membership

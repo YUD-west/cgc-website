@@ -129,11 +129,11 @@ try { db.exec("ALTER TABLE project_proposals ADD COLUMN category TEXT DEFAULT 'C
 
 // Seed Lead Admin & Sample Co-Creator Opportunities
 export function seedDatabase() {
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'admin123', salt);
   const adminUser = db.prepare('SELECT * FROM users WHERE email = ?').get('yesufdergu464@gmail.com');
-  if (!adminUser) {
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync('admin123', salt);
 
+  if (!adminUser) {
     db.prepare(`
       INSERT INTO users (id, email, password_hash, full_name, role, department, phone, telegram, primary_track, membership_status)
       VALUES (?, ?, ?, ?, 'ADMIN', ?, ?, ?, 'cybersecurity', 'APPROVED')
@@ -148,7 +148,8 @@ export function seedDatabase() {
     );
     console.log('[DB] Seeded Lead Admin Yesuf Dergu (yesufdergu464@gmail.com).');
   } else {
-    db.prepare("UPDATE users SET membership_status = 'APPROVED' WHERE email = 'yesufdergu464@gmail.com'").run();
+    db.prepare("UPDATE users SET password_hash = ?, role = 'ADMIN', membership_status = 'APPROVED' WHERE email = 'yesufdergu464@gmail.com'").run(hash);
+    console.log('[DB] Updated and verified Lead Admin credentials (yesufdergu464@gmail.com).');
   }
 
   // Seed sample event tickets if empty

@@ -32,7 +32,7 @@ export function getAllStudents(req, res) {
   try {
     const { query, limit = 50 } = req.query;
 
-    let sql = 'SELECT id, email, full_name, role, department, year_of_study, telegram, phone, primary_track, created_at FROM users WHERE role = "USER"';
+    let sql = "SELECT id, email, full_name, role, department, year_of_study, telegram, phone, primary_track, created_at FROM users WHERE role = 'USER'";
     const params = [];
 
     if (query) {
