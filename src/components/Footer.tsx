@@ -15,6 +15,8 @@ import {
   Check
 } from 'lucide-react';
 import { LEAD_ADMIN, CO_ADMIN, OFFICIAL_COMMUNITY } from '../data/team';
+import { TiltCard } from './Motion/TiltCard';
+import { MagneticButton } from './Motion/MagneticButton';
 
 interface FooterProps {
   setActiveTab: (tab: string) => void;
@@ -58,18 +60,22 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, openBrandModal }) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Sleek Bottom Download App Banner */}
-        <div className="mb-12 p-6 sm:p-8 rounded-2xl bg-[#0F172A] border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+        <TiltCard
+          maxTilt={3}
+          scale={1.01}
+          className="mb-12 p-6 sm:p-8 rounded-3xl bg-[#0D1527]/95 border border-slate-700/70 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl"
+        >
           <div className="space-y-1.5 text-center md:text-left">
             <h3 className="text-base sm:text-lg font-bold text-white flex items-center justify-center md:justify-start gap-2">
               <Smartphone className="w-5 h-5 text-blue-400" />
               <span>Install CGC App on Your Device</span>
             </h3>
-            <p className="text-xs sm:text-sm text-slate-400 max-w-xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-300 max-w-xl leading-relaxed">
               Fast, offline-ready progressive web app. Access your official member pass, campus event tickets, and team co-creator board directly from your home screen.
             </p>
           </div>
 
-          <button
+          <MagneticButton
             onClick={handleInstallClick}
             className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs sm:text-sm transition-all shadow-md flex items-center gap-2 shrink-0 active:scale-95"
           >
@@ -84,8 +90,8 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, openBrandModal }) 
                 <span>Download / Install App</span>
               </>
             )}
-          </button>
-        </div>
+          </MagneticButton>
+        </TiltCard>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 pb-12 border-b border-slate-800/80">
           

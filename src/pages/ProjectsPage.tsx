@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { ProjectCard } from '../components/ProjectCard';
 import { INITIAL_PROJECTS } from '../data/projects';
 import { Project, TrackId } from '../types';
+import { MagneticButton } from '../components/Motion/MagneticButton';
+import { RevealOnScroll } from '../components/Motion/RevealOnScroll';
 import { 
   Search, 
   Plus, 
@@ -115,7 +117,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
   ];
 
   return (
-    <div className="space-y-10 pb-20 pt-10 sm:pt-14">
+    <div className="space-y-10 pb-24 pt-10 sm:pt-14">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Clean Header & Actions */}
@@ -124,25 +126,25 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
               Campus Innovation Projects
             </h1>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
               Student-engineered software, network tools, and cross-faculty initiatives. Open for all departments and skill levels.
             </p>
           </div>
 
-          <button
+          <MagneticButton
             onClick={onProposeProject}
-            className="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs sm:text-sm shadow-md transition-all flex items-center gap-2 w-fit shrink-0"
+            className="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs sm:text-sm shadow-md transition-all flex items-center gap-2 w-fit shrink-0 active:scale-95"
           >
             <Plus className="w-4 h-4" />
             <span>Propose a Project Idea</span>
-          </button>
+          </MagneticButton>
         </div>
 
         {/* Dual Tab Switcher: Projects vs Co-Creators */}
-        <div className="flex items-center gap-2 my-6 bg-[#111A2E] p-1.5 rounded-2xl border border-slate-800 w-fit">
+        <div className="flex items-center gap-2 my-6 bg-[#0D1527]/90 p-1.5 rounded-2xl border border-slate-800 w-fit">
           <button
             onClick={() => setTabMode('projects')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 active:scale-95 ${
               tabMode === 'projects'
                 ? 'bg-blue-600 text-white shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
@@ -154,7 +156,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
 
           <button
             onClick={() => setTabMode('teams')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 active:scale-95 ${
               tabMode === 'teams'
                 ? 'bg-blue-600 text-white shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
@@ -180,7 +182,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                   placeholder="Search by topic, problem, department, or student lead..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#111A2E] border border-slate-800 text-white text-xs sm:text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500 transition"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#0D1527] border border-slate-800 text-white text-xs sm:text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500 transition shadow-inner"
                 />
               </div>
 
@@ -190,10 +192,10 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                   <button
                     key={cat.id}
                     onClick={() => setSelectedCategory(cat.id)}
-                    className={`px-3.5 py-2 rounded-xl font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                    className={`px-3.5 py-2 rounded-xl font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 active:scale-95 ${
                       selectedCategory === cat.id
-                        ? 'bg-blue-600 text-white shadow-sm'
-                        : 'bg-[#111A2E] text-slate-400 hover:text-white border border-slate-800/80 hover:bg-slate-800'
+                        ? 'bg-blue-600 text-white shadow-sm font-bold'
+                        : 'bg-[#0D1527] text-slate-300 hover:text-white border border-slate-800 hover:border-slate-700 hover:bg-slate-800/50'
                     }`}
                   >
                     <span>{cat.label}</span>
@@ -213,7 +215,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                     setSearchQuery('');
                     setSelectedCategory('all');
                   }}
-                  className="text-blue-400 hover:underline"
+                  className="text-blue-400 hover:underline active:scale-95"
                 >
                   Clear Filters
                 </button>
@@ -232,7 +234,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                 ))}
               </div>
             ) : (
-              <div className="p-12 rounded-3xl bg-[#111A2E] border border-slate-800 text-center space-y-4 my-8">
+              <div className="p-12 rounded-3xl bg-[#0D1527] border border-slate-800 text-center space-y-4 my-8">
                 <Layers className="w-10 h-10 text-slate-500 mx-auto" />
                 <h3 className="text-lg font-bold text-white">No Projects Match Your Search</h3>
                 <p className="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">
@@ -241,7 +243,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                 <div className="pt-2">
                   <button
                     onClick={onProposeProject}
-                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl"
+                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow-md active:scale-95"
                   >
                     Propose a Project Idea
                   </button>

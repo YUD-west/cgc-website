@@ -4,15 +4,18 @@ import { EventCard } from '../components/EventCard';
 import { EVENTS } from '../data/events';
 import { CAMPUS_EVENT_PHOTOS, CampusEventPhoto } from '../data/team';
 import { ClubEvent } from '../types';
+import { TiltCard } from '../components/Motion/TiltCard';
+import { MagneticButton } from '../components/Motion/MagneticButton';
+import { RevealOnScroll } from '../components/Motion/RevealOnScroll';
 import { 
   Calendar, 
   MapPin, 
   Users, 
-  Maximize2,
-  X,
-  Sparkles,
-  Award,
-  ExternalLink
+  Maximize2, 
+  X, 
+  Sparkles, 
+  Award, 
+  ExternalLink 
 } from 'lucide-react';
 
 interface EventsPageProps {
@@ -37,7 +40,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({ onRsvp, onNavigate }) =>
   const categories = ['all', 'Workshop', 'Hackathon', 'Project Build', 'Tech Talk', 'Competition'];
 
   return (
-    <div className="space-y-12 sm:space-y-16 pb-20 pt-12 sm:pt-16">
+    <div className="space-y-12 sm:space-y-16 pb-24 pt-10 sm:pt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -48,12 +51,12 @@ export const EventsPage: React.FC<EventsPageProps> = ({ onRsvp, onNavigate }) =>
 
         {/* Tab Controls: Upcoming vs Past vs Gallery */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
-          <div className="flex items-center gap-2 p-1.5 rounded-xl bg-slate-900 border border-slate-800 w-fit">
+          <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-[#0D1527] border border-slate-800 w-fit">
             <button
               onClick={() => setActiveTab('upcoming')}
-              className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
+              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all active:scale-95 ${
                 activeTab === 'upcoming'
-                  ? 'bg-blue-600 text-white shadow-sm'
+                  ? 'bg-blue-600 text-white shadow-md font-bold'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -61,9 +64,9 @@ export const EventsPage: React.FC<EventsPageProps> = ({ onRsvp, onNavigate }) =>
             </button>
             <button
               onClick={() => setActiveTab('past')}
-              className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
+              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all active:scale-95 ${
                 activeTab === 'past'
-                  ? 'bg-blue-600 text-white shadow-sm'
+                  ? 'bg-blue-600 text-white shadow-md font-bold'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -71,9 +74,9 @@ export const EventsPage: React.FC<EventsPageProps> = ({ onRsvp, onNavigate }) =>
             </button>
             <button
               onClick={() => setActiveTab('gallery')}
-              className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 ${
+              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 active:scale-95 ${
                 activeTab === 'gallery'
-                  ? 'bg-blue-600 text-white shadow-sm'
+                  ? 'bg-blue-600 text-white shadow-md font-bold'
                   : 'text-emerald-400 hover:text-white'
               }`}
             >
@@ -89,7 +92,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({ onRsvp, onNavigate }) =>
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors active:scale-95 ${
                     selectedCategory === cat
                       ? 'bg-slate-800 text-white border border-slate-700'
                       : 'text-slate-400 hover:text-white'
@@ -115,10 +118,12 @@ export const EventsPage: React.FC<EventsPageProps> = ({ onRsvp, onNavigate }) =>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {CAMPUS_EVENT_PHOTOS.map((photo) => (
-                <div
+                <TiltCard
                   key={photo.id}
                   onClick={() => setSelectedPhoto(photo)}
-                  className="group cursor-pointer rounded-2xl overflow-hidden bg-[#111A2E] border border-slate-800 hover:border-blue-500/50 shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between"
+                  maxTilt={6}
+                  scale={1.02}
+                  className="group rounded-2xl overflow-hidden bg-[#0D1527]/95 border border-slate-700/70 hover:border-blue-500/60 shadow-lg transition-all duration-300 flex flex-col justify-between"
                 >
                   <div className="relative h-60 w-full overflow-hidden bg-slate-950">
                     <img
@@ -126,7 +131,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({ onRsvp, onNavigate }) =>
                       alt={photo.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#111A2E] via-transparent to-transparent opacity-80" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0D1527] via-transparent to-transparent opacity-80" />
                     <span className="absolute top-3 right-3 bg-slate-900/90 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-mono text-emerald-400 border border-slate-700 flex items-center gap-1">
                       <Maximize2 className="w-3 h-3" />
                       <span>Expand</span>
@@ -152,7 +157,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({ onRsvp, onNavigate }) =>
                       ))}
                     </div>
                   </div>
-                </div>
+                </TiltCard>
               ))}
             </div>
           </div>
@@ -164,11 +169,11 @@ export const EventsPage: React.FC<EventsPageProps> = ({ onRsvp, onNavigate }) =>
                 <EventCard key={event.id} event={event} onRsvp={onRsvp} />
               ))
             ) : (
-              <div className="p-12 rounded-3xl bg-[#111A2E] border border-slate-800 text-center space-y-3">
+              <div className="p-12 rounded-3xl bg-[#0D1527] border border-slate-800 text-center space-y-3">
                 <Calendar className="w-10 h-10 text-slate-500 mx-auto" />
                 <h3 className="text-lg font-bold text-white">No Events in this Category</h3>
                 <p className="text-xs text-slate-400">
-                  Check back soon or select "All Formats" to view upcoming activities.
+                  Check back soon or select &quot;All Formats&quot; to view upcoming activities.
                 </p>
               </div>
             )}
@@ -176,30 +181,36 @@ export const EventsPage: React.FC<EventsPageProps> = ({ onRsvp, onNavigate }) =>
         )}
 
         {/* Suggest a Workshop / Speaker Box */}
-        <div className="mt-16 p-8 rounded-3xl bg-gradient-to-r from-slate-900 to-[#111A2E] border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div>
-            <h3 className="text-lg font-bold text-white">Want to organize or facilitate a tech event?</h3>
-            <p className="text-xs text-slate-400 mt-1 max-w-xl">
-              CGC provides lab computers, projector screening, and student audiences in the Main ICT Building. Contact Lead Admin Yesuf Dergu.
-            </p>
-          </div>
-          <button
-            onClick={() => onNavigate('contact')}
-            className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold whitespace-nowrap transition-colors"
+        <RevealOnScroll className="mt-16">
+          <TiltCard
+            maxTilt={3}
+            scale={1.01}
+            className="p-8 rounded-3xl bg-gradient-to-r from-[#0D1527] to-[#121E38] border border-slate-700/70 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl"
           >
-            Get In Touch With Event Organizers
-          </button>
-        </div>
+            <div>
+              <h3 className="text-lg font-bold text-white">Want to organize or facilitate a tech event?</h3>
+              <p className="text-xs text-slate-300 mt-1 max-w-xl">
+                CGC provides lab computers, projector screening, and student audiences in the Main ICT Building. Contact Lead Admin Yesuf Dergu.
+              </p>
+            </div>
+            <MagneticButton
+              onClick={() => onNavigate('contact')}
+              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold whitespace-nowrap shadow-md transition-all active:scale-95 shrink-0"
+            >
+              Get In Touch With Event Organizers
+            </MagneticButton>
+          </TiltCard>
+        </RevealOnScroll>
 
       </div>
 
       {/* Lightbox Modal */}
       {selectedPhoto && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in" onClick={() => setSelectedPhoto(null)}>
-          <div className="relative max-w-4xl w-full bg-[#111A2E] rounded-2xl overflow-hidden border border-slate-700 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="relative max-w-4xl w-full bg-[#0D1527] rounded-2xl overflow-hidden border border-slate-700 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => setSelectedPhoto(null)}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/60 text-white hover:bg-black/90 transition-colors"
+              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/60 text-white hover:bg-black/90 transition-colors active:scale-95"
               aria-label="Close photo preview"
             >
               <X className="w-5 h-5" />
@@ -209,7 +220,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({ onRsvp, onNavigate }) =>
               alt={selectedPhoto.title}
               className="w-full max-h-[75vh] object-contain bg-black"
             />
-            <div className="p-5 bg-slate-900 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+            <div className="p-5 bg-[#090F1B] border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
               <div>
                 <span className="text-[11px] font-mono text-blue-400 font-semibold uppercase block">{selectedPhoto.event} • {selectedPhoto.location}</span>
                 <span className="font-bold text-white text-base mt-0.5 block">{selectedPhoto.title}</span>

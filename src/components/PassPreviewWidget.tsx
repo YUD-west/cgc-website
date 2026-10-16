@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ShieldCheck, QrCode, ArrowRight, UserCheck, Lock, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, QrCode, ArrowRight, UserCheck, Lock, CheckCircle2, Sparkles } from 'lucide-react';
+import { TiltCard } from './Motion/TiltCard';
 
 interface PassPreviewWidgetProps {
   onNavigate: (tab: string) => void;
@@ -16,10 +17,11 @@ export const PassPreviewWidget: React.FC<PassPreviewWidgetProps> = ({ onNavigate
   ];
 
   return (
-    <div className="rounded-3xl bg-[#0E1628]/90 backdrop-blur-md border border-slate-700/60 p-6 sm:p-8 shadow-xl relative overflow-hidden">
+    <div className="rounded-3xl bg-[#0D1527]/95 backdrop-blur-xl border border-slate-700/70 p-6 sm:p-8 shadow-xl relative overflow-hidden">
       {/* Subtle atmospheric ambient emerald glow inside card */}
       <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-emerald-500/10 blur-[80px] rounded-full pointer-events-none" />
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
         
         {/* Left: Explanation */}
         <div className="lg:col-span-7 space-y-4">
@@ -43,7 +45,7 @@ export const PassPreviewWidget: React.FC<PassPreviewWidgetProps> = ({ onNavigate
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all active:scale-95 ${
                     selectedFaculty === f
                       ? 'bg-blue-600 text-white shadow-sm'
-                      : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
+                      : 'bg-slate-900/90 text-slate-300 hover:text-white border border-slate-800'
                   }`}
                 >
                   {f}
@@ -62,7 +64,7 @@ export const PassPreviewWidget: React.FC<PassPreviewWidgetProps> = ({ onNavigate
             </button>
             <button
               onClick={() => onNavigate('verify/CGC-WL-2026-PRES')}
-              className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 text-xs font-semibold transition-colors flex items-center gap-1.5"
+              className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 text-xs font-semibold transition-colors flex items-center gap-1.5 active:scale-95"
             >
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span>Test Live Verification Engine</span>
@@ -70,9 +72,17 @@ export const PassPreviewWidget: React.FC<PassPreviewWidgetProps> = ({ onNavigate
           </div>
         </div>
 
-        {/* Right: Realistic Member Card Simulation */}
+        {/* Right: Realistic 3D Tilt Member Card Simulation */}
         <div className="lg:col-span-5 flex justify-center">
-          <div className="w-full max-w-xs rounded-2xl bg-gradient-to-b from-slate-900 to-[#0A0F1D] border border-slate-700 p-5 shadow-xl relative overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
+          <TiltCard
+            maxTilt={10}
+            scale={1.03}
+            glareOpacity={0.16}
+            className="w-full max-w-xs rounded-2xl bg-gradient-to-b from-[#111A2E] to-[#080D1A] border border-slate-700/80 p-5 shadow-2xl relative overflow-hidden"
+          >
+            {/* Holographic Top Strip */}
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-blue-500 via-emerald-400 to-sky-400" />
+
             {/* Top university header */}
             <div className="flex items-center justify-between pb-3 border-b border-slate-800 text-[10px] text-slate-400">
               <span className="font-semibold text-slate-200">AMBO UNIVERSITY</span>
@@ -81,19 +91,19 @@ export const PassPreviewWidget: React.FC<PassPreviewWidgetProps> = ({ onNavigate
 
             {/* Middle Badge Identity */}
             <div className="my-4 text-center space-y-2">
-              <div className="w-16 h-16 mx-auto rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center p-1">
+              <div className="w-16 h-16 mx-auto rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center p-1 shadow-inner">
                 <QrCode className="w-12 h-12 text-blue-400" />
               </div>
 
               <div>
                 <h4 className="text-sm font-bold text-white">Student Innovator</h4>
-                <p className="text-xs text-blue-400 font-medium">{selectedFaculty}</p>
-                <p className="text-[10px] font-mono text-slate-500 mt-0.5">ID: CGC-WL-2026-XXXX</p>
+                <p className="text-xs text-blue-400 font-semibold">{selectedFaculty}</p>
+                <p className="text-[10px] font-mono text-slate-400 mt-0.5">ID: CGC-WL-2026-XXXX</p>
               </div>
             </div>
 
             {/* Clearance Details */}
-            <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 text-[11px] space-y-1 text-left">
+            <div className="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 text-[11px] space-y-1.5 text-left">
               <div className="flex items-center justify-between">
                 <span className="text-slate-400">Status:</span>
                 <span className="text-emerald-400 font-semibold flex items-center gap-1">
@@ -113,11 +123,11 @@ export const PassPreviewWidget: React.FC<PassPreviewWidgetProps> = ({ onNavigate
 
             {/* Bottom note */}
             <div className="mt-3 text-center">
-              <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest">
+              <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest">
                 Scannable via CGC QR Validator
               </span>
             </div>
-          </div>
+          </TiltCard>
         </div>
 
       </div>

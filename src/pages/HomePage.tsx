@@ -5,6 +5,10 @@ import { EventCard } from '../components/EventCard';
 import { LiveActivityBar } from '../components/LiveActivityBar';
 import { InteractivePathway } from '../components/InteractivePathway';
 import { PassPreviewWidget } from '../components/PassPreviewWidget';
+import { HeroInnovationConsole } from '../components/HeroInnovationConsole';
+import { TiltCard } from '../components/Motion/TiltCard';
+import { MagneticButton } from '../components/Motion/MagneticButton';
+import { RevealOnScroll } from '../components/Motion/RevealOnScroll';
 import { INITIAL_PROJECTS } from '../data/projects';
 import { EVENTS } from '../data/events';
 import { CAMPUS_EVENT_PHOTOS, CampusEventPhoto } from '../data/team';
@@ -23,7 +27,8 @@ import {
   ShieldCheck,
   Terminal,
   Cpu,
-  Sparkles
+  Sparkles,
+  BookOpen
 } from 'lucide-react';
 
 interface HomePageProps {
@@ -52,29 +57,37 @@ export const HomePage: React.FC<HomePageProps> = ({
       subheading: 'Web systems, network defense, Linux & AI models',
       icon: Code2,
       accent: 'text-blue-400',
+      borderGlow: 'hover:border-blue-500/60',
+      badge: 'Engineering & Computing'
     },
     {
       title: 'Agriculture & Sciences',
       subheading: 'Crop diagnostics, field data, soil telemetry & weather',
       icon: Sprout,
       accent: 'text-emerald-400',
+      borderGlow: 'hover:border-emerald-500/60',
+      badge: 'Biosystems & AgriTech'
     },
     {
       title: 'Business & Economics',
       subheading: 'Startup models, product validation & market testing',
       icon: Briefcase,
       accent: 'text-amber-400',
+      borderGlow: 'hover:border-amber-500/60',
+      badge: 'FinTech & Commerce'
     },
     {
       title: 'Health & Social Sciences',
       subheading: 'Community healthcare tools & regional accessibility',
       icon: HeartHandshake,
-      accent: 'text-rose-400',
+      accent: 'text-sky-400',
+      borderGlow: 'hover:border-sky-500/60',
+      badge: 'Health Informatics'
     }
   ];
 
   return (
-    <div className="space-y-14 sm:space-y-20 pb-28 sm:pb-20">
+    <div className="space-y-16 sm:space-y-24 pb-28 sm:pb-20">
       
       {/* 
         =======================================================
@@ -85,15 +98,16 @@ export const HomePage: React.FC<HomePageProps> = ({
 
       {/* 
         =======================================================
-        1. HERO SECTION: DIRECT HEADING, NO EYEBROW BADGE
+        1. HERO SECTION: BOLD TYPOGRAPHY & INTERACTIVE CONSOLE
         =======================================================
       */}
-      <section className="relative pt-6 sm:pt-12 pb-12 overflow-hidden flex items-center border-b border-slate-800/80">
+      <section className="relative pt-6 sm:pt-14 pb-12 overflow-hidden flex flex-col items-center border-b border-slate-800/80">
+        
+        {/* Radiant Hero Ambient Backlight */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[36rem] sm:w-[50rem] h-72 bg-gradient-to-r from-blue-600/30 via-emerald-500/20 to-sky-500/25 blur-[120px] rounded-full pointer-events-none -z-10" />
+
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center">
           
-          {/* Radiant Hero Ambient Backlight */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[32rem] sm:w-[42rem] h-60 bg-gradient-to-r from-blue-600/35 via-sky-500/20 to-emerald-500/30 blur-[95px] rounded-full pointer-events-none -z-10" />
-
           {/* Main Direct Heading — Vibrant & Alive */}
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.08] relative">
             Ideas into{' '}
@@ -111,43 +125,60 @@ export const HomePage: React.FC<HomePageProps> = ({
             A student-led community uniting computing, agriculture, business, and health sciences to build real software, defend campus networks, and solve regional challenges.
           </p>
 
-          {/* Calls to Action with Motion Spring Effect */}
+          {/* Calls to Action with Magnetic Button micro-interactions */}
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <button
+            <MagneticButton
               onClick={() => onNavigate('join')}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 active:scale-95"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2"
             >
               <span>Join the Community</span>
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </MagneticButton>
 
-            <button
+            <MagneticButton
               onClick={() => onNavigate('projects')}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-semibold text-xs sm:text-sm border border-slate-700 transition-colors flex items-center justify-center gap-2 active:scale-95"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 font-semibold text-xs sm:text-sm border border-slate-700 transition-colors flex items-center justify-center gap-2"
             >
               <span>Explore Student Projects</span>
               <ChevronRight className="w-4 h-4 text-slate-400" />
-            </button>
+            </MagneticButton>
+
+            <MagneticButton
+              onClick={() => onNavigate('handbook')}
+              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 font-semibold text-xs sm:text-sm border border-cyan-500/30 transition-colors flex items-center justify-center gap-2"
+            >
+              <BookOpen className="w-4 h-4 text-cyan-400" />
+              <span>Lab Handbook</span>
+            </MagneticButton>
           </div>
+
+          {/* 3D Tilt Multi-Discipline Innovation Console */}
+          <HeroInnovationConsole
+            onNavigate={onNavigate}
+            onProposeProject={onProposeProject}
+          />
 
           {/* Small Compact Stats Bar */}
           <div className="mt-12 pt-6 border-t border-slate-800/80 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
-            <div className="p-3.5 rounded-2xl bg-[#0E1628]/85 backdrop-blur-md border border-slate-700/60 hover:border-blue-500/40 transition-all shadow-sm">
+            <TiltCard maxTilt={5} scale={1.02} className="p-4 rounded-2xl bg-[#0D1527]/90 backdrop-blur-md border border-slate-700/60 shadow-sm">
               <div className="text-sm sm:text-base font-bold text-white">4 Disciplines</div>
               <div className="text-[11px] text-slate-400 mt-0.5">IT, Agri, Biz, Health</div>
-            </div>
-            <div className="p-3.5 rounded-2xl bg-[#0E1628]/85 backdrop-blur-md border border-slate-700/60 hover:border-blue-500/40 transition-all shadow-sm">
+            </TiltCard>
+
+            <TiltCard maxTilt={5} scale={1.02} className="p-4 rounded-2xl bg-[#0D1527]/90 backdrop-blur-md border border-slate-700/60 shadow-sm">
               <div className="text-sm sm:text-base font-bold text-blue-400">Computer Lab 02</div>
               <div className="text-[11px] text-slate-400 mt-0.5">Terminal workstations</div>
-            </div>
-            <div className="p-3.5 rounded-2xl bg-[#0E1628]/85 backdrop-blur-md border border-slate-700/60 hover:border-emerald-500/40 transition-all shadow-sm">
+            </TiltCard>
+
+            <TiltCard maxTilt={5} scale={1.02} className="p-4 rounded-2xl bg-[#0D1527]/90 backdrop-blur-md border border-slate-700/60 shadow-sm">
               <div className="text-sm sm:text-base font-bold text-emerald-400">100% Free</div>
               <div className="text-[11px] text-slate-400 mt-0.5">Open university club</div>
-            </div>
-            <div className="p-3.5 rounded-2xl bg-[#0E1628]/85 backdrop-blur-md border border-slate-700/60 hover:border-blue-500/40 transition-all shadow-sm">
+            </TiltCard>
+
+            <TiltCard maxTilt={5} scale={1.02} className="p-4 rounded-2xl bg-[#0D1527]/90 backdrop-blur-md border border-slate-700/60 shadow-sm">
               <div className="text-sm sm:text-base font-bold text-white">Student-Led</div>
               <div className="text-[11px] text-slate-400 mt-0.5">Peer mentorship</div>
-            </div>
+            </TiltCard>
           </div>
 
         </div>
@@ -155,82 +186,91 @@ export const HomePage: React.FC<HomePageProps> = ({
 
       {/* 
         =======================================================
-        2. INTERACTIVE "CHOOSE YOUR PATH" MOTION MATRIX (NEW)
+        2. INTERACTIVE "CHOOSE YOUR PATH" MOTION MATRIX
         =======================================================
       */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <RevealOnScroll className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <InteractivePathway onNavigate={onNavigate} />
-      </section>
+      </RevealOnScroll>
 
       {/* 
         =======================================================
         3. ACADEMIC DISCIPLINES: NO BADGE ABOVE HEADING
         =======================================================
       */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <RevealOnScroll className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Academic Disciplines
           </h2>
-          <p className="mt-1 text-xs sm:text-sm text-slate-400">
+          <p className="mt-1 text-xs sm:text-sm text-slate-300">
             Cross-faculty collaboration between technical software builders and domain problem solvers.
           </p>
         </div>
 
-        {/* Small, compact cards with sub-headings */}
+        {/* Small, compact cards with 3D tilt and sub-headings */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {academicStreams.map((stream, idx) => {
             const Icon = stream.icon;
             return (
-              <div
+              <TiltCard
                 key={idx}
-                className="p-4 sm:p-5 rounded-2xl bg-[#0E1628]/90 backdrop-blur-md border border-slate-700/60 hover:border-blue-500/50 hover:shadow-glow-blue hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between shadow-card"
+                maxTilt={8}
+                scale={1.02}
+                className={`p-5 rounded-2xl bg-[#0D1527]/95 backdrop-blur-xl border border-slate-700/70 ${stream.borderGlow} transition-all duration-300 flex flex-col justify-between shadow-lg`}
               >
                 <div>
-                  <div className={`w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center mb-3 ${stream.accent}`}>
-                    <Icon className="w-4 h-4" />
+                  <div className="flex items-center justify-between mb-3">
+                    <div className={`w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center ${stream.accent}`}>
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+                      {stream.badge}
+                    </span>
                   </div>
-                  <h3 className="font-bold text-white text-sm sm:text-base">{stream.title}</h3>
-                  <p className="text-xs text-blue-400/90 font-medium mt-0.5">{stream.subheading}</p>
+                  <h3 className="font-bold text-white text-base">{stream.title}</h3>
+                  <p className="text-xs text-blue-400 font-medium mt-1">{stream.subheading}</p>
                 </div>
-              </div>
+              </TiltCard>
             );
           })}
         </div>
-      </section>
+      </RevealOnScroll>
 
       {/* 
         =======================================================
         4. REAL CAMPUS GALLERY: NO BADGE ABOVE HEADING
         =======================================================
       */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <RevealOnScroll className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
               Woliso Campus Gallery
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1">
+            <p className="text-xs sm:text-sm text-slate-300 mt-1">
               Real moments from competitive hackathons, orientations, and Computer Lab 02.
             </p>
           </div>
 
           <button
             onClick={() => onNavigate('events')}
-            className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors self-start sm:self-auto"
+            className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors self-start sm:self-auto active:scale-95"
           >
             <span>View All Events</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        {/* 4 Photo Grid */}
+        {/* 4 Photo Grid with 3D Tilt */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {CAMPUS_EVENT_PHOTOS.slice(0, 4).map((photo) => (
-            <div
+            <TiltCard
               key={photo.id}
               onClick={() => setSelectedPhoto(photo)}
-              className="group relative rounded-2xl overflow-hidden border border-slate-700/60 bg-[#0E1628]/90 backdrop-blur-md cursor-pointer hover:border-blue-500/50 hover:shadow-glow-blue hover:-translate-y-0.5 transition-all duration-300 shadow-card"
+              maxTilt={7}
+              scale={1.02}
+              className="group rounded-2xl overflow-hidden border border-slate-700/70 bg-[#0D1527]/95 backdrop-blur-xl hover:border-blue-500/60 transition-all duration-300 shadow-lg"
             >
               <div className="aspect-[4/3] overflow-hidden bg-slate-900">
                 <img
@@ -239,34 +279,34 @@ export const HomePage: React.FC<HomePageProps> = ({
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
-              <div className="p-3 bg-[#0F172A] border-t border-slate-800">
-                <h4 className="text-xs font-bold text-white line-clamp-1 group-hover:text-blue-400 transition-colors">
+              <div className="p-3 bg-[#0A101D] border-t border-slate-800">
+                <h4 className="text-xs font-bold text-white line-clamp-1 group-hover:text-blue-300 transition-colors">
                   {photo.title}
                 </h4>
-                <div className="flex items-center justify-between text-[11px] text-slate-400 mt-0.5">
+                <div className="flex items-center justify-between text-[11px] text-slate-400 mt-1">
                   <span className="truncate">{photo.event}</span>
                   <span className="flex items-center gap-0.5 text-blue-400 shrink-0">
                     <Maximize2 className="w-3 h-3" />
                   </span>
                 </div>
               </div>
-            </div>
+            </TiltCard>
           ))}
         </div>
-      </section>
+      </RevealOnScroll>
 
       {/* 
         =======================================================
         5. FEATURED PROJECTS: NO BADGE ABOVE HEADING
         =======================================================
       */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <RevealOnScroll className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
               Featured Campus Projects
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1">
+            <p className="text-xs sm:text-sm text-slate-300 mt-1">
               Active student-led software prototypes and security tools. Open for contributors.
             </p>
           </div>
@@ -280,7 +320,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </button>
             <button
               onClick={() => onNavigate('projects')}
-              className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors px-2"
+              className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors px-2 active:scale-95"
             >
               <span>See All</span>
               <ChevronRight className="w-3.5 h-3.5" />
@@ -298,36 +338,36 @@ export const HomePage: React.FC<HomePageProps> = ({
             />
           ))}
         </div>
-      </section>
+      </RevealOnScroll>
 
       {/* 
         =======================================================
-        6. INTERACTIVE MEMBER PASS SIMULATOR (NEW FEATURE)
+        6. INTERACTIVE MEMBER PASS SIMULATOR
         =======================================================
       */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <RevealOnScroll className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <PassPreviewWidget onNavigate={onNavigate} />
-      </section>
+      </RevealOnScroll>
 
       {/* 
         =======================================================
         7. UPCOMING WORKSHOPS: NO BADGE ABOVE HEADING
         =======================================================
       */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <RevealOnScroll className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
               Upcoming Workshops & Sessions
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1">
+            <p className="text-xs sm:text-sm text-slate-300 mt-1">
               Hands-on practical sessions in Computer Lab 02. Beginners always welcome.
             </p>
           </div>
 
           <button
             onClick={() => onNavigate('events')}
-            className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors self-start sm:self-auto"
+            className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors self-start sm:self-auto active:scale-95"
           >
             <span>All Activities</span>
             <ChevronRight className="w-3.5 h-3.5" />
@@ -344,38 +384,42 @@ export const HomePage: React.FC<HomePageProps> = ({
             />
           ))}
         </div>
-      </section>
+      </RevealOnScroll>
 
       {/* 
         =======================================================
         8. COMPACT WELCOME ACTION
         =======================================================
       */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="p-6 sm:p-8 rounded-2xl bg-[#0F172A] border border-slate-800 space-y-4">
-          <h3 className="text-xl sm:text-2xl font-bold text-white">
+      <RevealOnScroll className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <TiltCard
+          maxTilt={4}
+          scale={1.01}
+          className="p-6 sm:p-8 rounded-3xl bg-[#0D1527]/95 backdrop-blur-xl border border-slate-700/70 space-y-4 shadow-xl"
+        >
+          <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
             Ready to Build With CGC?
           </h3>
           <p className="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
             Open to all Ambo University Woliso Campus students. Whether you are learning to code or bringing a domain problem to solve, you are welcome.
           </p>
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <button
+            <MagneticButton
               onClick={() => onNavigate('join')}
-              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 active:scale-95 shadow-md"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 active:scale-95"
             >
               <span>Join CGC (Free Registration)</span>
               <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-            <button
+            </MagneticButton>
+            <MagneticButton
               onClick={() => onNavigate('about')}
-              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs sm:text-sm font-semibold border border-slate-700 transition-colors active:scale-95"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 text-xs sm:text-sm font-semibold border border-slate-700 transition-colors active:scale-95"
             >
-              About Leadership
-            </button>
+              <span>About Leadership</span>
+            </MagneticButton>
           </div>
-        </div>
-      </section>
+        </TiltCard>
+      </RevealOnScroll>
 
       {/* 
         =======================================================
@@ -401,7 +445,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
               <button
                 onClick={() => setSelectedPhoto(null)}
-                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 active:scale-95"
               >
                 <X className="w-4 h-4" />
               </button>

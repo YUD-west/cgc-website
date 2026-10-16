@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CGCLogo } from './Logo/CGCLogo';
 import { useAuth } from '../context/AuthContext';
+import { MagneticButton } from './Motion/MagneticButton';
 import { 
   Menu, 
   X, 
@@ -84,8 +85,8 @@ export const Navbar: React.FC<NavbarProps> = ({
       <header
         className={`sticky top-0 z-40 w-full transition-all duration-300 ${
           scrolled
-            ? 'bg-[#0A0F1D]/95 backdrop-blur-md border-b border-slate-800 shadow-lg'
-            : 'bg-[#0A0F1D]/85 backdrop-blur-sm border-b border-slate-800/60'
+            ? 'bg-[#080D1A]/95 backdrop-blur-xl border-b border-slate-800 shadow-xl'
+            : 'bg-[#080D1A]/80 backdrop-blur-md border-b border-slate-800/60'
         }`}
       >
         {/* Main Navbar */}
@@ -93,30 +94,27 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Logo / Monogram */}
           <button
             onClick={() => handleNavClick('home')}
-            className="flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-lg p-1 text-left"
+            className="flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-lg p-1 text-left active:scale-95 transition-transform"
             aria-label="CGC Home"
           >
             <CGCLogo variant="full" size="md" />
           </button>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
+          <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 p-1 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-md">
             {navLinks.map((link) => {
               const isActive = activeTab === link.id;
               return (
                 <button
                   key={link.id}
                   onClick={() => handleNavClick(link.id)}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 relative ${
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold tracking-wider transition-all duration-200 relative ${
                     isActive
-                      ? 'text-white bg-slate-800/90 shadow-sm border border-slate-700/60'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-800/40'
+                      ? 'text-white bg-blue-600 shadow-md font-bold'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                   }`}
                 >
-                  {link.label}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-blue-500 rounded-full" />
-                  )}
+                  <span>{link.label}</span>
                 </button>
               );
             })}
@@ -127,12 +125,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Command Palette Trigger */}
             <button
               onClick={openCommandPalette}
-              className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-400 bg-slate-800/60 hover:bg-slate-800 hover:text-slate-200 border border-slate-700/60 rounded-xl transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-400 bg-slate-900/80 hover:bg-slate-800 hover:text-slate-200 border border-slate-700/60 rounded-xl transition-colors active:scale-95"
               title="Search CGC (Ctrl + K)"
             >
               <Search className="w-3.5 h-3.5 text-slate-400" />
               <span>Search...</span>
-              <kbd className="hidden xl:inline-flex items-center px-1.5 py-0.2 text-[10px] font-mono bg-slate-900 border border-slate-700 rounded text-slate-400">
+              <kbd className="hidden xl:inline-flex items-center px-1.5 py-0.2 text-[10px] font-mono bg-slate-950 border border-slate-700 rounded text-slate-400">
                 ⌘K
               </kbd>
             </button>
@@ -144,7 +142,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 {isAdmin && (
                   <button
                     onClick={() => handleNavClick('admin')}
-                    className={`px-3 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 ${
+                    className={`px-3 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 active:scale-95 ${
                       activeTab === 'admin'
                         ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
                         : 'bg-slate-800/80 text-amber-400 border-amber-500/30 hover:bg-slate-800'
@@ -156,9 +154,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                 )}
 
                 {/* Member Dashboard */}
-                <button
+                <MagneticButton
                   onClick={() => handleNavClick('dashboard')}
-                  className={`px-3 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 ${
+                  className={`px-3 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 shadow-sm ${
                     activeTab === 'dashboard'
                       ? 'bg-blue-600 text-white border-blue-500'
                       : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
@@ -166,12 +164,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                 >
                   <UserIcon className="w-3.5 h-3.5 text-blue-400" />
                   <span>My Member Pass</span>
-                </button>
+                </MagneticButton>
 
                 {/* Logout */}
                 <button
                   onClick={logout}
-                  className="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-xl transition-colors"
+                  className="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-xl transition-colors active:scale-95"
                   title="Sign Out"
                 >
                   <LogOut className="w-4 h-4" />
@@ -181,22 +179,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="flex items-center gap-2">
                 <button
                   onClick={onOpenAuth}
-                  className="px-3.5 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-800 border border-slate-700 rounded-xl transition-colors"
+                  className="px-3.5 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-xl transition-colors active:scale-95"
                 >
                   Sign In
                 </button>
 
-                <button
+                <MagneticButton
                   onClick={() => handleNavClick('join')}
-                  className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md ${
-                    activeTab === 'join'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-blue-600 hover:bg-blue-500 text-white'
-                  }`}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white transition-all shadow-md active:scale-95"
                 >
                   <span>Join CGC (Free)</span>
                   <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                </MagneticButton>
               </div>
             )}
           </div>
@@ -205,7 +199,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex lg:hidden items-center gap-2">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none"
+              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none active:scale-95"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -216,14 +210,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-x-0 top-20 bg-[#0F172A]/95 border-b border-slate-800 p-6 space-y-4 z-40 backdrop-blur-xl animate-fade-in shadow-2xl">
+        <div className="lg:hidden fixed inset-x-0 top-16 bg-[#0B1120]/95 border-b border-slate-800 p-6 space-y-4 z-40 backdrop-blur-xl animate-fade-in shadow-2xl">
           <div className="space-y-1">
             {navLinks.map((link) => (
               <button
                 key={link.id}
                 onClick={() => handleNavClick(link.id)}
-                className={`w-full text-left py-2.5 px-3 rounded-lg text-sm font-semibold flex items-center justify-between ${
-                  activeTab === link.id ? 'bg-blue-600/20 text-blue-400' : 'text-slate-300 hover:bg-slate-800'
+                className={`w-full text-left py-2.5 px-3 rounded-xl text-sm font-semibold flex items-center justify-between active:scale-95 transition-all ${
+                  activeTab === link.id ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-300 hover:bg-slate-800/80'
                 }`}
               >
                 <span>{link.label}</span>
@@ -231,8 +225,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             ))}
             <button
               onClick={() => handleNavClick('verify')}
-              className={`w-full text-left py-2.5 px-3 rounded-lg text-sm font-semibold flex items-center justify-between ${
-                activeTab === 'verify' ? 'bg-emerald-500/20 text-emerald-400' : 'text-emerald-400 hover:bg-slate-800'
+              className={`w-full text-left py-2.5 px-3 rounded-xl text-sm font-semibold flex items-center justify-between active:scale-95 transition-all ${
+                activeTab === 'verify' ? 'bg-emerald-500/20 text-emerald-300' : 'text-emerald-400 hover:bg-slate-800/80'
               }`}
             >
               <span>🛡️ Verify Member Pass</span>
@@ -244,21 +238,21 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="space-y-2">
                 <button
                   onClick={() => handleNavClick('dashboard')}
-                  className="w-full py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs"
+                  className="w-full py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs active:scale-95"
                 >
                   My Member Pass
                 </button>
                 {isAdmin && (
                   <button
                     onClick={() => handleNavClick('admin')}
-                    className="w-full py-2.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold text-xs"
+                    className="w-full py-2.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold text-xs active:scale-95"
                   >
                     Admin Portal (Yesuf Dergu)
                   </button>
                 )}
                 <button
                   onClick={logout}
-                  className="w-full py-2 text-xs text-red-400 hover:text-red-300"
+                  className="w-full py-2 text-xs text-red-400 hover:text-red-300 active:scale-95"
                 >
                   Sign Out ({user.email})
                 </button>
@@ -267,13 +261,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => { setMobileMenuOpen(false); onOpenAuth(); }}
-                  className="py-2.5 rounded-xl bg-slate-800 text-white font-bold text-xs border border-slate-700"
+                  className="py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs border border-slate-700 active:scale-95"
                 >
                   Sign In
                 </button>
                 <button
                   onClick={() => handleNavClick('join')}
-                  className="py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs"
+                  className="py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs active:scale-95 shadow-md"
                 >
                   Join CGC (Free)
                 </button>

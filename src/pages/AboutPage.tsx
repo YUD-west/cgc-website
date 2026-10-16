@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { SectionHeader } from '../components/SectionHeader';
 import { CGCLogo } from '../components/Logo/CGCLogo';
 import { LEAD_ADMIN, CO_ADMIN, OFFICIAL_COMMUNITY, CAMPUS_EVENT_PHOTOS, CampusEventPhoto } from '../data/team';
+import { TiltCard } from '../components/Motion/TiltCard';
+import { MagneticButton } from '../components/Motion/MagneticButton';
+import { RevealOnScroll } from '../components/Motion/RevealOnScroll';
 import { 
   ShieldCheck, 
   Users, 
@@ -67,40 +70,48 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
   ];
 
   return (
-    <div className="space-y-24 sm:space-y-32 pb-20">
+    <div className="space-y-24 sm:space-y-32 pb-24">
       {/* 
         =======================================================
         HEADER & VISION
         =======================================================
       */}
-      <section className="relative pt-12 sm:pt-16">
+      <section className="relative pt-10 sm:pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             title="A Student-Led Innovation Movement"
             description="Cyber Guardians Club (CGC) is an autonomous, student-governed technology and innovation collective established at Ambo University, Woliso Campus, Ethiopia."
           />
 
-          {/* Mission & Vision Split Card */}
+          {/* Mission & Vision Split Card with 3D Tilt */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-            <div className="p-8 sm:p-10 rounded-3xl bg-[#111A2E] border border-slate-800 shadow-card space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center">
+            <TiltCard
+              maxTilt={5}
+              scale={1.015}
+              className="p-8 sm:p-10 rounded-3xl bg-[#0D1527]/95 backdrop-blur-xl border border-slate-700/70 shadow-xl space-y-4"
+            >
+              <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-400 flex items-center justify-center shadow-inner">
                 <Target className="w-6 h-6" />
               </div>
-              <h3 className="text-2xl font-bold text-white">Our Mission</h3>
+              <h3 className="text-2xl font-bold text-white tracking-tight">Our Mission</h3>
               <p className="text-slate-300 leading-relaxed text-sm sm:text-base">
                 To transform Ambo University Woliso Campus from a place of theoretical study into a thriving ecosystem of hands-on builders. We equip students with modern cybersecurity, software engineering, and artificial intelligence skills while building tools that matter to our campus and broader society.
               </p>
-            </div>
+            </TiltCard>
 
-            <div className="p-8 sm:p-10 rounded-3xl bg-[#111A2E] border border-slate-800 shadow-card space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
+            <TiltCard
+              maxTilt={5}
+              scale={1.015}
+              className="p-8 sm:p-10 rounded-3xl bg-[#0D1527]/95 backdrop-blur-xl border border-slate-700/70 shadow-xl space-y-4"
+            >
+              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center shadow-inner">
                 <Compass className="w-6 h-6" />
               </div>
-              <h3 className="text-2xl font-bold text-white">Our Vision</h3>
+              <h3 className="text-2xl font-bold text-white tracking-tight">Our Vision</h3>
               <p className="text-slate-300 leading-relaxed text-sm sm:text-base">
                 To become the benchmark for student-led technology communities in Ethiopian higher education—where multidisciplinary student teams launch viable open-source projects, publish security audits, and turn campus graduation projects into real sustainable startups.
               </p>
-            </div>
+            </TiltCard>
           </div>
         </div>
       </section>
@@ -110,17 +121,21 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
         LEADERSHIP & ADMIN SPOTLIGHT (YESUF DERGU)
         =======================================================
       */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <RevealOnScroll className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           title="Leadership & Community Administration"
           description="CGC is founded and operated by passionate undergraduates committed to open-source culture and practical engineering."
         />
 
-        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-[#111A2E] via-slate-900 to-[#10192E] border border-slate-800 shadow-2xl relative overflow-hidden">
+        <TiltCard
+          maxTilt={4}
+          scale={1.008}
+          className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-[#0D1527] via-[#10192E] to-[#0A101D] border border-slate-700/70 shadow-2xl relative overflow-hidden"
+        >
           <div className="flex flex-col lg:flex-row items-center gap-10">
             {/* Admin Photo */}
             <div className="relative flex-shrink-0 group">
-              <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-3xl overflow-hidden border-2 border-blue-500/50 shadow-glow-blue relative">
+              <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-3xl overflow-hidden border-2 border-blue-500/60 shadow-glow-blue relative">
                 <img
                   src={LEAD_ADMIN.photoUrl}
                   alt={LEAD_ADMIN.name}
@@ -136,7 +151,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
             {/* Admin Details & Bio */}
             <div className="space-y-4 text-center lg:text-left flex-1">
               <div>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-white">{LEAD_ADMIN.name}</h3>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">{LEAD_ADMIN.name}</h3>
                 <p className="text-sm font-semibold text-blue-400 mt-0.5">{LEAD_ADMIN.role}</p>
                 <p className="text-xs text-slate-400 mt-1">{LEAD_ADMIN.department}</p>
               </div>
@@ -151,7 +166,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
                   href={LEAD_ADMIN.telegramUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-md transition-colors"
+                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-md transition-all active:scale-95"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>Telegram ({LEAD_ADMIN.telegram})</span>
@@ -161,7 +176,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
                   href={CO_ADMIN.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors"
+                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors active:scale-95"
                 >
                   <Send className="w-3.5 h-3.5 text-blue-400" />
                   <span>Co-Admin ({CO_ADMIN.handle})</span>
@@ -171,7 +186,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
                   href={LEAD_ADMIN.linkedin}
                   target="_blank"
                   rel="noreferrer"
-                  className="p-2.5 rounded-xl bg-slate-800 hover:bg-blue-600 hover:text-white text-slate-300 border border-slate-700 transition-colors"
+                  className="p-2.5 rounded-xl bg-slate-800 hover:bg-blue-600 hover:text-white text-slate-300 border border-slate-700 transition-colors active:scale-95"
                   title="LinkedIn Profile"
                 >
                   <Linkedin className="w-4 h-4" />
@@ -181,7 +196,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
                   href={LEAD_ADMIN.github}
                   target="_blank"
                   rel="noreferrer"
-                  className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 hover:text-white text-slate-300 border border-slate-700 transition-colors"
+                  className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 hover:text-white text-slate-300 border border-slate-700 transition-colors active:scale-95"
                   title="GitHub Profile (YUD-west)"
                 >
                   <Github className="w-4 h-4" />
@@ -189,7 +204,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
 
                 <a
                   href={`mailto:${LEAD_ADMIN.email}`}
-                  className="p-2.5 rounded-xl bg-slate-800 hover:bg-emerald-600 hover:text-white text-slate-300 border border-slate-700 transition-colors"
+                  className="p-2.5 rounded-xl bg-slate-800 hover:bg-emerald-600 hover:text-white text-slate-300 border border-slate-700 transition-colors active:scale-95"
                   title={`Email ${LEAD_ADMIN.email}`}
                 >
                   <Mail className="w-4 h-4" />
@@ -197,15 +212,15 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </TiltCard>
+      </RevealOnScroll>
 
       {/* 
         =======================================================
         WOLISO CAMPUS TECH EVENTS & HACKATHON PHOTO GALLERY
         =======================================================
       */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <RevealOnScroll className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           badge="Authentic Photo Archive"
           badgeColor="blue"
@@ -215,10 +230,12 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {CAMPUS_EVENT_PHOTOS.map((photo) => (
-            <div
+            <TiltCard
               key={photo.id}
               onClick={() => setSelectedPhoto(photo)}
-              className="group cursor-pointer rounded-2xl overflow-hidden bg-[#111A2E] border border-slate-800 hover:border-blue-500/50 shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between"
+              maxTilt={6}
+              scale={1.02}
+              className="group cursor-pointer rounded-2xl overflow-hidden bg-[#0D1527]/95 border border-slate-700/70 hover:border-blue-500/60 shadow-lg transition-all duration-300 flex flex-col justify-between"
             >
               <div className="relative h-56 w-full overflow-hidden bg-slate-950">
                 <img
@@ -226,7 +243,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
                   alt={photo.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#111A2E] via-transparent to-transparent opacity-80" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0D1527] via-transparent to-transparent opacity-80" />
                 <span className="absolute top-3 right-3 bg-slate-900/90 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-mono text-emerald-400 border border-slate-700 flex items-center gap-1">
                   <Maximize2 className="w-3 h-3" />
                   <span>Click to Expand</span>
@@ -253,17 +270,17 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
                   ))}
                 </div>
               </div>
-            </div>
+            </TiltCard>
           ))}
         </div>
-      </section>
+      </RevealOnScroll>
 
       {/* 
         =======================================================
         OUR CORE VALUES
         =======================================================
       */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <RevealOnScroll className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           badge="Guiding Principles"
           badgeColor="green"
@@ -275,15 +292,17 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
           {coreValues.map((val, idx) => {
             const Icon = val.icon;
             return (
-              <div
+              <TiltCard
                 key={idx}
-                className="p-6 rounded-2xl bg-[#111A2E] border border-slate-800 shadow-card flex flex-col justify-between"
+                maxTilt={8}
+                scale={1.02}
+                className="p-6 rounded-2xl bg-[#0D1527]/95 border border-slate-700/70 shadow-lg flex flex-col justify-between"
               >
                 <div>
-                  <div className={`w-12 h-12 rounded-xl border flex items-center justify-center mb-5 ${val.color}`}>
+                  <div className={`w-12 h-12 rounded-xl border flex items-center justify-center mb-5 ${val.color} shadow-inner`}>
                     <Icon className="w-6 h-6" />
                   </div>
-                  <h3 className="text-xl font-bold text-white">{val.title}</h3>
+                  <h3 className="text-xl font-bold text-white tracking-tight">{val.title}</h3>
                   <div className="text-xs font-semibold text-slate-400 mt-1">
                     {val.tagline}
                   </div>
@@ -291,24 +310,24 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
                     {val.description}
                   </p>
                 </div>
-              </div>
+              </TiltCard>
             );
           })}
         </div>
-      </section>
+      </RevealOnScroll>
 
       {/* 
         =======================================================
         CAMPUS JOURNEY: FROM IT TO ALL DEPARTMENTS
         =======================================================
       */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-8 sm:p-12 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl">
+      <RevealOnScroll className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="p-8 sm:p-12 rounded-3xl bg-[#0D1527]/95 border border-slate-700/70 shadow-xl">
           <div className="max-w-3xl">
             <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider block mb-2">
               Evolutionary Path
             </span>
-            <h2 className="text-3xl font-extrabold text-white">
+            <h2 className="text-3xl font-extrabold text-white tracking-tight">
               The Journey: From IT Department to Campus-Wide Innovation
             </h2>
             <p className="mt-3 text-slate-300 leading-relaxed text-sm sm:text-base">
@@ -318,7 +337,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
 
           <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 relative">
             {/* Stage 1 */}
-            <div className="p-6 rounded-2xl bg-[#111A2E] border border-slate-800 relative">
+            <TiltCard maxTilt={5} scale={1.02} className="p-6 rounded-2xl bg-[#090F1B] border border-slate-800 relative">
               <span className="text-xs font-bold font-mono text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-md border border-blue-500/20 inline-block mb-3">
                 Phase 1 • Genesis
               </span>
@@ -326,10 +345,10 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
               <p className="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed">
                 Focused on establishing Linux lab proficiency, networking basics, Git version control, and cybersecurity fundamentals among computing undergraduates.
               </p>
-            </div>
+            </TiltCard>
 
             {/* Stage 2 */}
-            <div className="p-6 rounded-2xl bg-[#111A2E] border border-blue-500/30 relative shadow-glow-blue">
+            <TiltCard maxTilt={5} scale={1.02} className="p-6 rounded-2xl bg-[#090F1B] border border-blue-500/40 relative shadow-glow-blue">
               <span className="text-xs font-bold font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20 inline-block mb-3">
                 Phase 2 • Expansion (Current)
               </span>
@@ -337,10 +356,10 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
               <p className="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed">
                 Opening tracks to Natural Sciences (applied AI diagnostics), Business & Economics (product market validation), and Engineering students across Woliso.
               </p>
-            </div>
+            </TiltCard>
 
             {/* Stage 3 */}
-            <div className="p-6 rounded-2xl bg-[#111A2E] border border-slate-800 relative">
+            <TiltCard maxTilt={5} scale={1.02} className="p-6 rounded-2xl bg-[#090F1B] border border-slate-800 relative">
               <span className="text-xs font-bold font-mono text-slate-400 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 inline-block mb-3">
                 Phase 3 • Impact
               </span>
@@ -348,11 +367,11 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
               <p className="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed">
                 Partnering with regional organizations, publishing peer-reviewed student research, and incubating campus projects into sustainable civic utilities and tech startups.
               </p>
-            </div>
+            </TiltCard>
           </div>
 
           {/* Woliso Campus Facilities Context */}
-          <div className="mt-10 p-6 rounded-2xl bg-[#0F172A] border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="mt-10 p-6 rounded-2xl bg-[#090F1B] border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-xl bg-slate-800 text-slate-300">
                 <MapPin className="w-5 h-5 text-emerald-400" />
@@ -365,23 +384,27 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
 
             <button
               onClick={() => onNavigate('contact')}
-              className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1"
+              className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1 active:scale-95 transition-colors"
             >
               <span>View Lab Hours & Location</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
-      </section>
+      </RevealOnScroll>
 
       {/* 
         =======================================================
         JOIN CTA
         =======================================================
       */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="p-10 rounded-3xl bg-slate-900 border border-slate-800 max-w-3xl mx-auto space-y-4">
-          <h3 className="text-2xl font-bold text-white">Connect with Lead Admin Yesuf Dergu</h3>
+      <RevealOnScroll className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <TiltCard
+          maxTilt={4}
+          scale={1.01}
+          className="p-10 rounded-3xl bg-[#0D1527]/95 border border-slate-700/70 max-w-3xl mx-auto space-y-4 shadow-xl"
+        >
+          <h3 className="text-2xl font-bold text-white tracking-tight">Connect with Lead Admin Yesuf Dergu</h3>
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
             Have questions or want to partner on a campus hackathon? Join the IT Joint Community or message our leadership directly.
           </p>
@@ -390,20 +413,20 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
               href={OFFICIAL_COMMUNITY.telegramGroup}
               target="_blank"
               rel="noreferrer"
-              className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-colors flex items-center gap-2"
+              className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-all flex items-center gap-2 shadow-md active:scale-95"
             >
               <Send className="w-4 h-4" />
               <span>Join Telegram Group</span>
             </a>
             <button
               onClick={() => onNavigate('contact')}
-              className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 transition-colors"
+              className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 transition-colors active:scale-95"
             >
               Official Contact Form
             </button>
           </div>
-        </div>
-      </section>
+        </TiltCard>
+      </RevealOnScroll>
 
       {/* 
         =======================================================
@@ -412,10 +435,10 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
       */}
       {selectedPhoto && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in" onClick={() => setSelectedPhoto(null)}>
-          <div className="relative max-w-4xl w-full bg-[#111A2E] rounded-2xl overflow-hidden border border-slate-700 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="relative max-w-4xl w-full bg-[#0D1527] rounded-2xl overflow-hidden border border-slate-700 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => setSelectedPhoto(null)}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/60 text-white hover:bg-black/90 transition-colors"
+              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/60 text-white hover:bg-black/90 transition-colors active:scale-95"
               aria-label="Close photo preview"
             >
               <X className="w-5 h-5" />
@@ -425,7 +448,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
               alt={selectedPhoto.title}
               className="w-full max-h-[75vh] object-contain bg-black"
             />
-            <div className="p-5 bg-slate-900 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+            <div className="p-5 bg-[#090F1B] border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
               <div>
                 <span className="text-[11px] font-mono text-blue-400 font-semibold uppercase block">{selectedPhoto.event} • {selectedPhoto.location}</span>
                 <span className="font-bold text-white text-base mt-0.5 block">{selectedPhoto.title}</span>

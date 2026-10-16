@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CGCLogo } from '../components/Logo/CGCLogo';
+import { TiltCard } from '../components/Motion/TiltCard';
+import { MagneticButton } from '../components/Motion/MagneticButton';
 import { 
   ShieldCheck, 
   AlertTriangle, 
@@ -95,14 +97,14 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
       
       {/* Human-Crafted Header & Sub-Header */}
       <div className="text-center space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold">
           <ShieldCheck className="w-4 h-4 text-emerald-400" />
           <span>Official Pass & Ticket Verification</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
           Verify Member Pass or Event Ticket
         </h1>
-        <p className="text-slate-400 text-xs sm:text-sm max-w-lg mx-auto leading-relaxed">
+        <p className="text-slate-300 text-xs sm:text-sm max-w-lg mx-auto leading-relaxed">
           Authenticate student club memberships or special event credentials for hackathons, guest lectures, and coding challenges at Ambo University, Woliso Campus.
         </p>
       </div>
@@ -115,13 +117,13 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
             value={passIdInput}
             onChange={(e) => setPassIdInput(e.target.value)}
             placeholder="e.g. CGC-WL-2026-PRES or EVT-HACK-2026-WL"
-            className="w-full bg-[#111A2E] border border-slate-700/80 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 font-mono"
+            className="w-full bg-[#0D1527] border border-slate-700/80 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 font-mono shadow-inner"
           />
         </div>
-        <button
+        <MagneticButton
           type="submit"
           disabled={loading}
-          className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 transition shadow-sm"
+          className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 transition shadow-sm active:scale-95"
         >
           {loading ? (
             <RefreshCw className="w-3.5 h-3.5 animate-spin" />
@@ -129,16 +131,20 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
             <Search className="w-3.5 h-3.5" />
           )}
           <span>Verify</span>
-        </button>
+        </MagneticButton>
       </form>
 
       {/* Verification Output Card */}
       {result && (
-        <div className="rounded-3xl border transition-all duration-300 shadow-2xl overflow-hidden animate-fade-in bg-[#111A2E]">
+        <TiltCard
+          maxTilt={4}
+          scale={1.01}
+          className="rounded-3xl border border-slate-700/80 transition-all duration-300 shadow-2xl overflow-hidden animate-fade-in bg-[#0D1527]"
+        >
           {/* 1. Event / Hackathon / Lecture Ticket Verified */}
           {result.verified && result.isEventTicket && result.ticket ? (
             <div>
-              <div className="bg-gradient-to-r from-blue-950/80 via-indigo-950/70 to-slate-900 border-b border-blue-500/30 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="bg-gradient-to-r from-blue-950/80 via-indigo-950/70 to-[#0A101D] border-b border-blue-500/30 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-2xl bg-blue-500/20 border border-blue-400/40 flex items-center justify-center text-blue-400 shrink-0">
                     <CheckCircle2 className="w-7 h-7" />
@@ -166,12 +172,12 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
 
               <div className="p-6 sm:p-8 space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                  <div className="p-3.5 rounded-xl bg-slate-900/70 border border-slate-800 space-y-1">
+                  <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
                     <span className="text-[10px] uppercase font-semibold text-slate-500">Access Level</span>
                     <div className="font-semibold text-emerald-400">{result.ticket.accessLevel}</div>
                     <div className="text-slate-400 text-[11px]">Computer Lab 02 Clearance</div>
                   </div>
-                  <div className="p-3.5 rounded-xl bg-slate-900/70 border border-slate-800 space-y-1">
+                  <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
                     <span className="text-[10px] uppercase font-semibold text-slate-500">Authorized Issuer</span>
                     <div className="font-semibold text-white">{result.ticket.createdBy}</div>
                     <div className="text-slate-400 text-[11px]">Ambo University, Woliso Campus</div>
@@ -182,7 +188,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
           ) : result.verified && result.member ? (
             /* 2. Official Member Pass Verified */
             <div>
-              <div className="bg-gradient-to-r from-emerald-950/80 via-emerald-900/60 to-slate-900 border-b border-emerald-500/30 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="bg-gradient-to-r from-emerald-950/80 via-emerald-900/60 to-[#0A101D] border-b border-emerald-500/30 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 shrink-0">
                     <CheckCircle2 className="w-7 h-7" />
@@ -211,7 +217,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
               {/* Member Details Grid */}
               <div className="p-6 sm:p-8 space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                  <div className="p-3.5 rounded-xl bg-slate-900/70 border border-slate-800 space-y-1">
+                  <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
                     <span className="text-[10px] uppercase font-semibold text-slate-500 flex items-center gap-1">
                       <GraduationCap className="w-3.5 h-3.5 text-blue-400" />
                       Department & Standing
@@ -220,7 +226,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
                     <div className="text-slate-400 text-[11px]">{result.member.yearOfStudy}</div>
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-slate-900/70 border border-slate-800 space-y-1">
+                  <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
                     <span className="text-[10px] uppercase font-semibold text-slate-500 flex items-center gap-1">
                       <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                       Membership Role
@@ -229,7 +235,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
                     <div className="text-slate-400 text-[11px]">{result.member.primaryTrack}</div>
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-slate-900/70 border border-slate-800 space-y-1">
+                  <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
                     <span className="text-[10px] uppercase font-semibold text-slate-500 flex items-center gap-1">
                       <Building2 className="w-3.5 h-3.5 text-amber-400" />
                       Campus Clearance
@@ -238,7 +244,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
                     <div className="text-slate-400 text-[11px]">Computer Lab 02 & Orientation Hall</div>
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-slate-900/70 border border-slate-800 space-y-1">
+                  <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
                     <span className="text-[10px] uppercase font-semibold text-slate-500 flex items-center gap-1">
                       <Calendar className="w-3.5 h-3.5 text-indigo-400" />
                       Issued Date
@@ -251,7 +257,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
                 {/* Campus Verification Seal */}
                 <div className="p-4 rounded-2xl bg-blue-950/20 border border-blue-900/40 flex items-center justify-between text-xs">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-black text-white text-xs">
+                    <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-black text-white text-xs shadow-sm">
                       CGC
                     </div>
                     <div>
@@ -259,7 +265,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
                       <div className="text-[11px] text-slate-400">Lead Administration: Yesuf Dergu (@SatoshiFlash)</div>
                     </div>
                   </div>
-                  <span className="px-2.5 py-1 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">
+                  <span className="px-2.5 py-1 rounded bg-slate-800 text-emerald-400 font-mono text-[10px] border border-slate-700">
                     HASH: VERIFIED-OK
                   </span>
                 </div>
@@ -280,7 +286,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-400 space-y-2">
+              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-xs text-slate-400 space-y-2">
                 <p>If you are a registered student experiencing an issue, contact the CGC Lead Executive Desk:</p>
                 <div className="text-slate-300 font-mono text-[11px]">
                   Telegram: <a href="https://t.me/IT_Jointcommunity" target="_blank" className="text-blue-400 underline">@IT_Jointcommunity</a> | Email: yesufdergu464@gmail.com
@@ -288,14 +294,14 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
               </div>
             </div>
           )}
-        </div>
+        </TiltCard>
       )}
 
       {/* Back button */}
       <div className="text-center pt-2">
         <button
           onClick={onNavigateHome}
-          className="text-xs text-slate-400 hover:text-white transition inline-flex items-center gap-1"
+          className="text-xs text-slate-400 hover:text-white transition inline-flex items-center gap-1 active:scale-95"
         >
           ← Return to Cyber Guardians Club Portal
         </button>

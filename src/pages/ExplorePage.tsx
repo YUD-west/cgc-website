@@ -4,6 +4,9 @@ import { TRACKS } from '../data/tracks';
 import { INITIAL_PROJECTS } from '../data/projects';
 import { TrackId, Project } from '../types';
 import { ProjectCard } from '../components/ProjectCard';
+import { TiltCard } from '../components/Motion/TiltCard';
+import { MagneticButton } from '../components/Motion/MagneticButton';
+import { RevealOnScroll } from '../components/Motion/RevealOnScroll';
 import { 
   ShieldCheck, 
   Code2, 
@@ -53,13 +56,13 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
   };
 
   return (
-    <div className="space-y-16 sm:space-y-24 pb-20">
+    <div className="space-y-16 sm:space-y-24 pb-24">
       {/* 
         =======================================================
         PAGE HEADER
         =======================================================
       */}
-      <section className="pt-12 sm:pt-16">
+      <section className="pt-10 sm:pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             title="Learning Tracks & Specializations"
@@ -74,9 +77,9 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
                 <button
                   key={t.id}
                   onClick={() => setSelectedTrackId(t.id)}
-                  className={`flex items-center gap-2.5 px-4 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
+                  className={`flex items-center gap-2.5 px-4 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all duration-200 active:scale-95 ${
                     isSelected
-                      ? 'bg-blue-600 text-white shadow-glow-blue'
+                      ? 'bg-blue-600 text-white shadow-md font-bold'
                       : 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-800'
                   }`}
                 >
@@ -94,13 +97,16 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
         ACTIVE TRACK DEEP DIVE
         =======================================================
       */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-[#111A2E] rounded-3xl border border-slate-800 p-8 sm:p-12 shadow-card space-y-10">
-          
+      <RevealOnScroll className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <TiltCard
+          maxTilt={3}
+          scale={1.005}
+          className="bg-[#0D1527]/95 rounded-3xl border border-slate-700/70 p-7 sm:p-12 shadow-2xl space-y-10"
+        >
           {/* Header of Active Track */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-800/80">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-800">
             <div className="flex items-start gap-4">
-              <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-blue-400">
+              <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-blue-400 shadow-inner">
                 {getTrackIcon(selectedTrack.id, 'w-8 h-8')}
               </div>
               <div>
@@ -117,15 +123,15 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
             </div>
 
             <div className="flex items-center gap-3">
-              <button
+              <MagneticButton
                 onClick={() => onNavigate('join')}
-                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md transition-colors"
+                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md transition-all active:scale-95"
               >
                 Join This Cohort
-              </button>
+              </MagneticButton>
               <button
                 onClick={onProposeProject}
-                className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-colors"
+                className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-colors active:scale-95"
               >
                 Propose Track Idea
               </button>
@@ -143,7 +149,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
               </div>
 
               {/* Practical Focus Box */}
-              <div className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800/90 space-y-2">
+              <div className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-2">
                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-400">
                   <Terminal className="w-4 h-4" />
                   <span>Practical Lab Focus (Woliso Campus)</span>
@@ -160,7 +166,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
                   {(selectedTrack.coreInitiatives || []).map((init, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs text-slate-200"
+                      className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-200"
                     >
                       <CheckCircle2 className="w-4 h-4 text-blue-400 flex-shrink-0" />
                       <span>{init}</span>
@@ -173,7 +179,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
             {/* Sidebar: Syllabus Topics & Tools Stack */}
             <div className="space-y-6">
               {/* Topics */}
-              <div className="p-6 rounded-2xl bg-slate-900/70 border border-slate-800">
+              <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800">
                 <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-1.5">
                   <BookOpen className="w-4 h-4 text-blue-400" />
                   <span>Syllabus & Focus Areas</span>
@@ -189,7 +195,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
               </div>
 
               {/* Key Tools */}
-              <div className="p-6 rounded-2xl bg-slate-900/70 border border-slate-800">
+              <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800">
                 <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
                   <Wrench className="w-4 h-4 text-emerald-400" />
                   <span>Tools & Stack</span>
@@ -223,7 +229,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
 
               <button
                 onClick={() => onNavigate('projects')}
-                className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1"
+                className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1 active:scale-95 transition-colors"
               >
                 <span>View Full Registry</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -247,38 +253,41 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
                 </p>
                 <button
                   onClick={onProposeProject}
-                  className="mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold transition-colors"
+                  className="mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold transition-colors active:scale-95"
                 >
                   Propose the First {selectedTrack.shortName} Project
                 </button>
               </div>
             )}
           </div>
-
-        </div>
-      </section>
+        </TiltCard>
+      </RevealOnScroll>
 
       {/* 
         =======================================================
         INTER-DISCIPLINARY CALLOUT
         =======================================================
       */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-8 sm:p-10 rounded-3xl bg-slate-900 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6">
+      <RevealOnScroll className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <TiltCard
+          maxTilt={4}
+          scale={1.01}
+          className="p-8 sm:p-10 rounded-3xl bg-[#0D1527]/95 border border-slate-700/70 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl"
+        >
           <div>
             <h3 className="text-xl font-bold text-white">Not sure which track to pick?</h3>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl leading-relaxed">
               You do not have to limit yourself to one track. Many students participate in Programming while contributing to Cybersecurity CTFs, or join Software Development while testing AI models.
             </p>
           </div>
-          <button
+          <MagneticButton
             onClick={() => onNavigate('join')}
-            className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-semibold whitespace-nowrap transition-colors"
+            className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-semibold whitespace-nowrap shadow-md transition-all active:scale-95"
           >
             Apply & Choose Interests
-          </button>
-        </div>
-      </section>
+          </MagneticButton>
+        </TiltCard>
+      </RevealOnScroll>
     </div>
   );
 };

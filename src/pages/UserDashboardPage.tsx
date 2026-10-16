@@ -4,6 +4,7 @@ import { CGCLogo } from '../components/Logo/CGCLogo';
 import { QRCodeView } from '../components/QRCodeView';
 import { MemberBadgeModal } from '../components/Modals/MemberBadgeModal';
 import { downloadBadgeAsPNG, BadgeData } from '../utils/exportBadge';
+import { TiltCard } from '../components/Motion/TiltCard';
 import { 
   CheckCircle2, 
   Terminal, 
@@ -130,8 +131,12 @@ export const UserDashboardPage: React.FC<UserDashboardProps> = ({
 
         {/* Column 1: Member Card (Official QR if Approved, or Pending Notice) */}
         {isApproved && memberId ? (
-          <div id="cgc-member-card" className="p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-[#0F172A] to-[#162238] border border-blue-900/60 shadow-2xl relative flex flex-col justify-between space-y-5">
-            <div>
+          <TiltCard
+            maxTilt={8}
+            scale={1.02}
+            className="p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-[#0D1527] to-[#141F36] border border-blue-900/60 shadow-2xl relative flex flex-col justify-between space-y-5"
+          >
+            <div id="cgc-member-card">
               <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
                 <CGCLogo variant="full" size="sm" showTagline={false} />
                 <span className="px-2.5 py-1 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
@@ -217,7 +222,7 @@ export const UserDashboardPage: React.FC<UserDashboardProps> = ({
                 <span className="font-mono text-slate-500">Lab 02 Clearance</span>
               </div>
             </div>
-          </div>
+          </TiltCard>
         ) : (
           /* Provisional / Pending Approval Card */
           <div className="p-6 sm:p-7 rounded-3xl bg-[#111A2E] border border-amber-500/30 shadow-xl relative flex flex-col justify-between space-y-5">

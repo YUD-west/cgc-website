@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { TiltCard } from './Motion/TiltCard';
 import { 
   Code2, 
   ShieldCheck, 
@@ -136,22 +137,27 @@ export const InteractivePathway: React.FC<InteractivePathwayProps> = ({ onNaviga
   const activePathway = PATHWAYS.find((p) => p.id === activePathwayId) || PATHWAYS[0];
 
   return (
-    <div className="rounded-3xl bg-[#0E1628]/90 backdrop-blur-md border border-slate-700/60 p-6 sm:p-8 shadow-xl relative overflow-hidden">
+    <TiltCard
+      maxTilt={4}
+      scale={1.008}
+      className="rounded-3xl bg-[#0D1527]/95 backdrop-blur-xl border border-slate-700/70 p-6 sm:p-8 shadow-xl relative overflow-hidden"
+    >
       {/* Subtle atmospheric ambient glow inside card */}
       <div className="absolute -top-20 -right-20 w-64 h-64 bg-blue-500/10 blur-[80px] rounded-full pointer-events-none" />
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
+      
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 relative z-10">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
             Find Your Place in CGC
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-slate-300 mt-1">
             Tap your background or goal to see your recommended pathway and active teams.
           </p>
         </div>
       </div>
 
       {/* Interactive Motion Tab Buttons */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none relative z-10">
         {PATHWAYS.map((path) => {
           const Icon = path.icon;
           const isSelected = activePathwayId === path.id;
@@ -162,7 +168,7 @@ export const InteractivePathway: React.FC<InteractivePathwayProps> = ({ onNaviga
               className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 active:scale-95 ${
                 isSelected
                   ? 'bg-blue-600 text-white shadow-md'
-                  : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800 hover:border-slate-700'
+                  : 'bg-slate-900/90 text-slate-300 hover:text-white border border-slate-800 hover:border-slate-700'
               }`}
             >
               <Icon className="w-4 h-4 shrink-0" />
@@ -173,7 +179,7 @@ export const InteractivePathway: React.FC<InteractivePathwayProps> = ({ onNaviga
       </div>
 
       {/* Animated Pathway Details Panel */}
-      <div className="mt-6 pt-6 border-t border-slate-800 grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in">
+      <div className="mt-6 pt-6 border-t border-slate-800 grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in relative z-10">
         
         {/* Left Col: Scope & Activities */}
         <div className="lg:col-span-2 space-y-4">
@@ -185,7 +191,7 @@ export const InteractivePathway: React.FC<InteractivePathwayProps> = ({ onNaviga
               {activePathway.tagline}
             </p>
             <p className="text-xs text-slate-300 mt-2">
-              <strong>Target Audience:</strong> {activePathway.whoIsThisFor}
+              <strong className="text-white">Target Audience:</strong> {activePathway.whoIsThisFor}
             </p>
           </div>
 
@@ -205,7 +211,7 @@ export const InteractivePathway: React.FC<InteractivePathwayProps> = ({ onNaviga
         </div>
 
         {/* Right Col: Active Live Team & Quick Action */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col justify-between space-y-4">
+        <div className="p-4 sm:p-5 rounded-2xl bg-[#080D1A]/90 border border-slate-800 flex flex-col justify-between space-y-4">
           <div>
             <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-wider block mb-1">
               • Active Team Opportunity
@@ -213,7 +219,7 @@ export const InteractivePathway: React.FC<InteractivePathwayProps> = ({ onNaviga
             <h4 className="text-sm font-bold text-white">
               {activePathway.activeProject.title}
             </h4>
-            <p className="text-xs text-slate-400 mt-1 line-clamp-2">
+            <p className="text-xs text-slate-300 mt-1 line-clamp-2">
               {activePathway.activeProject.description}
             </p>
 
@@ -235,6 +241,6 @@ export const InteractivePathway: React.FC<InteractivePathwayProps> = ({ onNaviga
         </div>
 
       </div>
-    </div>
+    </TiltCard>
   );
 };
