@@ -1,7 +1,13 @@
-# Cyber Guardians Club (CGC) — Official Website
+# Cyber Guardians Club (CGC) — Official Innovation Platform
 
+[![Live Website](https://img.shields.io/badge/Live%20Website-cgc--woliso.onrender.com-success?style=for-the-badge&logo=render)](https://cgc-woliso.onrender.com/)
+[![Campus](https://img.shields.io/badge/Ambo%20University-Woliso%20Campus-blue?style=for-the-badge)](https://cgc-woliso.onrender.com/)
+[![Status](https://img.shields.io/badge/Status-100%25%20Verified%20Live-brightgreen?style=for-the-badge)](https://cgc-woliso.onrender.com/)
+
+> 🌐 **Official Live URL:** [https://cgc-woliso.onrender.com/](https://cgc-woliso.onrender.com/)  
 > **Tagline:** Ideas into Impact.  
 > **Institution:** Ambo University, Woliso Campus, Oromia, Ethiopia.  
+> **Lead Administrator:** Yesuf Dergu (`yesufdergu464@gmail.com`)  
 > **Core Principle:** *Don't just attend events. Build things that matter.*
 
 A modern, minimal, professional public web application for **CGC (Cyber Guardians Club)**, a student-led technology and innovation community uniting students from Information Technology, Informatics, Natural Sciences, Agricultural Sciences, Business, and Social Sciences.
