@@ -217,61 +217,23 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
 
       {/* 
         =======================================================
-        WOLISO CAMPUS TECH EVENTS & HACKATHON PHOTO GALLERY
+        WOLISO CAMPUS WORKSHOPS & EVENT GALLERY LINK
         =======================================================
       */}
       <RevealOnScroll className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeader
-          badge="Authentic Photo Archive"
-          badgeColor="blue"
-          title="Tech Events & Hackathons in Woliso Campus"
-          description="Photographic highlights from our tech orientation ceremonies, Cursor Hackathon Ambo project demos, classroom lectures, and laboratory build sessions."
-        />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {CAMPUS_EVENT_PHOTOS.map((photo) => (
-            <TiltCard
-              key={photo.id}
-              onClick={() => setSelectedPhoto(photo)}
-              maxTilt={6}
-              scale={1.02}
-              className="group cursor-pointer rounded-2xl overflow-hidden bg-[#0D1527]/95 border border-slate-700/70 hover:border-blue-500/60 shadow-lg transition-all duration-300 flex flex-col justify-between"
-            >
-              <div className="relative h-56 w-full overflow-hidden bg-slate-950">
-                <img
-                  src={photo.imageUrl}
-                  alt={photo.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0D1527] via-transparent to-transparent opacity-80" />
-                <span className="absolute top-3 right-3 bg-slate-900/90 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-mono text-emerald-400 border border-slate-700 flex items-center gap-1">
-                  <Maximize2 className="w-3 h-3" />
-                  <span>Click to Expand</span>
-                </span>
-              </div>
-
-              <div className="p-5 space-y-2">
-                <div className="flex items-center gap-1.5 text-xs text-blue-400 font-semibold">
-                  <Calendar className="w-3.5 h-3.5" />
-                  <span>{photo.event}</span>
-                </div>
-                <h4 className="text-base font-bold text-white group-hover:text-blue-300 transition-colors">
-                  {photo.title}
-                </h4>
-                <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
-                  {photo.description}
-                </p>
-
-                <div className="pt-2 flex flex-wrap gap-1">
-                  {photo.tags.map((t, i) => (
-                    <span key={i} className="text-[10px] font-mono bg-slate-900 text-slate-400 px-2 py-0.5 rounded border border-slate-800">
-                      #{t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </TiltCard>
-          ))}
+        <div className="p-8 sm:p-10 rounded-3xl bg-[#0D1527] border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-md">
+          <div>
+            <h3 className="text-xl font-bold text-white">Campus Tech Events & Hackathon Photos</h3>
+            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl leading-relaxed">
+              Explore authentic photos from the Cursor Hackathon Ambo, Computer Lab 02 coding workshops, and student demo sessions.
+            </p>
+          </div>
+          <button
+            onClick={() => onNavigate('events')}
+            className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs sm:text-sm transition-all whitespace-nowrap shadow-md active:scale-95"
+          >
+            <span>View Campus Photo Gallery →</span>
+          </button>
         </div>
       </RevealOnScroll>
 

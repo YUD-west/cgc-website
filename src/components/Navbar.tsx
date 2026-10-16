@@ -66,12 +66,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const navLinks = [
-    { id: 'home', label: 'Home', icon: Sparkles },
-    { id: 'explore', label: 'Tracks', icon: Compass },
-    { id: 'projects', label: 'Projects & Teams', icon: Layers },
-    { id: 'events', label: 'Events & Labs', icon: Calendar },
-    { id: 'handbook', label: 'Handbook', icon: BookOpen },
-    { id: 'about', label: 'About CGC', icon: Shield },
+    { id: 'home', label: 'Home' },
+    { id: 'about', label: 'About CGC' },
+    { id: 'projects', label: 'Projects' },
+    { id: 'events', label: 'Events' },
+    { id: 'join', label: 'Join Us' },
   ];
 
   const handleNavClick = (id: string) => {

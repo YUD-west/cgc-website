@@ -107,13 +107,12 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
   }, [allProjects, searchQuery, selectedCategory, levelFilter]);
 
   const categories = [
-    { id: 'all', label: 'All Projects', icon: Layers },
-    { id: 'beginners', label: '🌱 Beginners Welcome', icon: Sparkles },
-    { id: 'agri', label: '🌾 Agriculture & Sciences', icon: Sprout },
-    { id: 'business', label: '💼 Business & Innovation', icon: Briefcase },
-    { id: 'software', label: '💻 Software & Web', icon: Code2 },
-    { id: 'health', label: '🩺 Health & Community', icon: HeartHandshake },
-    { id: 'cyber', label: '🔒 Cybersecurity', icon: ShieldCheck }
+    { id: 'all', label: 'All Projects' },
+    { id: 'software', label: '💻 Software & Web' },
+    { id: 'cyber', label: '🔒 Cybersecurity' },
+    { id: 'agri', label: '🌾 Agriculture' },
+    { id: 'business', label: '💼 Business' },
+    { id: 'beginners', label: '🌱 Beginners' },
   ];
 
   return (

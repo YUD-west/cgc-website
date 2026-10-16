@@ -24,10 +24,9 @@ export const MobileNavDock: React.FC<MobileNavDockProps> = ({
 
   const navItems = [
     { id: 'home', label: 'Home', icon: Home },
-    { id: 'explore', label: 'Tracks', icon: Compass },
+    { id: 'about', label: 'About', icon: ShieldCheck },
     { id: 'projects', label: 'Projects', icon: Layers },
     { id: 'events', label: 'Events', icon: Calendar },
-    { id: 'verify', label: 'Pass', icon: ShieldCheck },
   ];
 
   return (
