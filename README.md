@@ -1,132 +1,144 @@
-# Cyber Guardians Club (CGC) — Official Innovation Platform
+# Yesuf Dergu — Developer Portfolio
 
-[![Live Website](https://img.shields.io/badge/Live%20Website-cgc--woliso.onrender.com-success?style=for-the-badge&logo=render)](https://cgc-woliso.onrender.com/)
-[![Campus](https://img.shields.io/badge/Ambo%20University-Woliso%20Campus-blue?style=for-the-badge)](https://cgc-woliso.onrender.com/)
-[![Status](https://img.shields.io/badge/Status-100%25%20Verified%20Live-brightgreen?style=for-the-badge)](https://cgc-woliso.onrender.com/)
+A premium, dark-minimal personal portfolio website for **Yesuf Dergu** — Self-taught Developer, Full-Stack Developer, and Aspiring AI/ML Engineer based in Ethiopia.
 
-> 🌐 **Official Live URL:** [https://cgc-woliso.onrender.com/](https://cgc-woliso.onrender.com/)  
-> **Tagline:** Ideas into Impact.  
-> **Institution:** Ambo University, Woliso Campus, Oromia, Ethiopia.  
-> **Lead Administrator:** Yesuf Dergu (`yesufdergu464@gmail.com`)  
-> **Core Principle:** *Don't just attend events. Build things that matter.*
-
-A modern, minimal, professional public web application for **CGC (Cyber Guardians Club)**, a student-led technology and innovation community uniting students from Information Technology, Informatics, Natural Sciences, Agricultural Sciences, Business, and Social Sciences.
+Designed with a pure near-black canvas (`#0A0A0A`), crisp white typography, and subtle lime-green accents (`#A3E635`). Built for speed, responsiveness, accessibility, and straightforward content customization.
 
 ---
 
-## 1. Visual Identity & Brand System
+## ✦ Live Production Deployments
 
-The visual identity is anchored by a custom geometric **CGC lettermark** crafted on a 100×100 vector coordinate grid:
-- **Guardian Shield Hexagon:** Represents defensive cybersecurity, resilient engineering, and student solidarity.
-- **Geometric Monogram (C-G-C):** Custom geometric letterforms with clean chamfers and high legibility at micro-scales (favicons, badges) as well as vector print (certificates, presentations, T-shirts).
-- **The Impact Node:** An energetic green spark positioned at the vertex of action, visually communicating "Ideas into Impact."
+- **NegadeX (DSA Stock Trading Simulator):** [https://negadex.vercel.app/](https://negadex.vercel.app/)
+- **YegnaFarm AI (Agricultural Intelligence):** [https://frontend-alpha-gray-52.vercel.app/](https://frontend-alpha-gray-52.vercel.app/)
+- **CGC Woliso (University Innovation Platform):** [https://cgc-woliso.onrender.com/](https://cgc-woliso.onrender.com/)
 
-### Color Palette Tokens
-| Token Name | Hex Code | Purpose |
-| :--- | :--- | :--- |
-| **Midnight Navy** | `#0F172A` | Dominant canvas background & high-contrast foundation |
-| **Electric Blue** | `#2563EB` | Primary brand action, digital trust, and interaction states |
-| **Off-White** | `#F5F7FA` | Clean typography, subtle surfaces, and negative space |
-| **Green Accent** | `#16A34A` | Growth, impact node, and active status indicators |
-
-*Note: An interactive Visual Identity Inspector is built into the website (click the logo or "View Identity & Palette" in the footer) to copy hex tokens and review SVG specifications.*
+### In Active Development ("Cooking")
+- **De Larada E-Commerce Platform:** [dealrada-ecommerce-platform](https://github.com/YUD-west/dealrada-ecommerce-platform)
+- **ScamShield AI:** [ScamShield-AI](https://github.com/YUD-west/ScamShield-AI)
+- **Library Management System:** [library-management-system](https://github.com/YUD-west/library-management-system)
+- **HomeNet (Local Network Discovery & Management)**
+- **Urjii (Job Discovery & Matching Platform)**
+- **Kefeta Youth Center Platform**
 
 ---
 
-## 2. Key Features & Architecture
+## ✦ Design Philosophy
 
-### A. Home
-- **Hero:** Geometric lettermark showcase, tagline *Ideas into Impact*, student-led community narrative, and clear calls to action.
-- **Our Purpose:** Highlights hands-on practical learning, cross-department collaboration, and the open-community model.
-- **5 Innovation Areas:** Quick access to all core learning tracks.
-- **Featured Projects:** Active campus codebases with GitHub and demo links.
-- **Upcoming Events:** In-person lab workshops and hybrid sessions with free seat reservation.
-- **Participation Structure:** Visual distinction between the *Open Community* (free public access) and *Official Membership* (project cohorts).
-
-### B. About CGC
-- **Mission & Vision:** Clear statements grounded in the Ambo University Woliso Campus context.
-- **4 Core Values:** *Innovation*, *Collaboration*, *Integrity*, and *Growth*.
-- **The Evolution:** Traces the club's journey starting with IT undergraduates and expanding to all campus departments.
-- **Woliso Campus Lab Facilities:** Information on Computer Lab 02 in the Main ICT Building.
-
-### C. Explore (Innovation Tracks)
-Detailed curricula, practical lab focus, tools stack, and linked projects for:
-1. **Cybersecurity & Digital Defense** (Wireshark, Burp Suite, Nmap, Linux, OWASP, CTFs)
-2. **Programming & Problem-Solving** (Data structures, contest algorithms, Python, C++, Java)
-3. **Artificial Intelligence & Machine Learning** (Local datasets, computer vision, Afan Oromo / Amharic NLP)
-4. **Software & Web Engineering** (React, TypeScript, Node.js, PostgreSQL, Tailwind CSS)
-5. **Tech Entrepreneurship & Product Innovation** (Problem validation, Lean MVP, pitch decks)
-
-### D. Projects & Innovation (Heart of the Website)
-- **Multi-Faceted Filtering:** Search by keyword, track, status (*Active*, *Contributors Wanted*, *Incubating*, *Completed*), or origin (*CGC Initiated* vs *Student Proposed*).
-- **Propose a Project:** Accessible form allowing any student to pitch a campus problem, recruit teammates, and save it dynamically to the live registry.
-- **Join Team:** One-click application for members to join active project teams.
-- **Honest Sample Content:** Transparent notices indicating that featured projects represent realistic campus problem models.
-
-### E. Events & Activities
-- **Timeline:** Toggle between *Upcoming Activities* and *Past Event Recaps*.
-- **RSVP Registration:** Free seat reservation with instant downloadable/copyable digital **CGC Event Pass**.
-- **Past Highlights:** Recaps of previous CTFs, Git bootcamps, and attendee numbers.
-
-### F. Join CGC
-- **Welcoming Onboarding:** Welcomes beginners and non-IT majors explicitly.
-- **Accessible Application Form:** Captures name, email, phone/telegram, department, year, track, skill level, learning goals, and motivation.
-- **Transparent Local Persistence:** Saves applications to the browser's persistent registry and produces a verified **CGC Digital Member Pass** with unique ID format (`CGC-WL-2026-XXXX`).
-
-### G. Contact & Campus Presence
-- **Physical Location:** Main ICT Building, Lab 02, Ambo University Woliso Campus, Oromia, Ethiopia.
-- **Digital Channels:** Telegram (`@CGC_Woliso`), GitHub (`cgc-woliso`), and official email placeholder.
-- **Inquiry Form & Interactive FAQ:** Searchable/filterable accordion answering common questions.
-
-### H. Command Palette (`Ctrl + K` / `⌘K`)
-- Instant site search for jumping directly to projects, events, tracks, or pages from anywhere in the application.
+- **Pure Dark Palette:** Near-black background (`#0A0A0A`), deep surface cards (`#111111`), and refined border contrast (`rgba(255, 255, 255, 0.08)`).
+- **Subtle Lime Accents:** Vibrant `#A3E635` accents applied sparingly to active states, badges, and focus indicators.
+- **Intentional Restraint:** Zero distracting blobs, unnecessary gradients, or generic AI-generated floaters. Focus is placed on strong typography, clean layout, and real software craftsmanship.
+- **Micro-Interactions & Motion:** Smooth scrolling, active navigation section tracking, accessible modal transitions, and responsive touch states.
+- **Accessible & Semantic:** Keyboard navigation friendly, semantic HTML landmarks (`<nav>`, `<header>`, `<main>`, `<section>`, `<footer>`), high contrast ratios, and clear ARIA attributes.
 
 ---
 
-## 3. Technology Stack
+## ✦ Website Sections
 
-- **Framework:** React 18 with TypeScript
-- **Styling:** Tailwind CSS with custom CGC color tokens (`#0F172A`, `#2563EB`, `#F5F7FA`, `#16A34A`)
+1. **Header & Navigation:** Sticky, translucent bar (`backdrop-blur-md`) with smooth-scrolling section links (`#home`, `#about`, `#projects`, `#experience`, `#skills`, `#achievements`, `#contact`), active section indicator, availability badge, and mobile drawer.
+2. **Hero:** Confident introduction, role statement, location tag (Ethiopia), status indicator, direct project navigation, and direct social links (GitHub, LinkedIn, Telegram).
+3. **About:** Narrative on Yesuf's self-taught journey, core engineering values (*Learn by Building*, *Practical Problem Solving*, *Craftsmanship & Restraint*), and quick profile facts.
+4. **Featured Projects:** Showcases live applications and in-development systems with live deployment buttons, GitHub links, and deep-dive architecture modals.
+5. **Experience:** Highlights development work on **Kefeta Youth Center**, **CGC Woliso Platform**, and participation in Ethiopian tech-community initiatives.
+6. **Skills:** Structured into four categories: *Frontend Development*, *Backend & Systems*, *Programming & Tools*, and *AI & Machine Learning*.
+7. **Achievements:** Features the 2nd place award at the **Ethiopian Cursor Community Hackathon** with key execution takeaways and editable notes.
+8. **Contact:**
+   - **Email:** [`yesufdergu464@gmail.com`](mailto:yesufdergu464@gmail.com) with one-click copy button
+   - **GitHub:** [https://github.com/YUD-west](https://github.com/YUD-west)
+   - **LinkedIn:** [https://www.linkedin.com/in/yusuf2537](https://www.linkedin.com/in/yusuf2537)
+   - **Telegram:** [https://t.me/SatoshiFlash](https://t.me/SatoshiFlash)
+   - **Direct Inquiry Composer:** Pre-filled subject & body email generator.
+9. **Footer:** Minimal copyright, social links, and smooth back-to-top button.
+
+---
+
+## ✦ Tech Stack
+
+- **Framework:** React 18
+- **Language:** TypeScript
+- **Bundler & Dev Server:** Vite 6
+- **Styling:** Tailwind CSS 3
 - **Icons:** Lucide React
-- **Build Tool:** Vite 6 (fast compilation, production minification)
-- **Persistence:** LocalStorage client registry (ready to bind to REST/Supabase backend)
+- **Fonts:** Inter & JetBrains Mono
 
 ---
 
-## 4. Getting Started
+## ✦ Getting Started
 
 ### Prerequisites
-- Node.js (v18+)
-- npm (v9+)
+- Node.js (v18.0.0 or later)
+- npm (v9.0.0 or later)
 
 ### Installation
 ```bash
-# Clone or navigate to the project directory
-cd CGC
+# Clone the repository
+git clone https://github.com/YUD-west/portfolio.git
+
+# Navigate to project folder
+cd portfolio
 
 # Install dependencies
 npm install
 
-# Start development server
+# Start local development server
 npm run dev
 ```
 
-### Production Build & Preview
+Visit `http://localhost:3000` to view the website in your browser.
+
+### Production Build
 ```bash
-# Build production bundle
+# Build production bundle with TypeScript check
 npm run build
 
 # Preview production build locally
 npm run preview
 ```
 
-The production server will be accessible at `http://localhost:3000/`.
+---
+
+## ✦ Customization Guide
+
+All personal information, project details, skills, and links are centralized in a single file:
+👉 `src/data/portfolioData.ts`
+
+### 1. Updating Contact Details
+In `src/data/portfolioData.ts`, update `socials`:
+```typescript
+socials: {
+  github: "https://github.com/YUD-west",
+  linkedin: "https://www.linkedin.com/in/yusuf2537",
+  telegram: "https://t.me/SatoshiFlash",
+  email: "yesufdergu464@gmail.com"
+}
+```
+
+### 2. Updating Project URLs & Repositories
+In `src/data/portfolioData.ts`, each project under `projects` contains `githubUrl` and `liveUrl`:
+```typescript
+{
+  id: "negadex",
+  title: "NegadeX",
+  githubUrl: "https://github.com/YUD-west/NegadeX-Trading-Simulator",
+  liveUrl: "https://negadex.vercel.app/"
+}
+```
 
 ---
 
-## 5. Future Roadmap Ready
-The modular architecture in `src/` is cleanly organized to add future backend integration:
-- Student authentication & profile dashboards
-- Idea board voting & community comments
-- Member directory & public skill portfolios
-- Course repository & lab schedule booking
+## ✦ Deployment
+
+### Deploy to Vercel (Recommended)
+1. Push your repository to GitHub.
+2. Sign in to [Vercel](https://vercel.com/) and click **Add New Project**.
+3. Import your GitHub repository.
+4. Vercel automatically detects Vite:
+   - **Framework Preset:** Vite
+   - **Build Command:** `npm run build`
+   - **Output Directory:** `dist`
+5. Click **Deploy**. The included `vercel.json` ensures all route fallbacks resolve cleanly.
+
+---
+
+## ✦ License & Ownership
+
+Created by **Yesuf Dergu**. All project content and code are open for personal customization.

@@ -1,280 +1,205 @@
 import React, { useState, useEffect } from 'react';
-import { CGCLogo } from './Logo/CGCLogo';
-import { useAuth } from '../context/AuthContext';
-import { MagneticButton } from './Motion/MagneticButton';
-import { 
-  Menu, 
-  X, 
-  Search, 
-  ArrowRight, 
-  Sparkles, 
-  Shield,
-  Layers, 
-  Calendar, 
-  Users, 
-  Compass,
-  User as UserIcon,
-  LogOut,
-  ShieldCheck,
-  Download,
-  BookOpen
-} from 'lucide-react';
+import { Menu, X, ArrowUpRight, Github, Linkedin, Send } from 'lucide-react';
+import { portfolioData } from '../data/portfolioData';
 
 interface NavbarProps {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
-  openCommandPalette: () => void;
-  onOpenAuth: () => void;
+  activeSection: string;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({
-  activeTab,
-  setActiveTab,
-  openCommandPalette,
-  onOpenAuth,
-}) => {
-  const { user, isAdmin, logout } = useAuth();
+export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
+  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 20);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // PWA Install Prompt State
-  const [installPrompt, setInstallPrompt] = useState<any>(null);
-  useEffect(() => {
-    const handler = (e: any) => {
-      e.preventDefault();
-      setInstallPrompt(e);
-    };
-    window.addEventListener('beforeinstallprompt', handler);
-    return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, []);
+  const navLinks = [
+    { label: 'Home', href: '#home' },
+    { label: 'About', href: '#about' },
+    { label: 'Projects', href: '#projects' },
+    { label: 'Experience', href: '#experience' },
+    { label: 'Skills', href: '#skills' },
+    { label: 'Achievements', href: '#achievements' },
+    { label: 'Contact', href: '#contact' },
+  ];
 
-  const handleInstallClick = async () => {
-    if (!installPrompt) return;
-    installPrompt.prompt();
-    const result = await installPrompt.userChoice;
-    if (result.outcome === 'accepted') {
-      setInstallPrompt(null);
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    setMobileMenuOpen(false);
+    const target = document.querySelector(href);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  const navLinks = [
-    { id: 'home', label: 'Home' },
-    { id: 'about', label: 'About CGC' },
-    { id: 'projects', label: 'Projects' },
-    { id: 'events', label: 'Events' },
-    { id: 'join', label: 'Join Us' },
-  ];
-
-  const handleNavClick = (id: string) => {
-    setActiveTab(id);
-    setMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
-    <>
-      <header
-        className={`sticky top-0 z-40 w-full transition-all duration-300 ${
-          scrolled
-            ? 'bg-[#080D1A]/95 backdrop-blur-xl border-b border-slate-800 shadow-xl'
-            : 'bg-[#080D1A]/80 backdrop-blur-md border-b border-slate-800/60'
-        }`}
-      >
-        {/* Main Navbar */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
+        isScrolled
+          ? 'bg-[#0A0A0A]/90 backdrop-blur-md border-b border-white/[0.08] py-3.5 shadow-2xl'
+          : 'bg-transparent py-5 border-b border-transparent'
+      }`}
+    >
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between">
           {/* Logo / Monogram */}
-          <button
-            onClick={() => handleNavClick('home')}
-            className="flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-lg p-1 text-left active:scale-95 transition-transform"
-            aria-label="CGC Home"
+          <a
+            href="#home"
+            onClick={(e) => handleLinkClick(e, '#home')}
+            className="group flex items-center gap-2.5 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-lime-400 rounded-md py-1 px-1.5"
+            aria-label="Yesuf Dergu - Home"
           >
-            <CGCLogo variant="full" size="md" />
-          </button>
+            <div className="w-8 h-8 rounded-md bg-[#161616] border border-white/10 flex items-center justify-center font-mono font-semibold text-sm text-white group-hover:border-lime-400/60 transition-colors">
+              YD
+            </div>
+            <div className="flex flex-col">
+              <span className="font-medium text-sm tracking-tight text-white group-hover:text-lime-400 transition-colors">
+                Yesuf Dergu
+              </span>
+              <span className="text-[11px] font-mono text-zinc-500 hidden sm:block">
+                Ethiopia
+              </span>
+            </div>
+          </a>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 p-1 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-md">
+          {/* Desktop Navigation */}
+          <nav
+            aria-label="Main Navigation"
+            className="hidden md:flex items-center gap-1 bg-[#141414]/70 border border-white/[0.07] px-3 py-1.5 rounded-full"
+          >
             {navLinks.map((link) => {
-              const isActive = activeTab === link.id;
+              const isActive = activeSection === link.href.substring(1);
               return (
-                <button
-                  key={link.id}
-                  onClick={() => handleNavClick(link.id)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold tracking-wider transition-all duration-200 relative ${
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={(e) => handleLinkClick(e, link.href)}
+                  className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all duration-150 ${
                     isActive
-                      ? 'text-white bg-blue-600 shadow-md font-bold'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                      ? 'text-black bg-lime-400 font-semibold shadow-sm'
+                      : 'text-zinc-400 hover:text-white hover:bg-white/[0.05]'
                   }`}
                 >
-                  <span>{link.label}</span>
-                </button>
+                  {link.label}
+                </a>
               );
             })}
           </nav>
 
-          {/* Actions: Command Search + Auth / Dashboard */}
-          <div className="hidden sm:flex items-center gap-2.5">
-            {/* Command Palette Trigger */}
-            <button
-              onClick={openCommandPalette}
-              className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-400 bg-slate-900/80 hover:bg-slate-800 hover:text-slate-200 border border-slate-700/60 rounded-xl transition-colors active:scale-95"
-              title="Search CGC (Ctrl + K)"
+          {/* Right Action: Availability & Quick Links */}
+          <div className="hidden lg:flex items-center gap-3">
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#141414] border border-white/[0.08] text-[11px] text-zinc-300">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-lime-400"></span>
+              </span>
+              <span>Available for projects</span>
+            </div>
+
+            <a
+              href="#contact"
+              onClick={(e) => handleLinkClick(e, '#contact')}
+              className="text-xs font-medium px-3.5 py-1.5 rounded-md bg-white text-black hover:bg-lime-400 hover:text-black transition-colors font-mono"
             >
-              <Search className="w-3.5 h-3.5 text-slate-400" />
-              <span>Search...</span>
-              <kbd className="hidden xl:inline-flex items-center px-1.5 py-0.2 text-[10px] font-mono bg-slate-950 border border-slate-700 rounded text-slate-400">
-                ⌘K
-              </kbd>
-            </button>
-
-            {/* Authenticated User Controls */}
-            {user ? (
-              <div className="flex items-center gap-2">
-                {/* Admin Portal Shortcut if Admin */}
-                {isAdmin && (
-                  <button
-                    onClick={() => handleNavClick('admin')}
-                    className={`px-3 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 active:scale-95 ${
-                      activeTab === 'admin'
-                        ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                        : 'bg-slate-800/80 text-amber-400 border-amber-500/30 hover:bg-slate-800'
-                    }`}
-                  >
-                    <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Admin Portal</span>
-                  </button>
-                )}
-
-                {/* Member Dashboard */}
-                <MagneticButton
-                  onClick={() => handleNavClick('dashboard')}
-                  className={`px-3 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 shadow-sm ${
-                    activeTab === 'dashboard'
-                      ? 'bg-blue-600 text-white border-blue-500'
-                      : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
-                  }`}
-                >
-                  <UserIcon className="w-3.5 h-3.5 text-blue-400" />
-                  <span>My Member Pass</span>
-                </MagneticButton>
-
-                {/* Logout */}
-                <button
-                  onClick={logout}
-                  className="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-xl transition-colors active:scale-95"
-                  title="Sign Out"
-                >
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={onOpenAuth}
-                  className="px-3.5 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-xl transition-colors active:scale-95"
-                >
-                  Sign In
-                </button>
-
-                <MagneticButton
-                  onClick={() => handleNavClick('join')}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white transition-all shadow-md active:scale-95"
-                >
-                  <span>Join CGC (Free)</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </MagneticButton>
-              </div>
-            )}
+              Get in touch
+            </a>
           </div>
 
-          {/* Mobile menu trigger button */}
-          <div className="flex lg:hidden items-center gap-2">
+          {/* Mobile Menu Button */}
+          <div className="flex items-center gap-2 md:hidden">
+            <a
+              href="#contact"
+              onClick={(e) => handleLinkClick(e, '#contact')}
+              className="text-xs px-2.5 py-1 rounded bg-white text-black font-medium"
+            >
+              Contact
+            </a>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none active:scale-95"
-              aria-label="Toggle menu"
+              type="button"
+              className="p-2 rounded-md bg-[#161616] text-zinc-300 hover:text-white border border-white/10 focus:outline-none focus:ring-2 focus:ring-lime-400"
+              aria-label="Toggle navigation menu"
+              aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
-      </header>
+      </div>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-x-0 top-16 bg-[#0B1120]/95 border-b border-slate-800 p-6 space-y-4 z-40 backdrop-blur-xl animate-fade-in shadow-2xl">
-          <div className="space-y-1">
-            {navLinks.map((link) => (
-              <button
-                key={link.id}
-                onClick={() => handleNavClick(link.id)}
-                className={`w-full text-left py-2.5 px-3 rounded-xl text-sm font-semibold flex items-center justify-between active:scale-95 transition-all ${
-                  activeTab === link.id ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-300 hover:bg-slate-800/80'
-                }`}
-              >
-                <span>{link.label}</span>
-              </button>
-            ))}
-            <button
-              onClick={() => handleNavClick('verify')}
-              className={`w-full text-left py-2.5 px-3 rounded-xl text-sm font-semibold flex items-center justify-between active:scale-95 transition-all ${
-                activeTab === 'verify' ? 'bg-emerald-500/20 text-emerald-300' : 'text-emerald-400 hover:bg-slate-800/80'
-              }`}
-            >
-              <span>🛡️ Verify Member Pass</span>
-            </button>
+        <div className="md:hidden bg-[#0F0F0F] border-b border-white/10 px-4 pt-3 pb-6 space-y-3 animate-fade-in shadow-2xl">
+          <div className="flex items-center gap-2 px-2 py-1 text-xs text-zinc-400 font-mono">
+            <span className="h-2 w-2 rounded-full bg-lime-400"></span>
+            <span>Based in Ethiopia · Open to collaboration</span>
           </div>
 
-          <div className="pt-4 border-t border-slate-800 space-y-2">
-            {user ? (
-              <div className="space-y-2">
-                <button
-                  onClick={() => handleNavClick('dashboard')}
-                  className="w-full py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs active:scale-95"
+          <div className="grid grid-cols-2 gap-2 pt-2">
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.href.substring(1);
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={(e) => handleLinkClick(e, link.href)}
+                  className={`text-sm font-medium px-3 py-2.5 rounded-lg border transition-colors ${
+                    isActive
+                      ? 'bg-lime-400/10 border-lime-400/40 text-lime-400 font-semibold'
+                      : 'bg-[#141414] border-white/5 text-zinc-300 hover:text-white'
+                  }`}
                 >
-                  My Member Pass
-                </button>
-                {isAdmin && (
-                  <button
-                    onClick={() => handleNavClick('admin')}
-                    className="w-full py-2.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold text-xs active:scale-95"
-                  >
-                    Admin Portal (Yesuf Dergu)
-                  </button>
-                )}
-                <button
-                  onClick={logout}
-                  className="w-full py-2 text-xs text-red-400 hover:text-red-300 active:scale-95"
-                >
-                  Sign Out ({user.email})
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => { setMobileMenuOpen(false); onOpenAuth(); }}
-                  className="py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs border border-slate-700 active:scale-95"
-                >
-                  Sign In
-                </button>
-                <button
-                  onClick={() => handleNavClick('join')}
-                  className="py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs active:scale-95 shadow-md"
-                >
-                  Join CGC (Free)
-                </button>
-              </div>
-            )}
+                  {link.label}
+                </a>
+              );
+            })}
+          </div>
+
+          <div className="pt-3 border-t border-white/10 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <a
+                href={portfolioData.socials.github}
+                target="_blank"
+                rel="noreferrer"
+                className="p-2 rounded-md bg-[#141414] text-zinc-400 hover:text-white border border-white/5"
+                aria-label="GitHub Profile"
+              >
+                <Github className="w-4 h-4" />
+              </a>
+              <a
+                href={portfolioData.socials.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="p-2 rounded-md bg-[#141414] text-zinc-400 hover:text-white border border-white/5"
+                aria-label="LinkedIn Profile"
+              >
+                <Linkedin className="w-4 h-4" />
+              </a>
+              <a
+                href={portfolioData.socials.telegram}
+                target="_blank"
+                rel="noreferrer"
+                className="p-2 rounded-md bg-[#141414] text-zinc-400 hover:text-white border border-white/5"
+                aria-label="Telegram Channel"
+              >
+                <Send className="w-4 h-4" />
+              </a>
+            </div>
+            <a
+              href="#contact"
+              onClick={(e) => handleLinkClick(e, '#contact')}
+              className="text-xs font-mono font-medium px-3 py-2 rounded bg-lime-400 text-black flex items-center gap-1.5"
+            >
+              Start Conversation <ArrowUpRight className="w-3.5 h-3.5" />
+            </a>
           </div>
         </div>
       )}
-    </>
+    </header>
   );
 };
