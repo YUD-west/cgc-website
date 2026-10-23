@@ -5,7 +5,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { db, seedDatabase } from './db.js';
 import { authenticateUser, requireAdmin, validateBody } from './middleware/auth.js';
-import { register, login, getMe, registerSchema, loginSchema } from './controllers/authController.js';
+import { register, login, getMe, changePassword, registerSchema, loginSchema } from './controllers/authController.js';
 import { 
   getMetrics, 
   getAllStudents, 
@@ -47,6 +47,7 @@ app.get('/api/health', (req, res) => {
 app.post('/api/auth/register', validateBody(registerSchema), register);
 app.post('/api/auth/login', validateBody(loginSchema), login);
 app.get('/api/auth/me', authenticateUser, getMe);
+app.post('/api/auth/change-password', authenticateUser, changePassword);
 
 // ---------------- PERSISTENT MEMBER APPLICATIONS ----------------
 app.post('/api/applications', (req, res) => {

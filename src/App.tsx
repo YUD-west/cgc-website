@@ -149,7 +149,27 @@ const AppContent: React.FC = () => {
           />
         )}
 
-        {activeTab === 'admin' && <AdminDashboardPage />}
+        {activeTab === 'admin' && (
+          isAdmin ? (
+            <AdminDashboardPage />
+          ) : (
+            <div className="py-24 max-w-md mx-auto px-4 text-center space-y-4">
+              <div className="w-14 h-14 bg-red-500/10 text-red-400 rounded-2xl flex items-center justify-center mx-auto border border-red-500/30">
+                <span className="text-xl font-bold">🔒</span>
+              </div>
+              <h2 className="text-xl font-bold text-white">403 — Restricted Lead Admin Clearance</h2>
+              <p className="text-xs text-neutral-400 leading-relaxed">
+                The CGC Presidential Control Center is restricted exclusively to the verified Lead Administrator. Please authenticate with your authorized admin credentials.
+              </p>
+              <button
+                onClick={() => setIsAuthModalOpen(true)}
+                className="mt-3 px-5 py-2.5 rounded-xl bg-[#FFC21A] hover:bg-[#FFB81C] text-black font-bold text-xs transition-all shadow-md cursor-pointer"
+              >
+                Authenticate as Admin
+              </button>
+            </div>
+          )
+        )}
       </main>
 
       {/* Slim Dark Footer */}

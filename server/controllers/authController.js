@@ -4,6 +4,39 @@ import { z } from 'zod';
 import { db } from '../db.js';
 import { JWT_SECRET } from '../middleware/auth.js';
 
+// In-memory brute-force protection
+const loginAttempts = new Map();
+
+function checkBruteForce(key) {
+  const record = loginAttempts.get(key);
+  if (!record) return { allowed: true };
+  const now = Date.now();
+  if (record.lockedUntil && record.lockedUntil > now) {
+    const remainingMinutes = Math.ceil((record.lockedUntil - now) / 60000);
+    return { allowed: false, remainingMinutes };
+  }
+  if (record.lockedUntil && record.lockedUntil <= now) {
+    loginAttempts.delete(key);
+    return { allowed: true };
+  }
+  return { allowed: true };
+}
+
+function recordFailedAttempt(key) {
+  const now = Date.now();
+  const record = loginAttempts.get(key) || { count: 0, firstAttempt: now };
+  record.count += 1;
+  if (record.count >= 5) {
+    record.lockedUntil = now + (15 * 60 * 1000); // 15-minute lockout
+    console.warn(`[SECURITY] Account/IP locked for 15 minutes due to 5 consecutive failed attempts: ${key}`);
+  }
+  loginAttempts.set(key, record);
+}
+
+function clearAttempts(key) {
+  loginAttempts.delete(key);
+}
+
 export const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6, 'Password must be at least 6 characters'),
@@ -27,15 +60,16 @@ export async function register(req, res) {
     const cleanEmail = email.toLowerCase().trim();
 
     // Check duplicate
-    const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(cleanEmail);
+    const existing = db.prepare('SELECT id FROM users WHERE lower(email) = lower(?)').get(cleanEmail);
     if (existing) {
       return res.status(409).json({ error: 'An account with this email already exists.' });
     }
 
-    const salt = bcrypt.genSaltSync(10);
+    const salt = bcrypt.genSaltSync(12);
     const passwordHash = bcrypt.hashSync(password, salt);
     const userId = `usr_${Date.now()}_${Math.random().toString(36).substring(7)}`;
 
+    // SECURITY: role is strictly hardcoded to 'USER' on public registration
     db.prepare(`
       INSERT INTO users (id, email, password_hash, full_name, role, department, year_of_study, phone, telegram, member_role, experience_level)
       VALUES (?, ?, ?, ?, 'USER', ?, ?, ?, ?, ?, ?)
@@ -80,18 +114,39 @@ export async function login(req, res) {
   try {
     const { email, password } = req.validatedBody;
     const cleanEmail = email.toLowerCase().trim();
+    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+    const rateLimitKey = `${clientIp}_${cleanEmail}`;
 
-    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(cleanEmail);
+    // Brute-force check
+    const { allowed, remainingMinutes } = checkBruteForce(rateLimitKey);
+    if (!allowed) {
+      return res.status(429).json({
+        error: `Security Lock: Too many failed login attempts. This account is locked for ${remainingMinutes} more minute(s) to protect against unauthorized access.`
+      });
+    }
+
+    const user = db.prepare('SELECT * FROM users WHERE lower(email) = lower(?)').get(cleanEmail);
     if (!user) {
+      recordFailedAttempt(rateLimitKey);
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
     const isMatch = bcrypt.compareSync(password, user.password_hash);
     if (!isMatch) {
+      recordFailedAttempt(rateLimitKey);
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
+    // Success: clear failed attempts
+    clearAttempts(rateLimitKey);
+
+    // SECURITY: Admin sessions expire in 24 hours, normal user in 7 days
+    const expiresIn = user.role === 'ADMIN' ? '24h' : '7d';
+    const token = jwt.sign(
+      { userId: user.id, role: user.role, email: user.email },
+      JWT_SECRET,
+      { expiresIn }
+    );
 
     return res.json({
       message: 'Login successful',
@@ -120,7 +175,7 @@ export function getMe(req, res) {
     // Check if user has an official verified application in member_applications
     const application = db.prepare(`
       SELECT * FROM member_applications
-      WHERE email = ?
+      WHERE lower(email) = lower(?)
       ORDER BY submitted_at DESC LIMIT 1
     `).get(user.email);
 
@@ -129,7 +184,7 @@ export function getMe(req, res) {
     const isAppApproved = application && application.status === 'Approved';
     const isApproved = isAdmin || isDbApproved || isAppApproved;
 
-    let membership;
+    let membership = null;
     if (isApproved) {
       const passId = isAdmin 
         ? 'CGC-WL-2026-PRES' 
@@ -157,7 +212,6 @@ export function getMe(req, res) {
         id: user.id,
         email: user.email,
         fullName: user.full_name || '',
-        full_name: user.full_name || '',
         role: user.role,
         department: user.department || 'Informatics & IT',
         yearOfStudy: user.year_of_study || '2nd Year',
@@ -174,5 +228,30 @@ export function getMe(req, res) {
   } catch (err) {
     console.error('[Auth] getMe error:', err);
     return res.status(500).json({ error: 'Failed to fetch current user' });
+  }
+}
+
+export async function changePassword(req, res) {
+  try {
+    const user = req.user;
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword || newPassword.length < 8) {
+      return res.status(400).json({ error: 'New password must be at least 8 characters long.' });
+    }
+
+    const dbUser = db.prepare('SELECT password_hash FROM users WHERE id = ?').get(user.id);
+    if (!dbUser || !bcrypt.compareSync(currentPassword, dbUser.password_hash)) {
+      return res.status(401).json({ error: 'Current password is incorrect.' });
+    }
+
+    const salt = bcrypt.genSaltSync(12);
+    const newHash = bcrypt.hashSync(newPassword, salt);
+    db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(newHash, user.id);
+
+    console.log(`[SECURITY] Password updated for user ${user.email} (${user.role}).`);
+    return res.json({ success: true, message: 'Password updated successfully.' });
+  } catch (err) {
+    console.error('[Auth] Change password error:', err);
+    return res.status(500).json({ error: 'Failed to update password.' });
   }
 }
