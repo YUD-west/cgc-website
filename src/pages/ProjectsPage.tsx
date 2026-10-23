@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import { ProjectCard } from '../components/ProjectCard';
 import { INITIAL_PROJECTS } from '../data/projects';
 import { Project } from '../types';
@@ -20,6 +21,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
   onProposeProject,
   customProposals = [],
 }) => {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
 
   // Under projects, keep ONLY CGC Official Portal & Digital Member Pass + any dynamic student proposals
@@ -48,13 +50,13 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-[#2A2A2A]">
           <div>
             <p className="text-xs uppercase font-semibold tracking-[0.2em] text-[#FFC21A] mb-1">
-              Active Builds
+              {t('projects.badge')}
             </p>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Campus Innovation Projects
+              {t('projects.title')}
             </h1>
             <p className="text-xs sm:text-sm text-[#A3A3A3] mt-1 max-w-2xl leading-relaxed">
-              Student-engineered software incubated at Ambo University Woliso Campus (Old Classroom ICT Building IT lab 01 and 06).
+              {t('projects.desc')}
             </p>
           </div>
 

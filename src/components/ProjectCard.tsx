@@ -1,5 +1,6 @@
 import React from 'react';
 import { Project } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 import { TiltCard } from './Motion/TiltCard';
 import { 
   Github, 
@@ -23,6 +24,12 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   project,
   onJoinTeam,
 }) => {
+  const { t } = useLanguage();
+
+  const isOfficial = project.id === 'cgc-proj-01' || project.title.toLowerCase().includes('cgc official portal');
+  const displayTitle = isOfficial ? t('project.title') : project.title;
+  const displayDesc = isOfficial ? t('project.desc') : project.description;
+
   const getTrackIcon = (trackId: string) => {
     switch (trackId) {
       case 'cybersecurity':
@@ -44,7 +51,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#FFC21A]/10 text-[#FFC21A] border border-[#FFC21A]/30">
             <span className="w-1.5 h-1.5 rounded-full bg-[#FFC21A] animate-pulse" />
-            Active
+            {t('projects.statusActive')}
           </span>
         );
       default:
@@ -73,13 +80,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-bold text-white group-hover:text-[#FFC21A] transition-colors line-clamp-1 mb-2">
-          {project.title}
+        <h3 className="text-lg font-bold text-white group-hover:text-[#FFC21A] transition-colors line-clamp-2 mb-2">
+          {displayTitle}
         </h3>
 
         {/* Tagline / Description */}
-        <p className="text-xs text-[#A3A3A3] leading-relaxed line-clamp-3 mb-4">
-          {project.description}
+        <p className="text-xs text-[#A3A3A3] leading-relaxed line-clamp-4 mb-4">
+          {displayDesc}
         </p>
 
         {/* Tags */}
@@ -109,7 +116,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
               target="_blank"
               rel="noreferrer"
               className="p-2 rounded-lg bg-[#141414] text-[#A3A3A3] hover:text-[#FFC21A] border border-[#2A2A2A] hover:border-[#FFC21A]/40 transition-colors"
-              title="GitHub Repository"
+              title={t('projects.viewGithub')}
             >
               <Github className="w-3.5 h-3.5" />
             </a>
@@ -119,7 +126,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
               onClick={() => onJoinTeam(project)}
               className="px-3 py-1.5 rounded-lg bg-[#FFC21A] hover:bg-[#FFB81C] text-black text-xs font-bold transition-all active:scale-95 cursor-pointer"
             >
-              Join Project
+              {t('join.joinTeam')}
             </button>
           )}
         </div>

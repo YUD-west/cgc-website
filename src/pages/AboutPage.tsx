@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import { SectionHeader } from '../components/SectionHeader';
 import { CGCLogo } from '../components/Logo/CGCLogo';
 import { LEAD_ADMIN, CO_ADMIN, OFFICIAL_COMMUNITY, CAMPUS_EVENT_PHOTOS, CampusEventPhoto } from '../data/team';
@@ -32,6 +33,7 @@ interface AboutPageProps {
 }
 
 export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandModal }) => {
+  const { t } = useLanguage();
   const [selectedPhoto, setSelectedPhoto] = useState<CampusEventPhoto | null>(null);
 
   const coreValues = [
@@ -79,8 +81,10 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
       <section className="relative pt-10 sm:pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
-            title="A Student-Led Innovation Movement"
-            description="Cyber Guardians Club (CGC) is an autonomous, student-governed technology and innovation collective established at Ambo University, Woliso Campus, Ethiopia."
+            badge={t('about.badge')}
+            badgeColor="amber"
+            title={t('about.title')}
+            description={t('about.desc')}
           />
 
           {/* Mission & Vision Split Card with 3D Tilt */}
@@ -93,9 +97,9 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
               <div className="w-12 h-12 rounded-xl bg-[#FFC21A]/10 border border-[#FFC21A]/30 text-[#FFC21A] flex items-center justify-center shadow-inner">
                 <Target className="w-6 h-6" />
               </div>
-              <h3 className="text-2xl font-bold text-white tracking-tight">Our Mission</h3>
+              <h3 className="text-2xl font-bold text-white tracking-tight">{t('about.missionTitle')}</h3>
               <p className="text-neutral-300 leading-relaxed text-sm sm:text-base">
-                To transform Ambo University Woliso Campus from a place of theoretical study into a thriving ecosystem of hands-on builders. We equip students with modern cybersecurity, software engineering, and artificial intelligence skills while building tools that matter to our campus and broader society.
+                {t('about.missionDesc')}
               </p>
             </TiltCard>
 
@@ -107,9 +111,9 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
               <div className="w-12 h-12 rounded-xl bg-[#FFC21A]/10 border border-[#FFC21A]/30 text-[#FFC21A] flex items-center justify-center shadow-inner">
                 <Compass className="w-6 h-6" />
               </div>
-              <h3 className="text-2xl font-bold text-white tracking-tight">Our Vision</h3>
+              <h3 className="text-2xl font-bold text-white tracking-tight">{t('about.visionTitle')}</h3>
               <p className="text-neutral-300 leading-relaxed text-sm sm:text-base">
-                To become the benchmark for student-led technology communities in Ethiopian higher education—where multidisciplinary student teams launch viable open-source projects, publish security audits, and turn campus graduation projects into real sustainable startups.
+                {t('about.visionDesc')}
               </p>
             </TiltCard>
           </div>

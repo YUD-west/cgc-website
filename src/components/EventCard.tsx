@@ -1,5 +1,6 @@
 import React from 'react';
 import { ClubEvent } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 import { TiltCard } from './Motion/TiltCard';
 import { 
   Clock, 
@@ -18,6 +19,13 @@ export const EventCard: React.FC<EventCardProps> = ({
   event,
   onRsvp,
 }) => {
+  const { t } = useLanguage();
+
+  const isOfficial = event.id === 'evt-02' || event.title.toLowerCase().includes('building real projects');
+  const displayTitle = isOfficial ? t('event.title') : event.title;
+  const displayDesc = isOfficial ? t('event.desc') : event.description;
+  const displayVenue = isOfficial ? t('brand.venue') : event.venue;
+
   const eventDate = new Date(event.date);
   const formattedDate = eventDate.toLocaleDateString('en-US', { 
     month: 'short', 
@@ -54,19 +62,19 @@ export const EventCard: React.FC<EventCardProps> = ({
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-bold text-white group-hover:text-[#FFC21A] transition-colors line-clamp-1 mb-1.5">
-          {event.title}
+        <h3 className="text-lg font-bold text-white group-hover:text-[#FFC21A] transition-colors line-clamp-2 mb-1.5">
+          {displayTitle}
         </h3>
 
         {/* Schedule */}
         <p className="text-xs text-[#FFC21A] font-medium flex items-center gap-1.5 mb-3">
           <Clock className="w-3.5 h-3.5 text-[#FFC21A] shrink-0" />
-          <span>{formattedDate} • {event.time}</span>
+          <span>{isOfficial ? t('event.time') : `${formattedDate} • ${event.time}`}</span>
         </p>
 
         {/* Brief description */}
-        <p className="text-xs text-[#A3A3A3] line-clamp-3 leading-relaxed">
-          {event.description}
+        <p className="text-xs text-[#A3A3A3] line-clamp-4 leading-relaxed">
+          {displayDesc}
         </p>
       </div>
 
@@ -74,7 +82,7 @@ export const EventCard: React.FC<EventCardProps> = ({
       <div className="mt-6 pt-4 border-t border-[#1C1C1C] flex items-center justify-between gap-3">
         <div className="text-[11px] text-[#737373] truncate max-w-[55%] flex items-center gap-1.5">
           <MapPin className="w-3.5 h-3.5 text-[#A3A3A3] shrink-0" />
-          <span className="truncate">{event.venue}</span>
+          <span className="truncate">{displayVenue}</span>
         </div>
 
         {onRsvp && event.status === 'Upcoming' && (
@@ -82,7 +90,7 @@ export const EventCard: React.FC<EventCardProps> = ({
             onClick={() => onRsvp(event)}
             className="px-4 py-2 text-xs font-bold rounded-lg bg-[#FFC21A] hover:bg-[#FFB81C] text-black shadow-sm transition-all flex items-center gap-1.5 shrink-0 active:scale-95 cursor-pointer"
           >
-            <span>RSVP Free</span>
+            <span>{t('events.rsvpBtn')}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         )}

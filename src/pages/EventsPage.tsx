@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import { EventCard } from '../components/EventCard';
 import { EVENTS } from '../data/events';
 import { ClubEvent } from '../types';
@@ -10,6 +11,8 @@ interface EventsPageProps {
 }
 
 export const EventsPage: React.FC<EventsPageProps> = ({ onRsvp }) => {
+  const { t } = useLanguage();
+
   // Only keep "Building Real Projects: From Idea to Working MVP"
   const singleEventList = EVENTS.filter((e) =>
     e.title.toLowerCase().includes('building real projects')
@@ -22,13 +25,13 @@ export const EventsPage: React.FC<EventsPageProps> = ({ onRsvp }) => {
         {/* Header */}
         <div className="pb-6 border-b border-[#2A2A2A] mb-8">
           <p className="text-xs uppercase font-semibold tracking-[0.2em] text-[#FFC21A] mb-1">
-            Hands-on Sprints
+            {t('events.badge')}
           </p>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Workshops &amp; Lab Sessions
+            {t('events.title')}
           </h1>
           <p className="text-xs sm:text-sm text-[#A3A3A3] mt-1 max-w-2xl leading-relaxed">
-            Technical build sessions in Old Classroom ICT Building IT lab 01 and 06, Woliso Campus.
+            {t('events.desc')}
           </p>
         </div>
 

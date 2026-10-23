@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import { Shield, Terminal, Cpu, Code2, ArrowRight } from 'lucide-react';
 
 declare const window: any;
@@ -8,6 +9,7 @@ interface AtomHeroProps {
 }
 
 export const AtomHero: React.FC<AtomHeroProps> = ({ onNavigate }) => {
+  const { t } = useLanguage();
   const mountRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const linksRef = useRef<SVGSVGElement>(null);
@@ -479,14 +481,14 @@ export const AtomHero: React.FC<AtomHeroProps> = ({ onNavigate }) => {
         {/* Hero Copy (Left) */}
         <div className="hero-copy relative z-10 max-w-xl py-12 lg:py-24">
           <p className="inline-block text-[#FFC21A] text-xs font-semibold uppercase tracking-[0.18em] mb-4">
-            Ambo University · Woliso Campus
+            {t('brand.campus')}
           </p>
           <h1 id="hero-title" className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-[1.08] mb-6 text-balance">
-            <span className="block text-white">Your Idea.</span>
-            <span className="block text-[#FFC21A]">Our Next Breakthrough</span>
+            <span className="block text-white">{t('hero.titleLine1')}</span>
+            <span className="block text-[#FFC21A]">{t('hero.titleLine2')}</span>
           </h1>
           <p className="text-gray-300 text-lg sm:text-xl font-normal leading-relaxed mb-8 max-w-md">
-            Open to every field. Built by curious minds. From Old Classroom ICT Building IT lab 01 and 06 to real-world impact.
+            {t('hero.description')}
           </p>
 
           <div className="flex flex-wrap items-center gap-4">
@@ -494,14 +496,14 @@ export const AtomHero: React.FC<AtomHeroProps> = ({ onNavigate }) => {
               onClick={() => onNavigate('join')}
               className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#F2F2F2] text-black font-bold text-sm hover:bg-white transition-all shadow-xl hover:shadow-white/10 active:scale-95 cursor-pointer"
             >
-              Join CGC (100% Free)
+              {t('hero.joinCta')}
               <ArrowRight className="w-4 h-4" />
             </button>
             <button
               onClick={() => onNavigate('projects')}
               className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl border border-[#2A2A2A] bg-black/40 text-gray-200 hover:text-white font-medium text-sm hover:border-[#A3A3A3] transition-all backdrop-blur-sm cursor-pointer"
             >
-              Explore Projects
+              {t('hero.exploreCta')}
             </button>
           </div>
         </div>
@@ -514,11 +516,11 @@ export const AtomHero: React.FC<AtomHeroProps> = ({ onNavigate }) => {
           style={{ willChange: 'transform, opacity' }}
         >
           <h2 className="flex items-center gap-2 font-display font-bold text-sm text-white mb-1.5">
-            <Shield className="w-4 h-4 text-[#14a94b]" />
-            Cybersecurity
+            <Shield className="w-4 h-4 text-[#FFC21A]" />
+            {t('track.cybersecurity.title')}
           </h2>
           <p className="text-xs text-[#A3A3A3] leading-snug">
-            Ethical hacking, defense and safe habits online.
+            {t('track.cybersecurity.desc')}
           </p>
         </article>
 
@@ -529,11 +531,11 @@ export const AtomHero: React.FC<AtomHeroProps> = ({ onNavigate }) => {
           style={{ willChange: 'transform, opacity' }}
         >
           <h2 className="flex items-center gap-2 font-display font-bold text-sm text-white mb-1.5">
-            <Terminal className="w-4 h-4 text-[#fcdd09]" />
-            Programming
+            <Terminal className="w-4 h-4 text-[#FFC21A]" />
+            {t('track.programming.title')}
           </h2>
           <p className="text-xs text-[#A3A3A3] leading-snug">
-            From first scripts to full web applications.
+            {t('track.programming.desc')}
           </p>
         </article>
 
@@ -544,11 +546,11 @@ export const AtomHero: React.FC<AtomHeroProps> = ({ onNavigate }) => {
           style={{ willChange: 'transform, opacity' }}
         >
           <h2 className="flex items-center gap-2 font-display font-bold text-sm text-white mb-1.5">
-            <Cpu className="w-4 h-4 text-[#e8262c]" />
-            AI &amp; ML
+            <Cpu className="w-4 h-4 text-[#FFC21A]" />
+            {t('track.aiml.title')}
           </h2>
           <p className="text-xs text-[#A3A3A3] leading-snug">
-            Data, models and projects that learn and predict.
+            {t('track.aiml.desc')}
           </p>
         </article>
 
@@ -559,11 +561,11 @@ export const AtomHero: React.FC<AtomHeroProps> = ({ onNavigate }) => {
           style={{ willChange: 'transform, opacity' }}
         >
           <h2 className="flex items-center gap-2 font-display font-bold text-sm text-white mb-1.5">
-            <Code2 className="w-4 h-4 text-[#14a94b]" />
-            Software Dev
+            <Code2 className="w-4 h-4 text-[#FFC21A]" />
+            {t('track.software.title')}
           </h2>
           <p className="text-xs text-[#A3A3A3] leading-snug">
-            Teamwork, Git and shipping working products.
+            {t('track.software.desc')}
           </p>
         </article>
       </div>

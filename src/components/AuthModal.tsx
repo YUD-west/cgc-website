@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { CGCLogo } from './Logo/CGCLogo';
 import { 
   X, 
@@ -31,6 +32,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   onSuccess
 }) => {
   const { login, register } = useAuth();
+  const { t } = useLanguage();
   const [tab, setTab] = useState<'login' | 'register'>(defaultTab);
 
   // Form states
@@ -102,9 +104,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <CGCLogo variant="compact" size="sm" />
             <div>
               <h3 className="text-base font-bold text-white">
-                {tab === 'login' ? 'Sign In to CGC' : 'Join Cyber Guardians Club'}
+                {tab === 'login' ? t('nav.signIn') : t('nav.join')}
               </h3>
-              <p className="text-xs text-neutral-400">Ambo University, Woliso Campus</p>
+              <p className="text-xs text-neutral-400">{t('brand.campus')}</p>
             </div>
           </div>
           <button
@@ -126,7 +128,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 : 'border-transparent text-neutral-400 hover:text-white'
             }`}
           >
-            Sign In
+            {t('nav.signIn')}
           </button>
           <button
             type="button"
@@ -137,7 +139,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 : 'border-transparent text-neutral-400 hover:text-white'
             }`}
           >
-            Join Club (All Faculties Welcome)
+            {t('nav.joinFree')}
           </button>
         </div>
 

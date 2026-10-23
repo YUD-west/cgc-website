@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import { SectionHeader } from '../components/SectionHeader';
 import { TRACKS } from '../data/tracks';
 import { TrackId, MemberApplication } from '../types';
@@ -22,6 +23,7 @@ interface JoinPageProps {
 }
 
 export const JoinPage: React.FC<JoinPageProps> = ({ onNavigate, onApplicationSubmit }) => {
+  const { t } = useLanguage();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -96,10 +98,10 @@ export const JoinPage: React.FC<JoinPageProps> = ({ onNavigate, onApplicationSub
         {/* Header */}
         <SectionHeader
           centered
-          badge="Become A Cyber Guardian"
+          badge={t('join.badge')}
           badgeColor="amber"
-          title="Join CGC at Woliso Campus"
-          description="Turn curiosity into hands-on capability. Beginners are celebrated, all departments are welcome, and you do not need prior expertise to start building."
+          title={t('join.title')}
+          description={t('join.desc')}
         />
 
         {/* The Two Participation Tiers Explained */}
@@ -138,9 +140,9 @@ export const JoinPage: React.FC<JoinPageProps> = ({ onNavigate, onApplicationSub
             </div>
 
             <div className="space-y-2">
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-white">Application Successfully Recorded!</h3>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-white">{t('join.successTitle')}</h3>
               <p className="text-neutral-300 text-sm max-w-lg mx-auto">
-                Welcome to Cyber Guardians Club, <strong>{applicationReceipt.fullName}</strong>. Below is your official membership intake card.
+                {t('join.successDesc')}
               </p>
             </div>
 
@@ -202,7 +204,7 @@ export const JoinPage: React.FC<JoinPageProps> = ({ onNavigate, onApplicationSub
                 className="px-4 py-2.5 rounded-xl bg-[#141414] hover:bg-[#202020] text-white text-xs font-semibold border border-[#2A2A2A] flex items-center gap-2 transition-colors"
               >
                 {copiedId ? <Check className="w-4 h-4 text-[#FFC21A]" /> : <Copy className="w-4 h-4" />}
-                <span>{copiedId ? 'Copied ID!' : 'Copy Member ID'}</span>
+                <span>{copiedId ? 'Copied ID!' : t('join.copyId')}</span>
               </button>
 
               <button
@@ -333,9 +335,9 @@ export const JoinPage: React.FC<JoinPageProps> = ({ onNavigate, onApplicationSub
                     onChange={(e) => setPrimaryTrack(e.target.value as TrackId)}
                     className="w-full px-4 py-3 rounded-xl bg-[#000000] border border-[#2A2A2A] text-white text-sm focus:border-[#FFC21A] focus:outline-none"
                   >
-                    {TRACKS.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.name}
+                    {TRACKS.map((track) => (
+                      <option key={track.id} value={track.id}>
+                        {track.name}
                       </option>
                     ))}
                   </select>
@@ -408,9 +410,9 @@ export const JoinPage: React.FC<JoinPageProps> = ({ onNavigate, onApplicationSub
 
                 <button
                   type="submit"
-                  className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#FFC21A] hover:bg-[#e5ad16] text-black font-bold text-sm shadow-[0_0_20px_rgba(255,194,26,0.2)] transition-all"
+                  className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#FFC21A] hover:bg-[#e5ad16] text-black font-bold text-sm shadow-[0_0_20px_rgba(255,194,26,0.2)] transition-all cursor-pointer"
                 >
-                  Submit Official Application
+                  {t('join.submit')}
                 </button>
               </div>
 
