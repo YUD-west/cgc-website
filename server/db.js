@@ -215,17 +215,35 @@ export function seedDatabase() {
     console.log('[DB] Seeded real CGC co-creator collaboration posts.');
   }
 
-  // Seed authentic campus projects if empty
+  // Purge legacy venues from database
+  try {
+    db.prepare("UPDATE event_tickets SET venue = 'Old Classroom ICT Building IT lab 01 and 06' WHERE venue LIKE '%Computer Lab%' OR venue LIKE '%Lab 02%'").run();
+    db.prepare("UPDATE co_creators SET title = REPLACE(title, 'Computer Lab 02', 'IT Lab 01 & 06'), description = REPLACE(description, 'Computer Lab 02', 'Old Classroom ICT Building IT lab 01 and 06')").run();
+    db.prepare("UPDATE project_proposals SET problem_statement = REPLACE(problem_statement, 'Computer Lab 02', 'IT lab 01 and 06'), proposed_solution = REPLACE(proposed_solution, 'Lab 02', 'IT lab 01 and 06')").run();
+  } catch (e) {
+    console.warn('[DB] Venue cleanup notice:', e);
+  }
+
+  // Enforce single project: CGC Official Portal & Digital Member Pass only
+  try {
+    db.prepare("DELETE FROM campus_projects WHERE id != 'PRJ-CGC-01'").run();
+  } catch (e) {}
+
   const projectCount = db.prepare('SELECT count(*) as count FROM campus_projects').get()?.count || 0;
   if (projectCount === 0) {
     db.prepare(`
       INSERT INTO campus_projects (id, title, description, category, proposer_name, proposer_faculty, target_level, needed_roles, status, impact_goal)
       VALUES 
-      ('PRJ-CGC-01', 'CGC Official Portal & Digital Member Pass', 'Official web platform, scannable QR verification pass, and cross-department collaboration engine for Ambo University Woliso Campus.', 'Software & Web', 'Yesuf Dergu', 'Information Technology', 'All Levels Welcome', 'Frontend UI Developer, Documentation & Community Liaison, Testing & QA Contributor', 'Active', 'Provide 500+ Ambo University Woliso Campus students with verified membership passes, project collaboration, and peer tech mentorship.'),
-      ('PRJ-HACK-02', 'Ambo University Cursor Hackathon Platform', 'Competitive hackathon innovation prototype demonstrated before university faculty and technical examiners at Ambo University. Engineered to solve student workflow and academic coordination needs.', 'Software & Web', 'Yesuf Dergu & Ameyu Kaba', 'Information Technology', 'All Levels Welcome', 'Full-Stack Developer, UI/UX Designer, Technical Pitch Lead', 'Active', 'Showcase Ambo University Woliso student engineering excellence to faculty examiners and national technology competitions.'),
-      ('PRJ-LAB-03', 'IT Lab 01 & 06 Network Defense & Ethical Telemetry', 'A student-led network security lab initiative in Old Classroom ICT Building IT lab 01 and 06. Students practice live packet inspection, isolate rogue ARP traffic, test ethical firewall configurations, and conduct capture-the-flag (CTF) defense drills on campus machines.', 'Cybersecurity & Systems', 'Yesuf Dergu', 'Information Technology (Cybersecurity SIG)', 'All Levels Welcome', 'Network Security Learner, Linux Terminal Administrator, CTF Challenge Author', 'Active', 'Turn Old Classroom ICT Building IT lab 01 and 06 into a secure, practical defensive computing and packet-analysis workshop for student cyber teams.'),
-      ('PRJ-AI-04', 'Woliso Campus AI & Practical Computing Cohort', 'An open technical cohort co-led by IT students to train peers across Agriculture, Business, and Natural Sciences on Python automation, data analysis, and applied AI tools for local challenges in South West Shewa zone.', 'Artificial Intelligence & Data', 'Ameyu Kaba', 'Informatics & Computer Science', 'Beginners Welcome', 'Python Beginners, Agricultural Data Collector, Community Coordinator', 'Active', 'Empower non-technical and beginner students with actionable AI and data automation skills for academic research and local problem-solving.')
+      ('PRJ-CGC-01', 'CGC Official Portal & Digital Member Pass', 'The official digital portal of Cyber Guardians Club at Ambo University, Woliso Campus (Old Classroom ICT Building IT lab 01 and 06). Features student membership passes, dynamic campus project proposals, inter-departmental co-creator board, and workshop coordination.', 'Software & Web', 'Yesuf Dergu', 'Information Technology (3rd Year), Ambo University', 'All Levels Welcome', 'Frontend UI Developer, Documentation & Community Liaison, Testing & QA Contributor', 'Active', 'Provide Ambo University Woliso Campus students with verified membership passes, hands-on project collaboration, and peer tech mentorship in IT lab 01 and 06.')
     `).run();
-    console.log('[DB] Seeded authentic CGC campus projects.');
+    console.log('[DB] Seeded CGC Official Portal & Digital Member Pass.');
+  } else {
+    db.prepare(`
+      UPDATE campus_projects SET 
+        title = 'CGC Official Portal & Digital Member Pass',
+        description = 'The official digital portal of Cyber Guardians Club at Ambo University, Woliso Campus (Old Classroom ICT Building IT lab 01 and 06). Features student membership passes, dynamic campus project proposals, inter-departmental co-creator board, and workshop coordination.',
+        impact_goal = 'Provide Ambo University Woliso Campus students with verified membership passes, hands-on project collaboration, and peer tech mentorship in IT lab 01 and 06.'
+      WHERE id = 'PRJ-CGC-01'
+    `).run();
   }
 }
