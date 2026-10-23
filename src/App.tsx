@@ -171,7 +171,7 @@ const AppContent: React.FC = () => {
       </main>
 
       {/* Slim Dark Footer */}
-      <Footer setActiveTab={handleNavigate} />
+      <Footer />
 
       {/* Modals & Dialogs */}
       <JoinTeamModal
