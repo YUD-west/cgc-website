@@ -34,16 +34,25 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <header className="sticky top-0 z-50 w-full bg-black/90 backdrop-blur-md border-b border-[#2A2A2A]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
-        {/* Logo matching Downloads/index.html */}
+        {/* Logo with official hammered gold insignia */}
         <button
           onClick={() => handleNavClick('home')}
-          className="group flex items-center gap-1.5 focus:outline-none cursor-pointer"
+          className="group flex items-center gap-2.5 focus:outline-none cursor-pointer"
           aria-label="CGC home"
         >
-          <span className="font-display font-extrabold text-xl tracking-[0.1em] text-[#F2F2F2]">
-            CGC
-          </span>
-          <span className="w-1.5 h-1.5 rounded-full bg-[#FFC21A] group-hover:scale-125 transition-transform" />
+          <img
+            src="/cgc-logo.png"
+            alt="CGC Logo"
+            className="h-8 sm:h-9 w-auto object-contain transition-transform group-hover:scale-105"
+          />
+          <div className="flex flex-col text-left">
+            <span className="font-display font-extrabold text-lg tracking-[0.08em] text-[#F2F2F2] leading-none">
+              CGC
+            </span>
+            <span className="text-[10px] text-[#A3A3A3] font-medium tracking-normal hidden sm:block mt-0.5">
+              Cyber Guardians Club
+            </span>
+          </div>
         </button>
 
         {/* Center Nav Links */}

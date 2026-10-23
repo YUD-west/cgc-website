@@ -124,17 +124,17 @@ export const BrandModal: React.FC<BrandModalProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
 
-        {/* Geometric Lettermark Design Rationale */}
+        {/* Insignia Design Rationale */}
         <div className="mt-6 p-4 rounded-xl bg-[#000000] border border-[#2A2A2A] text-xs text-neutral-300 leading-relaxed space-y-2">
-          <div className="font-bold text-white text-sm">Visual Philosophy: Minimalist Engineering</div>
+          <div className="font-bold text-white text-sm">Visual Philosophy: Golden Craftsmanship & Technology</div>
           <p>
-            • <strong>Guardian Shield Hexagon:</strong> Represents resilience, defensive cybersecurity, and student solidarity.
+            • <strong>Hammered Gold CGC Emblem:</strong> Represents durability, value creation, and excellence in student innovation at Ambo University Woliso Campus.
           </p>
           <p>
-            • <strong>Geometric Lettering:</strong> The custom shapes of <span className="font-mono text-[#FFC21A]">C</span>, <span className="font-mono text-white">G</span>, and <span className="font-mono text-[#FFC21A]">C</span> avoid generic system fonts, delivering a bold monogram that scales seamlessly down to 16px.
+            • <strong>Insignia Lettering:</strong> The sculpted letters <span className="font-mono text-[#FFC21A]">C</span>, <span className="font-mono text-[#FFC21A]">G</span>, and <span className="font-mono text-[#FFC21A]">C</span> create a distinctive emblem that anchors our official club identity across all digital and physical touchpoints.
           </p>
           <p>
-            • <strong>The Gold Node:</strong> Positioned at the vertex of action, illustrating the motto: <em className="text-[#FFC21A] font-semibold">"Ideas into Impact."</em>
+            • <strong>Golden Yellow Accent (#FFC21A):</strong> Signifies energy, forward momentum, and the motto: <em className="text-[#FFC21A] font-semibold">"Ideas into Impact."</em>
           </p>
         </div>
 

@@ -11,110 +11,53 @@ interface CGCLogoProps {
 export const CGCLogo: React.FC<CGCLogoProps> = ({
   variant = 'full',
   size = 'md',
-  theme = 'dark',
   className = '',
   showTagline = true,
 }) => {
-  const symbolSizes = {
-    sm: { width: 32, height: 32 },
-    md: { width: 42, height: 42 },
-    lg: { width: 54, height: 54 },
-    xl: { width: 72, height: 72 },
+  const sizeClasses = {
+    sm: { img: 'h-7', text: 'text-base', sub: 'text-[10px]' },
+    md: { img: 'h-9', text: 'text-lg', sub: 'text-xs' },
+    lg: { img: 'h-12', text: 'text-xl', sub: 'text-xs' },
+    xl: { img: 'h-16', text: 'text-2xl', sub: 'text-sm' },
   };
 
-  const { width, height } = symbolSizes[size];
+  const { img, text, sub } = sizeClasses[size];
 
-  // Palette tokens: strict black, white, and golden-yellow
-  const black = '#000000';
-  const gold = '#FFC21A';
-
-  const GeometricMark = (
-    <svg
-      width={width}
-      height={height}
-      viewBox="0 0 100 100"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="flex-shrink-0 transition-transform duration-300 hover:scale-[1.03]"
-      aria-label="CGC Monogram"
-    >
-      <defs>
-        <linearGradient id="cgcGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#FFD154" />
-          <stop offset="100%" stopColor="#FFC21A" />
-        </linearGradient>
-      </defs>
-
-      {/* Hexagonal Guardian shield boundary container */}
-      <polygon
-        points="50,4 92,26 92,74 50,96 8,74 8,26"
-        fill={black}
-        stroke="#2A2A2A"
-        strokeWidth="3.5"
-        strokeLinejoin="round"
-      />
-
-      {/* Inner Accent Ring Line */}
-      <polygon
-        points="50,11 86,30 86,70 50,89 14,70 14,30"
-        fill="none"
-        stroke={gold}
-        strokeOpacity="0.25"
-        strokeWidth="1.5"
-      />
-
-      {/* Left C Glyph (Gold) */}
-      <path
-        d="M 37 32 H 26 C 21.5 32 18 35.5 18 40 V 60 C 18 64.5 21.5 68 26 68 H 37 V 59 H 28 C 26.9 59 26 58.1 26 57 V 43 C 26 41.9 26.9 41 28 41 H 37 V 32 Z"
-        fill="url(#cgcGoldGrad)"
-      />
-
-      {/* Center G Glyph (White) */}
-      <path
-        d="M 59 32 H 44 C 39.5 32 36 35.5 36 40 V 60 C 36 64.5 39.5 68 44 68 H 59 C 62.5 68 64.5 65.5 64.5 62 V 48 H 50 V 55 H 56.5 V 60 C 56.5 60.5 56.1 61 55.5 61 H 45 C 43.9 61 43 60.1 43 59 V 41 C 43 39.9 43.9 39 45 39 H 59 V 32 Z"
-        fill="#F5F7FA"
-      />
-
-      {/* Right C Glyph (Gold) */}
-      <path
-        d="M 82 32 H 71 C 67.5 32 65 34.5 65 38 V 43 H 72 V 40 C 72 39.4 72.4 39 73 39 H 82 V 32 Z"
-        fill="url(#cgcGoldGrad)"
-      />
-      <path
-        d="M 72 57 V 60 C 72 60.6 72.4 61 73 61 H 82 V 68 H 71 C 67.5 68 65 65.5 65 62 V 57 H 72 Z"
-        fill="url(#cgcGoldGrad)"
-      />
-
-      {/* Central Node */}
-      <circle cx="50" cy="51.5" r="3.2" fill={gold} />
-    </svg>
+  const LogoMark = (
+    <img
+      src="/cgc-logo.png"
+      alt="CGC Logo"
+      className={`${img} w-auto object-contain flex-shrink-0 transition-transform duration-300 hover:scale-105 drop-shadow-[0_2px_10px_rgba(255,194,26,0.2)]`}
+      loading="eager"
+    />
   );
 
   if (variant === 'symbol') {
-    return <div className={`inline-flex items-center ${className}`}>{GeometricMark}</div>;
+    return <div className={`inline-flex items-center ${className}`}>{LogoMark}</div>;
+  }
+
+  if (variant === 'compact') {
+    return (
+      <div className={`inline-flex items-center gap-2 select-none ${className}`}>
+        {LogoMark}
+        <span className={`font-extrabold tracking-tight font-sans leading-none text-white ${text}`}>
+          CGC
+        </span>
+      </div>
+    );
   }
 
   return (
-    <div className={`inline-flex items-center gap-3.5 select-none ${className}`}>
-      {GeometricMark}
+    <div className={`inline-flex items-center gap-3 select-none ${className}`}>
+      {LogoMark}
 
       <div className="flex flex-col justify-center">
         <div className="flex items-center gap-2">
-          <span
-            className={`font-extrabold tracking-tight font-sans leading-none text-white ${
-              size === 'sm'
-                ? 'text-lg'
-                : size === 'md'
-                ? 'text-xl'
-                : size === 'lg'
-                ? 'text-2xl'
-                : 'text-3xl'
-            }`}
-          >
+          <span className={`font-extrabold tracking-tight font-sans leading-none text-white ${text}`}>
             CGC
           </span>
-          <span className="hidden sm:inline-block w-1 h-1 rounded-full bg-[#FFC21A]" />
-          <span className="font-semibold tracking-wide uppercase text-[11px] sm:text-xs text-[#FFC21A]">
+          <span className="hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-[#FFC21A]" />
+          <span className={`font-semibold tracking-wide uppercase text-[#FFC21A] ${sub}`}>
             Cyber Guardians Club
           </span>
         </div>
