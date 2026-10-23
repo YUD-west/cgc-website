@@ -13,7 +13,8 @@ import {
   updateApplicationStatus, 
   getProposals, 
   updateProposalStatus,
-  getRsvps 
+  getRsvps,
+  updateRsvpStatus
 } from './controllers/adminController.js';
 
 dotenv.config();
@@ -58,17 +59,28 @@ app.post('/api/applications', (req, res) => {
       return res.status(400).json({ error: 'Full name, email, and statement are required.' });
     }
 
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Anti-spam and duplicate check
+    const existing = db.prepare('SELECT id, status FROM member_applications WHERE lower(email) = ?').get(normalizedEmail);
+    if (existing) {
+      return res.status(400).json({ 
+        error: `An application with email "${normalizedEmail}" is already registered (Status: ${existing.status}). Duplicate submissions from the same account are blocked.` 
+      });
+    }
+
     const id = `CGC-MBR-2026-${Math.floor(1000 + Math.random() * 9000)}`;
 
     db.prepare(`
       INSERT INTO member_applications (id, full_name, email, phone, department, year_of_study, primary_track, skill_level, learning_goals, project_idea, why_join, status)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Approved')
-    `).run(id, fullName.trim(), email.toLowerCase().trim(), phone || null, department, yearOfStudy, primaryTrack, skillLevel, learningGoals || null, projectIdea || null, whyJoin.trim());
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Reviewing')
+    `).run(id, fullName.trim(), normalizedEmail, phone || null, department, yearOfStudy, primaryTrack, skillLevel, learningGoals || null, projectIdea || null, whyJoin.trim());
 
     res.status(201).json({
       success: true,
       id,
-      message: 'Membership registered in Woliso Campus registry.'
+      status: 'Reviewing',
+      message: 'Membership application submitted successfully. It is now awaiting review by Lead Admin Yesuf Dergu.'
     });
   } catch (err) {
     console.error('[Apps] Error saving application:', err);
@@ -79,7 +91,7 @@ app.post('/api/applications', (req, res) => {
 // ---------------- DYNAMIC CAMPUS PROJECTS BOARD ----------------
 app.get('/api/projects', (req, res) => {
   try {
-    const list = db.prepare('SELECT * FROM campus_projects ORDER BY created_at DESC').all();
+    const list = db.prepare("SELECT * FROM campus_projects WHERE status = 'Active' ORDER BY created_at DESC").all();
     res.json({ success: true, projects: list });
   } catch (err) {
     console.error('[Projects] Error fetching projects:', err);
@@ -107,24 +119,39 @@ app.post('/api/proposals', (req, res) => {
     
     const problemStatement = rawProblem || description;
     
-    if (!title || !problemStatement || !proposerName) {
-      return res.status(400).json({ error: 'Title, problem statement, and proposer name are required.' });
+    if (!title || !problemStatement || !proposerName || !proposerEmail) {
+      return res.status(400).json({ error: 'Title, problem statement, proposer name, and email are required.' });
+    }
+
+    const normalizedEmail = proposerEmail.toLowerCase().trim();
+    const cleanTitle = title.trim();
+
+    // Anti-spam and duplicate check: User cannot submit the same proposal twice or spam multiple pending proposals
+    const existing = db.prepare(`
+      SELECT id, title, status FROM project_proposals 
+      WHERE lower(proposer_email) = ? AND (status = 'Pending' OR lower(title) = lower(?))
+    `).get(normalizedEmail, cleanTitle);
+
+    if (existing) {
+      return res.status(400).json({ 
+        error: `You already have a proposal under this account (Title: "${existing.title}", Status: ${existing.status}). To prevent spam, duplicate submissions are restricted until reviewed by Lead Admin Yesuf Dergu.` 
+      });
     }
 
     const id = `PRJ-PROP-${Date.now().toString().slice(-4)}`;
 
     db.prepare(`
       INSERT INTO project_proposals (id, title, problem_statement, proposed_solution, track_id, category, proposer_name, proposer_email, proposer_department, proposer_role, needed_roles, target_level, status)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Incubating')
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')
     `).run(
       id,
-      title.trim(),
+      cleanTitle,
       problemStatement.trim(),
       proposedSolution?.trim() || 'Incubating in Old Classroom ICT Building IT lab 01 and 06',
       trackId || 'software-web',
       category || 'Campus Innovation',
       proposerName.trim(),
-      proposerEmail?.trim() || null,
+      normalizedEmail,
       proposerDepartment || 'Informatics & IT',
       proposerRole || 'Concept Lead',
       neededRoles || 'Developers, Designers, Researchers',
@@ -134,7 +161,8 @@ app.post('/api/proposals', (req, res) => {
     res.status(201).json({
       success: true,
       id,
-      message: 'Project proposal recorded in campus innovation pipeline.'
+      status: 'Pending',
+      message: 'Project proposal submitted for review. It is currently Pending and will only be published once approved by Lead Admin Yesuf Dergu.'
     });
   } catch (err) {
     console.error('[Proposals] Error saving proposal:', err);
@@ -144,7 +172,7 @@ app.post('/api/proposals', (req, res) => {
 
 app.get('/api/proposals', (req, res) => {
   try {
-    const list = db.prepare('SELECT * FROM project_proposals ORDER BY submitted_at DESC LIMIT 50').all();
+    const list = db.prepare("SELECT * FROM project_proposals WHERE status = 'Approved' ORDER BY submitted_at DESC LIMIT 50").all();
     res.json({ proposals: list });
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch proposals' });
@@ -159,18 +187,33 @@ app.post('/api/rsvps', (req, res) => {
       return res.status(400).json({ error: 'Event, name, and email are required.' });
     }
 
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Anti-spam and duplicate check: User cannot register twice for the same workshop
+    const existing = db.prepare(`
+      SELECT id, ticket_id, status FROM event_rsvps 
+      WHERE event_id = ? AND lower(email) = ?
+    `).get(eventId, normalizedEmail);
+
+    if (existing) {
+      return res.status(400).json({ 
+        error: `You have already applied for this workshop seat with email "${normalizedEmail}" (Status: ${existing.status}, Request ID: ${existing.ticket_id}). You cannot apply twice for the same workshop.` 
+      });
+    }
+
     const ticketId = `TCK-WL-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
     const id = `rsvp_${Date.now()}`;
 
     db.prepare(`
-      INSERT INTO event_rsvps (id, event_id, name, email, department, ticket_id)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run(id, eventId, name.trim(), email.toLowerCase().trim(), department || 'Informatics', ticketId);
+      INSERT INTO event_rsvps (id, event_id, name, email, department, ticket_id, status)
+      VALUES (?, ?, ?, ?, ?, ?, 'Pending')
+    `).run(id, eventId, name.trim(), normalizedEmail, department || 'Informatics', ticketId);
 
     res.status(201).json({
       success: true,
       ticketId,
-      message: 'Event seat confirmed.'
+      status: 'Pending',
+      message: 'Workshop seat registration submitted! Your request is Pending and will be confirmed once approved by Lead Admin Yesuf Dergu.'
     });
   } catch (err) {
     console.error('[RSVP] Error:', err);
@@ -381,6 +424,7 @@ app.patch('/api/admin/applications/:id', authenticateUser, requireAdmin, updateA
 app.get('/api/admin/proposals', authenticateUser, requireAdmin, getProposals);
 app.patch('/api/admin/proposals/:id', authenticateUser, requireAdmin, updateProposalStatus);
 app.get('/api/admin/rsvps', authenticateUser, requireAdmin, getRsvps);
+app.patch('/api/admin/rsvps/:id', authenticateUser, requireAdmin, updateRsvpStatus);
 
 // Admin Flexible Event Tickets
 app.get('/api/admin/event-tickets', authenticateUser, requireAdmin, (req, res) => {

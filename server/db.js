@@ -40,7 +40,7 @@ db.exec(`
     learning_goals TEXT,
     project_idea TEXT,
     why_join TEXT NOT NULL,
-    status TEXT NOT NULL DEFAULT 'Approved', -- 'Approved', 'Reviewing', 'Rejected'
+    status TEXT NOT NULL DEFAULT 'Reviewing', -- 'Approved', 'Reviewing', 'Rejected'
     submitted_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
@@ -55,7 +55,7 @@ db.exec(`
     proposer_email TEXT,
     proposer_department TEXT NOT NULL,
     needed_roles TEXT, -- comma-separated
-    status TEXT NOT NULL DEFAULT 'Incubating',
+    status TEXT NOT NULL DEFAULT 'Pending', -- 'Pending', 'Approved', 'Incubating', 'Rejected'
     submitted_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
@@ -67,6 +67,7 @@ db.exec(`
     email TEXT NOT NULL,
     department TEXT NOT NULL,
     ticket_id TEXT UNIQUE NOT NULL,
+    status TEXT NOT NULL DEFAULT 'Pending', -- 'Pending', 'Approved', 'Rejected'
     submitted_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
@@ -126,6 +127,11 @@ try { db.exec("ALTER TABLE users ADD COLUMN experience_level TEXT DEFAULT 'Begin
 try { db.exec("ALTER TABLE project_proposals ADD COLUMN target_level TEXT DEFAULT 'All Levels Welcome';"); } catch (e) {}
 try { db.exec("ALTER TABLE project_proposals ADD COLUMN proposer_role TEXT DEFAULT 'Concept Lead';"); } catch (e) {}
 try { db.exec("ALTER TABLE project_proposals ADD COLUMN category TEXT DEFAULT 'Campus Innovation';"); } catch (e) {}
+
+// Safely ensure status and indexing on event_rsvps table
+try { db.exec("ALTER TABLE event_rsvps ADD COLUMN status TEXT NOT NULL DEFAULT 'Pending';"); } catch (e) {}
+try { db.exec("CREATE INDEX IF NOT EXISTS idx_rsvps_email_event ON event_rsvps(lower(email), event_id);"); } catch (e) {}
+try { db.exec("CREATE INDEX IF NOT EXISTS idx_proposals_email ON project_proposals(lower(proposer_email));"); } catch (e) {}
 
 // Seed Lead Admin & Sample Co-Creator Opportunities (Strict Security Enforcement)
 export function seedDatabase() {
@@ -251,5 +257,14 @@ export function seedDatabase() {
         impact_goal = 'Provide Ambo University Woliso Campus students with verified membership passes, hands-on project collaboration, and peer tech mentorship in IT lab 01 and 06.'
       WHERE id = 'PRJ-CGC-01'
     `).run();
+  }
+
+  // Ensure all proposals and RSVPs that were never approved by Lead Admin are in 'Pending' queue
+  try {
+    db.prepare("UPDATE project_proposals SET status = 'Pending' WHERE status = 'Incubating'").run();
+    db.prepare("UPDATE event_rsvps SET status = 'Pending' WHERE status IS NULL OR status = ''").run();
+    console.log('[DB] Synchronized pending pipeline for Lead Admin Yesuf Dergu.');
+  } catch (e) {
+    console.warn('[DB] Pipeline reset notice:', e);
   }
 }

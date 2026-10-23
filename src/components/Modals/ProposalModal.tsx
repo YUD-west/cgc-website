@@ -42,10 +42,9 @@ export const ProposalModal: React.FC<ProposalModalProps> = ({
     try {
       setLoading(true);
       setError('');
-      const newId = generateId('PROP');
 
       // Post to backend database
-      await fetch('/api/proposals', {
+      const res = await fetch('/api/proposals', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -63,25 +62,13 @@ export const ProposalModal: React.FC<ProposalModalProps> = ({
         })
       });
 
-      const proposal: StudentProjectProposal = {
-        id: newId,
-        title: title.trim(),
-        proposerName: proposerName.trim(),
-        proposerEmail: proposerEmail.trim(),
-        proposerDepartment,
-        trackId: 'software-web',
-        problemStatement: problemStatement.trim(),
-        proposedSolution: proposedSolution.trim(),
-        neededRoles: neededRoles
-          .split(',')
-          .map((r) => r.trim())
-          .filter(Boolean),
-        submittedAt: new Date().toISOString(),
-      };
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Failed to submit proposal.');
+        return;
+      }
 
-      saveProposal(proposal);
-      onProposalSubmitted(proposal);
-      setProposalId(newId);
+      setProposalId(data.id || 'PRJ-PROP-SUBMITTED');
       setSubmitted(true);
     } catch (err: any) {
       console.error('Proposal submit error:', err);

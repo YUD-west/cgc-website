@@ -18,7 +18,6 @@ import { AuthModal } from './components/AuthModal';
 import { CommandPalette } from './components/CommandPalette';
 
 import { Project, ClubEvent, StudentProjectProposal } from './types';
-import { getStoredProposals } from './utils/storage';
 
 const AppContent: React.FC = () => {
   const { user, isAdmin } = useAuth();
@@ -31,65 +30,41 @@ const AppContent: React.FC = () => {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
 
-  // Dynamic user proposals from localStorage + backend
+  // Dynamic user proposals from backend (only officially approved projects)
   const [customProposals, setCustomProposals] = useState<Project[]>([]);
 
   useEffect(() => {
-    const stored = getStoredProposals();
-    const mapped: Project[] = stored.map((p) => ({
-      id: p.id,
-      title: p.title,
-      tagline: p.proposedSolution || 'Student-proposed campus initiative under CGC review.',
-      description: p.problemStatement,
-      trackId: p.trackId,
-      origin: 'Student Proposed',
-      status: 'Incubating',
-      lead: p.proposerName,
-      leadDepartment: `${p.proposerDepartment} (Student Lead)`,
-      teamSize: 1,
-      openRoles: p.neededRoles,
-      tags: ['Student Proposal', 'Community Concept'],
-      featured: false,
-      impactGoal: p.problemStatement,
-      createdDate: p.submittedAt.slice(0, 10),
-    }));
-    setCustomProposals(mapped);
+    fetch('/api/projects')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.projects) {
+          const approved: Project[] = data.projects
+            .filter((p: any) => p.id !== 'PRJ-CGC-01' && p.status === 'Active')
+            .map((p: any) => ({
+              id: p.id,
+              title: p.title,
+              tagline: p.impact_goal || p.description,
+              description: p.description,
+              trackId: p.category?.toLowerCase().includes('cyber') ? 'cybersecurity' : 'software-web',
+              origin: 'Student Proposed',
+              status: 'Approved',
+              lead: p.proposer_name,
+              leadDepartment: `${p.proposer_faculty} (Student Lead)`,
+              teamSize: 1,
+              openRoles: (p.needed_roles || '').split(',').map((r: string) => r.trim()).filter(Boolean),
+              tags: ['Approved Innovation', p.category || 'Software'],
+              featured: false,
+              impactGoal: p.impact_goal || p.description,
+              createdDate: (p.created_at || '').slice(0, 10),
+            }));
+          setCustomProposals(approved);
+        }
+      })
+      .catch((err) => console.warn('Could not load approved projects', err));
   }, []);
 
-  const handleProposalSubmitted = (newProp: StudentProjectProposal) => {
-    // Post to persistent SQLite database
-    fetch('/api/proposals', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title: newProp.title,
-        problemStatement: newProp.problemStatement,
-        proposedSolution: newProp.proposedSolution,
-        trackId: newProp.trackId,
-        proposerName: newProp.proposerName,
-        proposerDepartment: newProp.proposerDepartment,
-        neededRoles: newProp.neededRoles.join(', ')
-      })
-    }).catch(err => console.warn('Could not sync proposal to backend', err));
-
-    const asProject: Project = {
-      id: newProp.id,
-      title: newProp.title,
-      tagline: newProp.proposedSolution || 'Student-proposed campus initiative under CGC review.',
-      description: newProp.problemStatement,
-      trackId: newProp.trackId,
-      origin: 'Student Proposed',
-      status: 'Incubating',
-      lead: newProp.proposerName,
-      leadDepartment: `${newProp.proposerDepartment} (Student Lead)`,
-      teamSize: 1,
-      openRoles: newProp.neededRoles,
-      tags: ['Student Proposal', 'Community Concept'],
-      featured: false,
-      impactGoal: newProp.problemStatement,
-      createdDate: newProp.submittedAt.slice(0, 10),
-    };
-    setCustomProposals((prev) => [asProject, ...prev]);
+  const handleProposalSubmitted = (_newProp: StudentProjectProposal) => {
+    // Newly submitted proposals remain in the Pending queue until approved by Lead Admin Yesuf Dergu
   };
 
   const handleNavigate = (tab: string) => {

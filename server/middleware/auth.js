@@ -28,9 +28,14 @@ export function authenticateUser(req, res, next) {
   }
 }
 
+export const LEAD_ADMIN_EMAIL = 'yesufdergu464@gmail.com';
+
 export function requireAdmin(req, res, next) {
   if (!req.user || req.user.role !== 'ADMIN') {
     return res.status(403).json({ error: 'Forbidden. Administrator privileges required.' });
+  }
+  if (!req.user.email || req.user.email.toLowerCase() !== LEAD_ADMIN_EMAIL.toLowerCase()) {
+    return res.status(403).json({ error: 'Access restricted. Only Lead Admin Yesuf Dergu is authorized to perform this executive action.' });
   }
   next();
 }

@@ -11,16 +11,22 @@ export function getMetrics(req, res) {
 
     // 3. Student Project Proposals
     const proposalCount = db.prepare('SELECT COUNT(*) as count FROM project_proposals').get();
+    const pendingProposals = db.prepare("SELECT COUNT(*) as count FROM project_proposals WHERE status = 'Pending' OR status = 'Reviewing'").get();
 
     // 4. Workshop & Event RSVPs
     const rsvpCount = db.prepare('SELECT COUNT(*) as count FROM event_rsvps').get();
+    const pendingRsvps = db.prepare("SELECT COUNT(*) as count FROM event_rsvps WHERE status = 'Pending'").get();
+    const approvedRsvps = db.prepare("SELECT COUNT(*) as count FROM event_rsvps WHERE status = 'Approved'").get();
 
     return res.json({
       totalStudents: studentCount.count,
       totalApplications: totalApps.count,
       pendingApplications: pendingApps.count,
       totalProposals: proposalCount.count,
-      totalRsvps: rsvpCount.count
+      pendingProposals: pendingProposals.count,
+      totalRsvps: rsvpCount.count,
+      pendingRsvps: pendingRsvps.count,
+      approvedRsvps: approvedRsvps.count
     });
   } catch (err) {
     console.error('[Admin] Metrics error:', err);
@@ -135,11 +141,11 @@ export function updateApplicationStatus(req, res) {
 export function updateProposalStatus(req, res) {
   try {
     const { id } = req.params;
-    const { status, publishToCoCreator = true } = req.body; // 'Approved', 'Incubating', 'Reviewing', 'Rejected'
+    const { status, publishToCoCreator = true } = req.body; // 'Approved', 'Incubating', 'Reviewing', 'Rejected', 'Pending'
 
-    const validStatuses = ['Approved', 'Incubating', 'Reviewing', 'Rejected'];
+    const validStatuses = ['Approved', 'Incubating', 'Reviewing', 'Rejected', 'Pending'];
     if (!validStatuses.includes(status)) {
-      return res.status(400).json({ error: 'Invalid proposal status.' });
+      return res.status(400).json({ error: 'Invalid proposal status. Must be Approved, Incubating, Reviewing, Rejected, or Pending.' });
     }
 
     const proposal = db.prepare('SELECT * FROM project_proposals WHERE id = ?').get(id);
@@ -190,9 +196,9 @@ export function updateProposalStatus(req, res) {
       } else {
         db.prepare("UPDATE campus_projects SET status = 'Active' WHERE id = ?").run(proposal.id);
       }
-    } else if (status === 'Rejected') {
+    } else if (status === 'Rejected' || status === 'Pending') {
       db.prepare("UPDATE co_creators SET status = 'Closed' WHERE id = ?").run(collabId);
-      db.prepare("UPDATE campus_projects SET status = 'Rejected' WHERE id = ?").run(proposal.id);
+      db.prepare("DELETE FROM campus_projects WHERE id = ?").run(proposal.id);
     }
 
     return res.json({ success: true, id, status, message: `Proposal marked as ${status}` });
@@ -204,7 +210,7 @@ export function updateProposalStatus(req, res) {
 
 export function getProposals(req, res) {
   try {
-    const proposals = db.prepare('SELECT * FROM project_proposals ORDER BY submitted_at DESC LIMIT 50').all();
+    const proposals = db.prepare('SELECT * FROM project_proposals ORDER BY submitted_at DESC LIMIT 100').all();
     return res.json({ proposals });
   } catch (err) {
     console.error('[Admin] Proposals error:', err);
@@ -214,10 +220,33 @@ export function getProposals(req, res) {
 
 export function getRsvps(req, res) {
   try {
-    const rsvps = db.prepare('SELECT * FROM event_rsvps ORDER BY submitted_at DESC LIMIT 50').all();
+    const rsvps = db.prepare('SELECT * FROM event_rsvps ORDER BY submitted_at DESC LIMIT 100').all();
     return res.json({ rsvps });
   } catch (err) {
     console.error('[Admin] RSVPs error:', err);
     return res.status(500).json({ error: 'Failed to retrieve RSVPs' });
+  }
+}
+
+export function updateRsvpStatus(req, res) {
+  try {
+    const { id } = req.params;
+    const { status } = req.body; // 'Pending', 'Approved', 'Rejected'
+
+    const validStatuses = ['Pending', 'Approved', 'Rejected'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Invalid RSVP status. Must be Pending, Approved, or Rejected.' });
+    }
+
+    const rsvp = db.prepare('SELECT * FROM event_rsvps WHERE id = ?').get(id);
+    if (!rsvp) {
+      return res.status(404).json({ error: 'RSVP record not found.' });
+    }
+
+    db.prepare('UPDATE event_rsvps SET status = ? WHERE id = ?').run(status, id);
+    return res.json({ success: true, id, status, message: `RSVP reservation updated to ${status}` });
+  } catch (err) {
+    console.error('[Admin] Update RSVP status error:', err);
+    return res.status(500).json({ error: 'Failed to update RSVP status' });
   }
 }

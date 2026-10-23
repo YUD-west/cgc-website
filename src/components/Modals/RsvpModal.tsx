@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { X, CheckCircle2, Ticket, Calendar, Clock, MapPin, AlertCircle } from 'lucide-react';
+import { X, Ticket, Calendar, Clock, MapPin, ShieldAlert, Clock3 } from 'lucide-react';
 import { ClubEvent } from '../../types';
-import { saveRsvp, generateId } from '../../utils/storage';
 
 interface RsvpModalProps {
   isOpen: boolean;
@@ -21,28 +20,46 @@ export const RsvpModal: React.FC<RsvpModalProps> = ({
   const [confirmed, setConfirmed] = useState(false);
   const [ticketId, setTicketId] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   if (!isOpen || !event) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim()) {
       setError('Please provide your name and email.');
       return;
     }
 
-    const tId = generateId('PASS');
-    saveRsvp({
-      eventId: event.id,
-      name: name.trim(),
-      email: email.trim(),
-      department,
-      timestamp: new Date().toISOString(),
-      ticketId: tId,
-    });
+    try {
+      setLoading(true);
+      setError('');
 
-    setTicketId(tId);
-    setConfirmed(true);
+      const res = await fetch('/api/rsvps', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          eventId: event.id,
+          name: name.trim(),
+          email: email.trim(),
+          department
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Failed to submit workshop registration.');
+        return;
+      }
+
+      setTicketId(data.ticketId);
+      setConfirmed(true);
+    } catch (err: any) {
+      console.error('RSVP submit error:', err);
+      setError('Failed to connect to server. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleReset = () => {
@@ -67,11 +84,16 @@ export const RsvpModal: React.FC<RsvpModalProps> = ({
         {confirmed ? (
           <div className="text-center py-4">
             <div className="w-14 h-14 bg-[#FFC21A]/10 border border-[#FFC21A]/30 text-[#FFC21A] rounded-full flex items-center justify-center mx-auto mb-3">
-              <CheckCircle2 className="w-7 h-7" />
+              <Clock3 className="w-7 h-7" />
             </div>
-            <h3 className="text-xl font-bold text-white">Seat Reserved Successfully!</h3>
-            <p className="mt-1 text-neutral-300 text-xs">
-              Here is your digital admission pass for Woliso Campus:
+            <h3 className="text-xl font-bold text-white">Registration Submitted!</h3>
+            
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold font-mono mt-2 mb-1">
+              <span>⏳ Status: Pending Lead Admin Approval</span>
+            </div>
+
+            <p className="mt-2 text-neutral-300 text-xs max-w-sm mx-auto leading-relaxed">
+              Your seat request has been logged. To prevent spam and maintain lab workstation limits in Old Classroom ICT Building IT lab 01 and 06, all seats must be authorized by Lead Admin Yesuf Dergu.
             </p>
 
             {/* Digital Pass Preview */}
@@ -79,7 +101,7 @@ export const RsvpModal: React.FC<RsvpModalProps> = ({
               <div className="flex justify-between items-start border-b border-[#2A2A2A] pb-3">
                 <div>
                   <span className="text-[10px] uppercase font-mono font-bold text-[#FFC21A] tracking-wider">
-                    CGC Event Pass • Free Admission
+                    CGC Workshop Pass • Pending Review
                   </span>
                   <h4 className="font-bold text-white text-sm mt-0.5">{event.title}</h4>
                 </div>
@@ -88,11 +110,11 @@ export const RsvpModal: React.FC<RsvpModalProps> = ({
 
               <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
                 <div>
-                  <span className="text-neutral-500 block text-[10px]">Attendee</span>
+                  <span className="text-neutral-500 block text-[10px]">Applicant</span>
                   <span className="font-semibold text-neutral-200">{name}</span>
                 </div>
                 <div>
-                  <span className="text-neutral-500 block text-[10px]">Pass ID</span>
+                  <span className="text-neutral-500 block text-[10px]">Request / Pass ID</span>
                   <span className="font-mono font-bold text-[#FFC21A]">{ticketId}</span>
                 </div>
                 <div>
@@ -100,14 +122,14 @@ export const RsvpModal: React.FC<RsvpModalProps> = ({
                   <span className="text-neutral-300">{event.date} • {event.time}</span>
                 </div>
                 <div>
-                  <span className="text-neutral-500 block text-[10px]">Location</span>
+                  <span className="text-neutral-500 block text-[10px]">Venue</span>
                   <span className="text-neutral-300">{event.venue}</span>
                 </div>
               </div>
             </div>
 
             <p className="mt-4 text-[11px] text-neutral-400">
-              Please take a screenshot of this pass or keep your ticket ID handy when arriving at the lab.
+              Keep your Request ID handy. Once Lead Admin Yesuf Dergu reviews and approves your seat in the dashboard, your admission will be active.
             </p>
 
             <div className="mt-5">
@@ -115,7 +137,7 @@ export const RsvpModal: React.FC<RsvpModalProps> = ({
                 onClick={handleReset}
                 className="w-full py-2.5 bg-[#FFC21A] hover:bg-[#e5ad16] text-black font-bold rounded-lg text-sm transition-colors"
               >
-                Done
+                Close
               </button>
             </div>
           </div>
@@ -141,9 +163,9 @@ export const RsvpModal: React.FC<RsvpModalProps> = ({
             </div>
 
             {error && (
-              <div className="mt-3 p-2.5 rounded-lg bg-red-950/60 border border-red-800/80 text-red-200 text-xs flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                <span>{error}</span>
+              <div className="mt-3 p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2">
+                <ShieldAlert className="w-4 h-4 flex-shrink-0 mt-0.5 text-rose-400" />
+                <span className="leading-relaxed">{error}</span>
               </div>
             )}
 
@@ -221,9 +243,10 @@ export const RsvpModal: React.FC<RsvpModalProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-[#FFC21A] hover:bg-[#e5ad16] text-black text-xs font-bold rounded-lg shadow-md transition-colors"
+                  disabled={loading}
+                  className="px-5 py-2 bg-[#FFC21A] hover:bg-[#e5ad16] disabled:opacity-50 text-black text-xs font-bold rounded-lg shadow-md transition-colors"
                 >
-                  Confirm Free Reservation
+                  {loading ? 'Submitting Request...' : 'Submit RSVP for Admin Approval'}
                 </button>
               </div>
             </form>

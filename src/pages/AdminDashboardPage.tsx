@@ -38,6 +38,7 @@ export const AdminDashboardPage: React.FC = () => {
   // Custom filter states
   const [appFilter, setAppFilter] = useState<'ALL' | 'WITH_IDEA' | 'PENDING' | 'APPROVED'>('ALL');
   const [proposalFilter, setProposalFilter] = useState<'ALL' | 'PENDING' | 'APPROVED' | 'REJECTED'>('ALL');
+  const [rsvpFilter, setRsvpFilter] = useState<'ALL' | 'PENDING' | 'APPROVED' | 'REJECTED'>('ALL');
   
   // Data states
   const [students, setStudents] = useState<any[]>([]);
@@ -246,6 +247,31 @@ export const AdminDashboardPage: React.FC = () => {
       }
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleUpdateRsvpStatus = async (rsvpId: string, newStatus: string) => {
+    if (!token) return;
+    try {
+      const res = await fetch(`/api/admin/rsvps/${rsvpId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (res.ok) {
+        setActionMessage(
+          newStatus === 'Approved'
+            ? 'Workshop seat approved! Student registration confirmed.'
+            : `RSVP seat marked as ${newStatus}.`
+        );
+        fetchAdminData();
+        setTimeout(() => setActionMessage(null), 4000);
+      }
+    } catch (err) {
+      console.error('Update RSVP error:', err);
     }
   };
 
@@ -1208,29 +1234,169 @@ export const AdminDashboardPage: React.FC = () => {
 
         {/* TAB 4: RSVPS */}
         {activeTab === 'rsvps' && (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="text-[10px] uppercase text-slate-500 border-b border-slate-800 bg-slate-900/40">
-                <tr>
-                  <th className="py-3 px-3">Date</th>
-                  <th className="py-3 px-3">Student Name</th>
-                  <th className="py-3 px-3">Email</th>
-                  <th className="py-3 px-3">Department</th>
-                  <th className="py-3 px-3">Ticket ID</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/60">
-                {rsvps.map((rv) => (
-                  <tr key={rv.id} className="hover:bg-slate-900/40">
-                    <td className="py-3 px-3 text-slate-400">{rv.submitted_at?.slice(0, 10)}</td>
-                    <td className="py-3 px-3 font-bold text-white">{rv.name}</td>
-                    <td className="py-3 px-3 text-slate-300">{rv.email}</td>
-                    <td className="py-3 px-3 text-slate-400">{rv.department}</td>
-                    <td className="py-3 px-3 font-mono text-emerald-400">{rv.ticket_id}</td>
+          <div className="space-y-4">
+            {/* Header info */}
+            <div className="pb-3 border-b border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-[#FFC21A]" />
+                  <span>Workshop & Event Seat RSVPs</span>
+                </h3>
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  Manage workshop registrations for Old Classroom ICT Building IT lab 01 and 06. Only registrations approved by Lead Admin Yesuf Dergu are confirmed.
+                </p>
+              </div>
+
+              {/* Filter Pills */}
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => setRsvpFilter('ALL')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                    rsvpFilter === 'ALL'
+                      ? 'bg-[#FFC21A] text-black font-bold shadow-sm'
+                      : 'bg-[#141414] text-neutral-300 hover:bg-[#202020]'
+                  }`}
+                >
+                  All ({rsvps.length})
+                </button>
+                <button
+                  onClick={() => setRsvpFilter('PENDING')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                    rsvpFilter === 'PENDING'
+                      ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
+                      : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'
+                  }`}
+                >
+                  ⏳ Pending Approval ({rsvps.filter((r) => !r.status || r.status === 'Pending').length})
+                </button>
+                <button
+                  onClick={() => setRsvpFilter('APPROVED')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                    rsvpFilter === 'APPROVED'
+                      ? 'bg-emerald-600 text-white shadow-sm'
+                      : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'
+                  }`}
+                >
+                  ✓ Approved ({rsvps.filter((r) => r.status === 'Approved').length})
+                </button>
+                <button
+                  onClick={() => setRsvpFilter('REJECTED')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                    rsvpFilter === 'REJECTED'
+                      ? 'bg-rose-600 text-white shadow-sm'
+                      : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'
+                  }`}
+                >
+                  ✕ Rejected ({rsvps.filter((r) => r.status === 'Rejected').length})
+                </button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs text-slate-300">
+                <thead className="text-[10px] uppercase text-slate-500 border-b border-slate-800 bg-slate-900/40">
+                  <tr>
+                    <th className="py-3 px-3">Date</th>
+                    <th className="py-3 px-3">Student Name</th>
+                    <th className="py-3 px-3">Email</th>
+                    <th className="py-3 px-3">Department</th>
+                    <th className="py-3 px-3">Ticket / Pass ID</th>
+                    <th className="py-3 px-3">Status</th>
+                    <th className="py-3 px-3">Executive Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-800/60">
+                  {rsvps
+                    .filter((rv) => {
+                      if (rsvpFilter === 'PENDING') return !rv.status || rv.status === 'Pending';
+                      if (rsvpFilter === 'APPROVED') return rv.status === 'Approved';
+                      if (rsvpFilter === 'REJECTED') return rv.status === 'Rejected';
+                      return true;
+                    })
+                    .map((rv) => {
+                      const isApproved = rv.status === 'Approved';
+                      const isRejected = rv.status === 'Rejected';
+
+                      return (
+                        <tr key={rv.id} className="hover:bg-slate-900/40 transition-colors">
+                          <td className="py-3 px-3 text-slate-400 whitespace-nowrap">{rv.submitted_at?.slice(0, 10)}</td>
+                          <td className="py-3 px-3 font-bold text-white">{rv.name}</td>
+                          <td className="py-3 px-3 text-slate-300 font-mono text-[11px]">{rv.email}</td>
+                          <td className="py-3 px-3 text-slate-400">{rv.department}</td>
+                          <td className="py-3 px-3 font-mono text-[#FFC21A] font-semibold">{rv.ticket_id}</td>
+                          <td className="py-3 px-3 whitespace-nowrap">
+                            <span
+                              className={`px-2.5 py-1 rounded text-[10px] font-bold inline-flex items-center gap-1 ${
+                                isApproved
+                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                  : isRejected
+                                  ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                                  : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                              }`}
+                            >
+                              {isApproved ? (
+                                <>
+                                  <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                                  <span>Seat Approved</span>
+                                </>
+                              ) : isRejected ? (
+                                <>
+                                  <X className="w-3 h-3 text-rose-400" />
+                                  <span>Rejected</span>
+                                </>
+                              ) : (
+                                <>
+                                  <AlertCircle className="w-3 h-3 text-amber-400" />
+                                  <span>Pending Approval</span>
+                                </>
+                              )}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3">
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              {!isApproved ? (
+                                <button
+                                  onClick={() => handleUpdateRsvpStatus(rv.id, 'Approved')}
+                                  className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-[11px] shadow-sm transition flex items-center gap-1 whitespace-nowrap active:scale-95"
+                                  title="Approve Seat Reservation"
+                                >
+                                  <Check className="w-3.5 h-3.5" />
+                                  <span>Approve Seat</span>
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleUpdateRsvpStatus(rv.id, 'Pending')}
+                                  className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] border border-slate-700 transition active:scale-95"
+                                  title="Reset to Pending"
+                                >
+                                  Reset to Pending
+                                </button>
+                              )}
+
+                              {!isRejected ? (
+                                <button
+                                  onClick={() => handleUpdateRsvpStatus(rv.id, 'Rejected')}
+                                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/30 text-slate-400 hover:text-rose-400 border border-slate-700/60 transition active:scale-95"
+                                  title="Reject RSVP"
+                                >
+                                  <X className="w-3.5 h-3.5" />
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleUpdateRsvpStatus(rv.id, 'Approved')}
+                                  className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-emerald-900/30 text-slate-300 hover:text-emerald-400 text-[10px] border border-slate-700 transition active:scale-95"
+                                >
+                                  Re-Approve
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
