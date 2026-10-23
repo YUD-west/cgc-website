@@ -1,7 +1,6 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { LanguageSelector } from './LanguageSelector';
-import { Github, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const { t } = useLanguage();
@@ -23,20 +22,6 @@ export const Footer: React.FC = () => {
             <MapPin className="w-3.5 h-3.5 text-[#FFC21A] flex-shrink-0" />
             <span>{t('brand.venueFull')}</span>
           </div>
-        </div>
-
-        {/* Language selector & GitHub link */}
-        <div className="flex items-center gap-3">
-          <LanguageSelector direction="up" />
-          <a
-            href="https://github.com/YUD-west/cgc-website"
-            target="_blank"
-            rel="noreferrer"
-            className="p-2 rounded-lg border border-[#2A2A2A] bg-[#080808] hover:bg-[#151515] hover:border-[#FFC21A]/50 text-[#A3A3A3] hover:text-[#FFC21A] transition-colors"
-            title={t('footer.openSource')}
-          >
-            <Github className="w-4 h-4" />
-          </a>
         </div>
       </div>
 
