@@ -27,7 +27,7 @@ export const Footer: React.FC = () => {
 
         {/* Language selector & GitHub link */}
         <div className="flex items-center gap-3">
-          <LanguageSelector variant="compact" />
+          <LanguageSelector direction="up" />
           <a
             href="https://github.com/YUD-west/cgc-website"
             target="_blank"

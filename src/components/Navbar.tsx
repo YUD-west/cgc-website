@@ -72,8 +72,8 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right CTA / Language / Auth */}
         <div className="hidden sm:flex items-center gap-3">
-          {/* 3-Language Switcher */}
-          <LanguageSelector variant="compact" />
+          {/* 3-Language Dropdown */}
+          <LanguageSelector />
 
           {user ? (
             <div className="flex items-center gap-2.5">
@@ -120,7 +120,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Mobile menu trigger button */}
         <div className="flex md:hidden items-center gap-2">
-          <LanguageSelector variant="compact" />
+          <LanguageSelector />
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-2 rounded-lg text-[#A3A3A3] hover:text-white hover:bg-[#1A1A1A] focus:outline-none"
