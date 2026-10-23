@@ -40,9 +40,9 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
 
     // Hero Section
     'hero.badge': 'Student Innovation & Cyber Defense Club',
-    'hero.titleLine1': 'Turning Ideas Into',
-    'hero.titleLine2': 'Working Code & Defense',
-    'hero.description': 'Cyber Guardians Club (CGC) is the student technology community at Ambo University, Woliso Campus. We build real software, defend digital systems, and guide every student from ground zero.',
+    'hero.titleLine1': 'Your Idea',
+    'hero.titleLine2': 'Our Next Breakthrough',
+    'hero.description': 'Open to every field. Built by curious minds.',
     'hero.joinCta': 'Join CGC (100% Free)',
     'hero.exploreCta': 'Explore Active Project',
     'hero.stat1Val': '100% Free',
@@ -213,9 +213,9 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
 
     // Hero Section
     'hero.badge': 'Kilaaba Kalaqaa fi Eegumsa Saayibarii Barattootaa',
-    'hero.titleLine1': 'Yaada gara Hojiitti:',
-    'hero.titleLine2': 'Koodii Qabatamaa fi Nageenya Saayibarii',
-    'hero.description': 'Kilaabni Saayibarii (CGC) Yuunivarsiitii Amboo Kaampaasii Walisootti hawaasa kalaqa teeknooloojii barattootaati. Sooftiweerii qabatamaa ni ijaarra, nageenya netwoorkii ni eegna, barattoota hunda bu\'uraa kaafnee ni leenjisna.',
+    'hero.titleLine1': 'Yaada Keessan',
+    'hero.titleLine2': 'Kalaqa Keenya Itti Aanu',
+    'hero.description': 'Muummee hundaaf banaa dha. Sammuu qorattootaan kan ijaarame.',
     'hero.joinCta': 'CGC\'tti Makamaa (100% Bilisa)',
     'hero.exploreCta': 'Pirojektii Hojirra Jiru Ilaalaa',
     'hero.stat1Val': '100% Bilisa',
@@ -386,9 +386,9 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
 
     // Hero Section
     'hero.badge': 'የተማሪዎች ፈጠራ እና የሳይበር ደህንነት ክለብ',
-    'hero.titleLine1': 'ሀሳቦችን ወደ ተግባር:',
-    'hero.titleLine2': 'እውነተኛ ሶፍትዌር እና የሳይበር ጥበቃ',
-    'hero.description': 'ሳይበር ጋርዲያንስ ክለብ (CGC) በአምቦ ዩኒቨርሲቲ ወሊሶ ካምፓስ ውስጥ የተማሪዎች የቴክኖሎጂ እና የፈጠራ ማህበረሰብ ነው። እውነተኛ ሶፍትዌሮችን እንገነባለን፣ ኔትወርኮችን እንጠብቃለን፣ እንዲሁም ማንኛውንም ተማሪ ከመሰረቱ ጀምረን እናሰለጥናለን።',
+    'hero.titleLine1': 'የእርስዎ ሀሳብ',
+    'hero.titleLine2': 'ቀጣዩ ታላቅ የፈጠራ ስኬታችን',
+    'hero.description': 'ለሁሉም የትምህርት መስኮች ክፍት። በእውቀት ፈላጊ አእምሮዎች የተገነባ።',
     'hero.joinCta': 'CGCን ይቀላቀሉ (100% በነፃ)',
     'hero.exploreCta': 'ንቁ ፕሮጀክቶችን ይመልከቱ',
     'hero.stat1Val': '100% ነፃ',
