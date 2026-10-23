@@ -384,12 +384,6 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
               <Send className="w-4 h-4" />
               <span>Join Telegram Group</span>
             </a>
-            <button
-              onClick={() => onNavigate('contact')}
-              className="px-6 py-3 rounded-xl bg-[#141414] hover:bg-[#202020] text-white font-semibold text-sm border border-[#2A2A2A] transition-colors active:scale-95"
-            >
-              Official Contact Form
-            </button>
           </div>
         </TiltCard>
       </RevealOnScroll>
