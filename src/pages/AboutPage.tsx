@@ -6,10 +6,7 @@ import { LEAD_ADMIN, CO_ADMIN, OFFICIAL_COMMUNITY } from '../data/team';
 import { TiltCard } from '../components/Motion/TiltCard';
 import { RevealOnScroll } from '../components/Motion/RevealOnScroll';
 import { 
-  ShieldCheck, 
   Users, 
-  TrendingUp, 
-  Sparkles, 
   UserCheck,
   Send,
   Linkedin,
@@ -31,7 +28,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
       tagline: 'Practical engineering over passive consumption.',
       description:
         'We believe innovation is not about buzzwords; it is about writing code, configuring defensive systems, and assembling working prototypes that solve tangible local problems.',
-      icon: Sparkles,
+      imageSrc: '/innovation-icon-gold.png',
       color: 'text-[#FFC21A] bg-[#FFC21A]/10 border-[#FFC21A]/30',
     },
     {
@@ -47,7 +44,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
       tagline: 'Ethical security and authentic attribution.',
       description:
         'As Cyber Guardians, our skills must protect and uplift. We maintain strict ethical standards in penetration testing, respect data privacy, and celebrate honest student authorship.',
-      icon: ShieldCheck,
+      imageSrc: '/integrity-icon-gold.png',
       color: 'text-[#FFC21A] bg-[#FFC21A]/10 border-[#FFC21A]/30',
     },
     {
@@ -55,8 +52,8 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
       tagline: 'Beginner-friendly peer mentorship.',
       description:
         'Nobody starts as an expert. We foster a non-judgmental environment where seniors mentor juniors, questions are celebrated, and failures are treated as debuggable iterations.',
-      icon: TrendingUp,
-      color: 'text-white bg-white/10 border-white/20',
+      imageSrc: '/growth-icon-gold.png',
+      color: 'text-[#FFC21A] bg-[#FFC21A]/10 border-[#FFC21A]/30',
     },
   ];
 
@@ -240,8 +237,16 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
                 className="p-6 rounded-2xl bg-[#080808] border border-[#2A2A2A] shadow-lg flex flex-col justify-between"
               >
                 <div>
-                  <div className={`w-12 h-12 rounded-xl border flex items-center justify-center mb-5 ${val.color} shadow-inner`}>
-                    <Icon className="w-6 h-6" />
+                  <div className={`w-12 h-12 rounded-xl border flex items-center justify-center mb-5 ${val.color} shadow-inner ${val.imageSrc ? 'p-2.5' : ''}`}>
+                    {val.imageSrc ? (
+                      <img
+                        src={val.imageSrc}
+                        alt={`${val.title} Icon`}
+                        className="w-full h-full object-contain"
+                      />
+                    ) : (
+                      Icon && <Icon className="w-6 h-6" />
+                    )}
                   </div>
                   <h3 className="text-xl font-bold text-white tracking-tight">{val.title}</h3>
                   <div className="text-xs font-semibold text-[#FFC21A] mt-1">
