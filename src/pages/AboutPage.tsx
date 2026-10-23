@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { SectionHeader } from '../components/SectionHeader';
 import { CGCLogo } from '../components/Logo/CGCLogo';
-import { LEAD_ADMIN, CO_ADMIN, OFFICIAL_COMMUNITY, CAMPUS_EVENT_PHOTOS, CampusEventPhoto } from '../data/team';
+import { LEAD_ADMIN, CO_ADMIN, OFFICIAL_COMMUNITY } from '../data/team';
 import { TiltCard } from '../components/Motion/TiltCard';
-import { MagneticButton } from '../components/Motion/MagneticButton';
 import { RevealOnScroll } from '../components/Motion/RevealOnScroll';
 import { 
   ShieldCheck, 
@@ -15,8 +14,6 @@ import {
   Target, 
   MapPin, 
   ArrowRight,
-  Maximize2,
-  X,
   UserCheck,
   Send,
   Linkedin,
@@ -34,7 +31,6 @@ interface AboutPageProps {
 
 export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandModal }) => {
   const { t } = useLanguage();
-  const [selectedPhoto, setSelectedPhoto] = useState<CampusEventPhoto | null>(null);
 
   const coreValues = [
     {
@@ -221,28 +217,6 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
 
       {/* 
         =======================================================
-        WOLISO CAMPUS WORKSHOPS & EVENT GALLERY LINK
-        =======================================================
-      */}
-      <RevealOnScroll className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-8 sm:p-10 rounded-3xl bg-[#080808] border border-[#2A2A2A] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-md">
-          <div>
-            <h3 className="text-xl font-bold text-white">Campus Tech Events & Hackathon Photos</h3>
-            <p className="text-xs sm:text-sm text-neutral-300 mt-1 max-w-xl leading-relaxed">
-              Explore authentic photos from the Cursor Hackathon Ambo, Old Classroom ICT Building IT lab 01 and 06 coding workshops, and student demo sessions.
-            </p>
-          </div>
-          <button
-            onClick={() => onNavigate('events')}
-            className="px-6 py-3 rounded-xl bg-[#FFC21A] hover:bg-[#e5ad16] text-black font-bold text-xs sm:text-sm transition-all whitespace-nowrap shadow-md active:scale-95"
-          >
-            <span>View Campus Photo Gallery →</span>
-          </button>
-        </div>
-      </RevealOnScroll>
-
-      {/* 
-        =======================================================
         OUR CORE VALUES
         =======================================================
       */}
@@ -387,40 +361,6 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
           </div>
         </TiltCard>
       </RevealOnScroll>
-
-      {/* 
-        =======================================================
-        PHOTO LIGHTBOX MODAL
-        =======================================================
-      */}
-      {selectedPhoto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in" onClick={() => setSelectedPhoto(null)}>
-          <div className="relative max-w-4xl w-full bg-[#080808] rounded-2xl overflow-hidden border border-[#2A2A2A] shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <button
-              onClick={() => setSelectedPhoto(null)}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/60 text-white hover:bg-black/90 transition-colors active:scale-95"
-              aria-label="Close photo preview"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <img
-              src={selectedPhoto.imageUrl}
-              alt={selectedPhoto.title}
-              className="w-full max-h-[75vh] object-contain bg-black"
-            />
-            <div className="p-5 bg-[#050505] border-t border-[#2A2A2A] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-              <div>
-                <span className="text-[11px] font-mono text-[#FFC21A] font-semibold uppercase block">{selectedPhoto.event} • {selectedPhoto.location}</span>
-                <span className="font-bold text-white text-base mt-0.5 block">{selectedPhoto.title}</span>
-                <p className="text-neutral-300 mt-1 max-w-2xl">{selectedPhoto.description}</p>
-              </div>
-              <span className="text-[#FFC21A] font-mono font-semibold bg-[#FFC21A]/10 px-2.5 py-1 rounded border border-[#FFC21A]/30 whitespace-nowrap">
-                Ambo University
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
