@@ -51,6 +51,29 @@ app.get('/api/auth/me', authenticateUser, getMe);
 app.post('/api/auth/change-password', authenticateUser, changePassword);
 
 // ---------------- PERSISTENT MEMBER APPLICATIONS ----------------
+app.get('/api/applications/check', (req, res) => {
+  try {
+    const email = (req.query.email || '').toString().toLowerCase().trim();
+    if (!email) {
+      return res.status(400).json({ error: 'Email parameter required.' });
+    }
+
+    const app = db.prepare('SELECT id, status, submitted_at FROM member_applications WHERE lower(email) = ?').get(email);
+    const user = db.prepare('SELECT id, membership_status, role FROM users WHERE lower(email) = ?').get(email);
+
+    const isAccepted = (user && (user.membership_status === 'APPROVED' || user.role === 'ADMIN')) || (app && (app.status === 'Approved' || app.status === 'Innovation Lead'));
+
+    return res.json({
+      hasApplied: Boolean(app),
+      isAccepted: Boolean(isAccepted),
+      status: app ? app.status : (isAccepted ? 'Approved' : 'None'),
+      applicationId: app?.id || null
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to verify application status' });
+  }
+});
+
 app.post('/api/applications', (req, res) => {
   try {
     const { fullName, email, phone, department, yearOfStudy, primaryTrack, skillLevel, learningGoals, projectIdea, whyJoin } = req.body;
@@ -61,20 +84,39 @@ app.post('/api/applications', (req, res) => {
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    // Anti-spam and duplicate check
-    const existing = db.prepare('SELECT id, status FROM member_applications WHERE lower(email) = ?').get(normalizedEmail);
-    if (existing) {
+    // 1. Check if user account is already accepted or has Lead Admin role
+    const userAccount = db.prepare('SELECT id, role, membership_status FROM users WHERE lower(email) = ?').get(normalizedEmail);
+    if (userAccount && (userAccount.membership_status === 'APPROVED' || userAccount.role === 'ADMIN')) {
       return res.status(400).json({ 
-        error: `An application with email "${normalizedEmail}" is already registered (Status: ${existing.status}). Duplicate submissions from the same account are blocked.` 
+        error: 'This account has already applied and been accepted as an official CGC Member! Each user account can submit only one application, and you cannot apply again once accepted.' 
       });
     }
 
+    // 2. Check if an application has already been submitted for this account
+    const existing = db.prepare('SELECT id, status FROM member_applications WHERE lower(email) = ?').get(normalizedEmail);
+    if (existing) {
+      if (existing.status === 'Approved' || existing.status === 'Innovation Lead') {
+        return res.status(400).json({ 
+          error: `This account has already applied and been accepted (Application ID: ${existing.id}). Once accepted, you cannot apply again using the same account.` 
+        });
+      } else if (existing.status === 'Reviewing' || existing.status === 'Pending') {
+        return res.status(400).json({ 
+          error: `An application from this account has already been submitted and is currently under review by Lead Admin Yesuf Dergu (Application ID: ${existing.id}). Each user account can submit only one application.` 
+        });
+      } else {
+        return res.status(400).json({ 
+          error: `An application has already been submitted for this account (Status: ${existing.status}). Each account can submit only one application.` 
+        });
+      }
+    }
+
     const id = `CGC-MBR-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const userId = userAccount ? userAccount.id : null;
 
     db.prepare(`
-      INSERT INTO member_applications (id, full_name, email, phone, department, year_of_study, primary_track, skill_level, learning_goals, project_idea, why_join, status)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Reviewing')
-    `).run(id, fullName.trim(), normalizedEmail, phone || null, department, yearOfStudy, primaryTrack, skillLevel, learningGoals || null, projectIdea || null, whyJoin.trim());
+      INSERT INTO member_applications (id, full_name, email, phone, department, year_of_study, primary_track, skill_level, learning_goals, project_idea, why_join, status, user_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Reviewing', ?)
+    `).run(id, fullName.trim(), normalizedEmail, phone || null, department, yearOfStudy, primaryTrack, skillLevel, learningGoals || null, projectIdea || null, whyJoin.trim(), userId);
 
     res.status(201).json({
       success: true,

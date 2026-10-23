@@ -192,6 +192,7 @@ export function getMe(req, res) {
 
       membership = {
         isApproved: true,
+        hasApplied: Boolean(application || isAdmin),
         status: 'Approved',
         id: passId,
         primaryTrack: application?.primary_track || user.primary_track || 'cybersecurity',
@@ -201,8 +202,9 @@ export function getMe(req, res) {
     } else {
       membership = {
         isApproved: false,
+        hasApplied: Boolean(application),
         status: application ? application.status : 'Awaiting Application',
-        id: null,
+        id: application?.id || null,
         message: 'Your official CGC Member Pass and scannable Lab QR Code are issued once your application is reviewed and approved by Lead Admin Yesuf Dergu.'
       };
     }
@@ -221,7 +223,8 @@ export function getMe(req, res) {
         memberRole: user.member_role || 'Technical Builder',
         experienceLevel: user.experience_level || 'Beginner',
         primaryTrack: user.primary_track || 'cybersecurity',
-        isApprovedMember: isApproved
+        isApprovedMember: isApproved,
+        hasApplied: Boolean(application)
       },
       membership
     });

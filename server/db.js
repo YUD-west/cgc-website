@@ -133,6 +133,10 @@ try { db.exec("ALTER TABLE event_rsvps ADD COLUMN status TEXT NOT NULL DEFAULT '
 try { db.exec("CREATE INDEX IF NOT EXISTS idx_rsvps_email_event ON event_rsvps(lower(email), event_id);"); } catch (e) {}
 try { db.exec("CREATE INDEX IF NOT EXISTS idx_proposals_email ON project_proposals(lower(proposer_email));"); } catch (e) {}
 
+// Safely ensure single-application enforcement on member_applications table
+try { db.exec("ALTER TABLE member_applications ADD COLUMN user_id TEXT;"); } catch (e) {}
+try { db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_member_apps_email ON member_applications(lower(email));"); } catch (e) {}
+
 // Seed Lead Admin & Sample Co-Creator Opportunities (Strict Security Enforcement)
 export function seedDatabase() {
   const adminEmail = (process.env.ADMIN_EMAIL || 'yesufdergu464@gmail.com').toLowerCase().trim();

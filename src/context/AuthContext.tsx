@@ -13,16 +13,20 @@ export interface User {
   memberRole?: string;
   experienceLevel?: string;
   isApprovedMember?: boolean;
+  hasApplied?: boolean;
 }
 
 export interface ClubMembership {
   id?: string;
   status: string;
   isApproved?: boolean;
-  primary_track?: string;
+  hasApplied?: boolean;
+  primaryTrack?: string;
   department?: string;
-  year_of_study?: string;
-  submitted_at?: string;
+  yearOfStudy?: string;
+  submittedAt?: string;
+  issuedAt?: string;
+  message?: string;
 }
 
 interface AuthContextType {
