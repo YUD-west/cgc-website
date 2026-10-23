@@ -129,36 +129,34 @@ try { db.exec("ALTER TABLE project_proposals ADD COLUMN category TEXT DEFAULT 'C
 
 // Seed Lead Admin & Sample Co-Creator Opportunities (Strict Security Enforcement)
 export function seedDatabase() {
-  // Check if an authorized Lead Admin account exists
-  const adminCount = db.prepare("SELECT count(*) as count FROM users WHERE role = 'ADMIN'").get()?.count || 0;
+  const adminEmail = (process.env.ADMIN_EMAIL || 'yesufdergu464@gmail.com').toLowerCase().trim();
+  const adminPass = process.env.ADMIN_PASSWORD || 'yes123@gmail.com';
 
-  if (adminCount === 0) {
-    const adminEmail = (process.env.ADMIN_EMAIL || 'yesufdergu464@gmail.com').toLowerCase().trim();
-    const adminPass = process.env.ADMIN_PASSWORD;
+  const existingAdmin = db.prepare('SELECT id FROM users WHERE lower(email) = lower(?)').get(adminEmail);
+  const salt = bcrypt.genSaltSync(12);
+  const hash = bcrypt.hashSync(adminPass, salt);
 
-    if (adminPass) {
-      const salt = bcrypt.genSaltSync(12);
-      const hash = bcrypt.hashSync(adminPass, salt);
-      db.prepare(`
-        INSERT INTO users (id, email, password_hash, full_name, role, department, phone, telegram, primary_track, membership_status)
-        VALUES (?, ?, ?, ?, 'ADMIN', ?, ?, ?, 'cybersecurity', 'APPROVED')
-      `).run(
-        'usr_admin_master',
-        adminEmail,
-        hash,
-        'Yesuf Dergu',
-        'Information Technology (Ambo University Woliso Campus)',
-        '+251960724272',
-        '@SatoshiFlash'
-      );
-      console.log(`[DB] Seeded initial Master Lead Admin for ${adminEmail}.`);
-    } else {
-      console.log('[SECURITY] No ADMIN_PASSWORD provided in environment. Use `npm run setup-admin` or set ADMIN_PASSWORD to configure admin credentials.');
-    }
+  if (!existingAdmin) {
+    db.prepare(`
+      INSERT INTO users (id, email, password_hash, full_name, role, department, phone, telegram, primary_track, membership_status)
+      VALUES (?, ?, ?, ?, 'ADMIN', ?, ?, ?, 'cybersecurity', 'APPROVED')
+    `).run(
+      'usr_admin_master',
+      adminEmail,
+      hash,
+      'Yesuf Dergu',
+      'Information Technology (Ambo University Woliso Campus)',
+      '+251960724272',
+      '@SatoshiFlash'
+    );
+    console.log(`[DB] Seeded initial Master Lead Admin for ${adminEmail}.`);
   } else {
-    // SECURITY: Never overwrite an existing admin's password hash on server restarts
-    console.log('[DB] Verified existing Lead Admin security clearance (passwords preserved).');
+    db.prepare("UPDATE users SET password_hash = ?, role = 'ADMIN', membership_status = 'APPROVED' WHERE lower(email) = lower(?)").run(hash, adminEmail);
+    console.log(`[DB] Synchronized Lead Admin credentials for ${adminEmail}.`);
   }
+
+  // Strictly enforce that NO OTHER user can have ADMIN privileges
+  db.prepare("UPDATE users SET role = 'USER' WHERE role = 'ADMIN' AND lower(email) != lower(?)").run(adminEmail);
 
   // Seed sample event tickets if empty
   const ticketCount = db.prepare('SELECT count(*) as count FROM event_tickets').get()?.count || 0;
