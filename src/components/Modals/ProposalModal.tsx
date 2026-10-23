@@ -103,11 +103,11 @@ export const ProposalModal: React.FC<ProposalModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#111A2E] border border-slate-700 w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in text-[#F2F2F2]">
+      <div className="bg-[#080808] border border-[#2A2A2A] w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto">
         <button
           onClick={handleReset}
-          className="absolute top-5 right-5 text-slate-400 hover:text-white p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 transition"
+          className="absolute top-5 right-5 text-neutral-400 hover:text-white p-2 rounded-xl bg-[#141414] hover:bg-[#202020] transition"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
@@ -115,23 +115,23 @@ export const ProposalModal: React.FC<ProposalModalProps> = ({
 
         {submitted ? (
           <div className="text-center py-8 space-y-4">
-            <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto">
+            <div className="w-16 h-16 bg-[#FFC21A]/10 border border-[#FFC21A]/30 text-[#FFC21A] rounded-full flex items-center justify-center mx-auto">
               <CheckCircle2 className="w-8 h-8" />
             </div>
             <h3 className="text-2xl font-bold text-white">Project Proposal Submitted!</h3>
-            <p className="text-slate-300 text-xs sm:text-sm max-w-md mx-auto leading-relaxed">
+            <p className="text-neutral-300 text-xs sm:text-sm max-w-md mx-auto leading-relaxed">
               Your concept has been recorded in the CGC Woliso project registry with tracking code:
             </p>
-            <div className="inline-block font-mono bg-slate-900 border border-slate-800 text-blue-400 px-4 py-2 rounded-xl text-sm font-bold">
+            <div className="inline-block font-mono bg-[#000000] border border-[#2A2A2A] text-[#FFC21A] px-4 py-2 rounded-xl text-sm font-bold">
               {proposalId}
             </div>
-            <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+            <p className="text-xs text-neutral-400 max-w-md mx-auto leading-relaxed">
               Lead Admin Yesuf Dergu and the project committee will review your proposal. Once approved, your open roles will be published to the campus Co-Creator board so other students can join your team!
             </p>
             <div className="pt-4">
               <button
                 onClick={handleReset}
-                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow-md transition"
+                className="px-6 py-2.5 bg-[#FFC21A] hover:bg-[#e5ad16] text-black text-xs font-bold rounded-xl shadow-md transition"
               >
                 Back to Projects
               </button>
@@ -141,13 +141,13 @@ export const ProposalModal: React.FC<ProposalModalProps> = ({
           <div>
             {/* Modal Header */}
             <div className="mb-6">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[11px] font-bold uppercase tracking-wider mb-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFC21A]/10 text-[#FFC21A] border border-[#FFC21A]/30 text-[11px] font-bold uppercase tracking-wider mb-2">
                 <Lightbulb className="w-3.5 h-3.5" />
                 <span>Open to All Campus Streams</span>
               </div>
               <h3 className="text-xl sm:text-2xl font-extrabold text-white">Propose a Campus Project</h3>
-              <p className="text-xs text-slate-400 mt-1">
-                Whether you have a technical solution, a business idea, an agricultural challenge, or a community initiative — submit your idea here to recruit student teammates and incubate in Computer Lab 02.
+              <p className="text-xs text-neutral-400 mt-1">
+                Whether you have a technical solution, a business idea, an agricultural challenge, or a community initiative — submit your idea here to recruit student teammates and incubate in Old Classroom ICT Building IT lab 01 and 06.
               </p>
             </div>
 
@@ -160,24 +160,24 @@ export const ProposalModal: React.FC<ProposalModalProps> = ({
 
             <form onSubmit={handleSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Project Name / Working Title *</label>
+                <label className="block text-neutral-300 font-semibold mb-1">Project Name / Working Title *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Woliso Local Market Price Tracker or Automated Crop Blight Scanner"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#000000] border border-[#2A2A2A] text-white placeholder-neutral-500 focus:border-[#FFC21A] focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Domain / Category *</label>
+                  <label className="block text-neutral-300 font-semibold mb-1">Domain / Category *</label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2.5 rounded-xl bg-[#000000] border border-[#2A2A2A] text-white focus:border-[#FFC21A] focus:outline-none"
                   >
                     <option value="Agriculture & Sciences">🌾 Agriculture & Food Security</option>
                     <option value="Business & Entrepreneurship">💼 Business & Campus Marketplace</option>
@@ -188,11 +188,11 @@ export const ProposalModal: React.FC<ProposalModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Your Role on This Project *</label>
+                  <label className="block text-neutral-300 font-semibold mb-1">Your Role on This Project *</label>
                   <select
                     value={proposerRole}
                     onChange={(e) => setProposerRole(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2.5 rounded-xl bg-[#000000] border border-[#2A2A2A] text-white focus:border-[#FFC21A] focus:outline-none"
                   >
                     <option value="Entrepreneur / Concept Lead">💼 Entrepreneur & Concept Lead</option>
                     <option value="Agricultural / Domain Specialist">🌾 Agricultural / Domain Specialist</option>
@@ -204,7 +204,7 @@ export const ProposalModal: React.FC<ProposalModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-neutral-300 font-semibold mb-1">
                   What Problem on Campus or in the Community Are You Solving? *
                 </label>
                 <textarea
@@ -213,12 +213,12 @@ export const ProposalModal: React.FC<ProposalModalProps> = ({
                   placeholder="Describe the challenge clearly in plain language (e.g. Local Woliso farmers lack real-time market prices, leading to unfair crop broker margins...)"
                   value={problemStatement}
                   onChange={(e) => setProblemStatement(e.target.value)}
-                  className="w-full p-3 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none resize-none leading-relaxed"
+                  className="w-full p-3 rounded-xl bg-[#000000] border border-[#2A2A2A] text-white placeholder-neutral-500 focus:border-[#FFC21A] focus:outline-none resize-none leading-relaxed"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-neutral-300 font-semibold mb-1">
                   Proposed Solution Concept (Simple Explanation)
                 </label>
                 <textarea
@@ -226,29 +226,29 @@ export const ProposalModal: React.FC<ProposalModalProps> = ({
                   placeholder="Explain how technology, data, or teamwork can solve this problem..."
                   value={proposedSolution}
                   onChange={(e) => setProposedSolution(e.target.value)}
-                  className="w-full p-3 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none resize-none leading-relaxed"
+                  className="w-full p-3 rounded-xl bg-[#000000] border border-[#2A2A2A] text-white placeholder-neutral-500 focus:border-[#FFC21A] focus:outline-none resize-none leading-relaxed"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Who Do You Need on Your Team?</label>
+                  <label className="block text-neutral-300 font-semibold mb-1">Who Do You Need on Your Team?</label>
                   <input
                     type="text"
                     placeholder="e.g. Beginners, Frontend Developer, Marketing Lead"
                     value={neededRoles}
                     onChange={(e) => setNeededRoles(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2.5 rounded-xl bg-[#000000] border border-[#2A2A2A] text-white placeholder-neutral-500 focus:border-[#FFC21A] focus:outline-none"
                   />
-                  <span className="text-[10px] text-slate-500 mt-1 block">Comma-separated team roles</span>
+                  <span className="text-[10px] text-neutral-500 mt-1 block">Comma-separated team roles</span>
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Experience Level Welcomed</label>
+                  <label className="block text-neutral-300 font-semibold mb-1">Experience Level Welcomed</label>
                   <select
                     value={targetLevel}
                     onChange={(e) => setTargetLevel(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2.5 rounded-xl bg-[#000000] border border-[#2A2A2A] text-white focus:border-[#FFC21A] focus:outline-none"
                   >
                     <option value="Beginners Welcome">🌱 Beginners Welcome (Learn together)</option>
                     <option value="All Levels Welcome">🤝 All Levels Welcome</option>
@@ -258,37 +258,37 @@ export const ProposalModal: React.FC<ProposalModalProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 border-t border-slate-800">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 border-t border-[#2A2A2A]">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Your Full Name *</label>
+                  <label className="block text-neutral-300 font-semibold mb-1">Your Full Name *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Bonsa Tadesse"
                     value={proposerName}
                     onChange={(e) => setProposerName(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2.5 rounded-xl bg-[#000000] border border-[#2A2A2A] text-white focus:border-[#FFC21A] focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Your Email Address *</label>
+                  <label className="block text-neutral-300 font-semibold mb-1">Your Email Address *</label>
                   <input
                     type="email"
                     required
                     placeholder="student@ambou.edu.et"
                     value={proposerEmail}
                     onChange={(e) => setProposerEmail(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2.5 rounded-xl bg-[#000000] border border-[#2A2A2A] text-white focus:border-[#FFC21A] focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Your Faculty / Stream *</label>
+                  <label className="block text-neutral-300 font-semibold mb-1">Your Faculty / Stream *</label>
                   <select
                     value={proposerDepartment}
                     onChange={(e) => setProposerDepartment(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2.5 rounded-xl bg-[#000000] border border-[#2A2A2A] text-white focus:border-[#FFC21A] focus:outline-none"
                   >
                     <option value="Faculty of Agriculture">🌾 Faculty of Agriculture</option>
                     <option value="Business & Economics">💼 Business & Economics</option>
@@ -305,10 +305,10 @@ export const ProposalModal: React.FC<ProposalModalProps> = ({
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-3 rounded-xl bg-[#FFC21A] hover:bg-[#e5ad16] text-black font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {loading ? (
-                    <span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+                    <span className="animate-spin inline-block w-4 h-4 border-2 border-black border-t-transparent rounded-full" />
                   ) : (
                     <>
                       <span>Submit Project Proposal</span>

@@ -49,7 +49,7 @@ export const AdminDashboardPage: React.FC = () => {
   // Flexible Event Ticket Form State
   const [ticketTitle, setTicketTitle] = useState('Woliso Inter-Department Innovation Hackathon 2026');
   const [ticketType, setTicketType] = useState('Hackathon');
-  const [ticketVenue, setTicketVenue] = useState('Computer Lab 02 & Main Hall');
+  const [ticketVenue, setTicketVenue] = useState('Old Classroom ICT Building IT lab 01 and 06');
   const [ticketDate, setTicketDate] = useState('March 28, 2026');
   const [ticketAccess, setTicketAccess] = useState('Full Hacker Clearance & Workstation Access');
   const [ticketCustomId, setTicketCustomId] = useState('EVT-HACK-2026-WL');
@@ -291,7 +291,7 @@ export const AdminDashboardPage: React.FC = () => {
         yearOfStudy: st.year_of_study || '2nd Year Student',
         track: st.primary_track || 'Cybersecurity & Systems',
         role: st.role === 'ADMIN' ? 'Lead Administrator & Club President' : 'Official Verified Member',
-        accessLevel: st.role === 'ADMIN' ? 'Full Executive Lab 02 & Systems Clearance' : 'Full Lab 02 Workstation & Innovation Hall Clearance',
+        accessLevel: st.role === 'ADMIN' ? 'Full Executive IT lab 01 & 06 Clearance' : 'Full IT lab 01 & 06 Workstation Clearance',
         issuedAt: '2026'
       });
       setActionMessage(`Downloaded official ID badge for ${st.full_name}`);
@@ -319,22 +319,22 @@ export const AdminDashboardPage: React.FC = () => {
     <div className="py-12 sm:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 animate-fade-in">
       
       {/* Header Banner */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-[#111A2E] border border-blue-900/60 shadow-glow-blue flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="p-6 sm:p-8 rounded-3xl bg-[#080808] border border-[#2A2A2A] shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-blue-600/20 text-blue-400 border border-blue-500/30 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-[#FFC21A]/10 text-[#FFC21A] border border-[#FFC21A]/30 flex items-center justify-center">
             <ShieldCheck className="w-6 h-6" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-blue-400 uppercase tracking-wider">CGC Administration Portal</span>
-              <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-400 font-mono border border-emerald-500/20">
+              <span className="text-xs font-bold text-[#FFC21A] uppercase tracking-wider">CGC Administration Portal</span>
+              <span className="px-2 py-0.5 rounded text-[10px] bg-[#FFC21A]/10 text-[#FFC21A] font-mono border border-[#FFC21A]/30">
                 LIVE DATABASE
               </span>
             </div>
             <h1 className="text-2xl font-extrabold text-white mt-0.5">
               Presidential Control Center • Yesuf Dergu
             </h1>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-neutral-400">
               Ambo University Woliso Campus — Community Registry, Member Reviews & Student Innovation
             </p>
           </div>
@@ -342,15 +342,15 @@ export const AdminDashboardPage: React.FC = () => {
 
         <button
           onClick={fetchAdminData}
-          className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 flex items-center gap-2 transition-colors"
+          className="px-4 py-2.5 rounded-xl bg-[#141414] hover:bg-[#202020] text-white text-xs font-semibold border border-[#2A2A2A] flex items-center gap-2 transition-colors"
         >
-          <RotateCw className="w-3.5 h-3.5 text-blue-400" />
+          <RotateCw className="w-3.5 h-3.5 text-[#FFC21A]" />
           <span>Refresh Data</span>
         </button>
       </div>
 
       {actionMessage && (
-        <div className="p-3.5 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs flex items-center gap-2">
+        <div className="p-3.5 rounded-2xl bg-[#141414] border border-[#FFC21A]/40 text-[#FFC21A] text-xs flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
           <span>{actionMessage}</span>
         </div>
@@ -358,16 +358,16 @@ export const AdminDashboardPage: React.FC = () => {
 
       {/* Metric Cards Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="p-5 rounded-2xl bg-[#111A2E] border border-slate-800">
+        <div className="p-5 rounded-2xl bg-[#080808] border border-[#2A2A2A]">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-[11px] font-semibold uppercase text-slate-400">Registered Students</span>
-            <Users className="w-4 h-4 text-blue-400" />
+            <span className="text-[11px] font-semibold uppercase text-neutral-400">Registered Students</span>
+            <Users className="w-4 h-4 text-[#FFC21A]" />
           </div>
           <div className="text-2xl font-extrabold text-white">{metrics?.totalStudents ?? 0}</div>
-          <span className="text-[10px] text-slate-500">Student accounts in Woliso DB</span>
+          <span className="text-[10px] text-neutral-500">Student accounts in Woliso DB</span>
         </div>
 
-        <div className="p-5 rounded-2xl bg-[#111A2E] border border-slate-800">
+        <div className="p-5 rounded-2xl bg-[#080808] border border-[#2A2A2A]">
           <div className="flex items-center justify-between mb-1">
             <span className="text-[11px] font-semibold uppercase text-slate-400">Member Applications</span>
             <FileText className="w-4 h-4 text-emerald-400" />
@@ -404,8 +404,8 @@ export const AdminDashboardPage: React.FC = () => {
             onClick={() => setActiveTab('students')}
             className={`py-3 px-4 text-xs font-bold uppercase tracking-wider border-b-2 whitespace-nowrap transition-all ${
               activeTab === 'students'
-                ? 'border-blue-500 text-blue-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-[#FFC21A] text-[#FFC21A]'
+                : 'border-transparent text-neutral-400 hover:text-neutral-200'
             }`}
           >
             Registered Students ({students.length})
@@ -529,7 +529,7 @@ export const AdminDashboardPage: React.FC = () => {
                               ) : (
                                 <button
                                   onClick={() => handleToggleUserMembership(st.id, 'APPROVED')}
-                                  className="px-3 py-1 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-[11px] shadow-sm transition flex items-center gap-1"
+                                  className="px-3 py-1 rounded-xl bg-[#FFC21A] hover:bg-[#e5ad16] text-black font-bold text-[11px] shadow-sm transition flex items-center gap-1"
                                 >
                                   <Check className="w-3 h-3" />
                                   <span>Approve & Issue QR</span>
@@ -567,34 +567,34 @@ export const AdminDashboardPage: React.FC = () => {
             {/* Form & Live Badge Preview */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
               {/* Left Column: Generator Form */}
-              <form onSubmit={handleCreateEventTicket} className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 space-y-4 text-xs">
+              <form onSubmit={handleCreateEventTicket} className="p-6 rounded-3xl bg-[#080808] border border-[#2A2A2A] space-y-4 text-xs">
                 <h4 className="font-bold text-white text-sm flex items-center gap-2">
-                  <Plus className="w-4 h-4 text-blue-400" />
+                  <Plus className="w-4 h-4 text-[#FFC21A]" />
                   <span>Configure Event Pass</span>
                 </h4>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Event / Ticket Title *</label>
+                  <label className="block text-neutral-300 font-semibold mb-1">Event / Ticket Title *</label>
                   <input
                     type="text"
                     required
                     value={ticketTitle}
                     onChange={(e) => setTicketTitle(e.target.value)}
                     placeholder="e.g. Cursor Hackathon 2026 Finals"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                    className="w-full bg-[#000000] border border-[#2A2A2A] rounded-xl p-2.5 text-white placeholder-neutral-500 focus:outline-none focus:border-[#FFC21A]"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-300 font-semibold mb-1">Event Category *</label>
+                    <label className="block text-neutral-300 font-semibold mb-1">Event Category *</label>
                     <select
                       value={ticketType}
                       onChange={(e) => {
                         setTicketType(e.target.value);
                         setTicketCustomId(`EVT-${e.target.value.slice(0, 4).toUpperCase()}-${Date.now().toString().slice(-4)}`);
                       }}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white focus:outline-none focus:border-blue-500"
+                      className="w-full bg-[#000000] border border-[#2A2A2A] rounded-xl p-2.5 text-white focus:outline-none focus:border-[#FFC21A]"
                     >
                       <option value="Hackathon">🏆 Hackathon</option>
                       <option value="Lecture">🎓 Lecture / Masterclass</option>
@@ -604,53 +604,53 @@ export const AdminDashboardPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 font-semibold mb-1">Pass ID / Code *</label>
+                    <label className="block text-neutral-300 font-semibold mb-1">Pass ID / Code *</label>
                     <input
                       type="text"
                       required
                       value={ticketCustomId}
                       onChange={(e) => setTicketCustomId(e.target.value)}
                       placeholder="e.g. EVT-HACK-2026-WL"
-                      className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white font-mono placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                      className="w-full bg-[#000000] border border-[#2A2A2A] rounded-xl p-2.5 text-white font-mono placeholder-neutral-500 focus:outline-none focus:border-[#FFC21A]"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-300 font-semibold mb-1">Venue *</label>
+                    <label className="block text-neutral-300 font-semibold mb-1">Venue *</label>
                     <input
                       type="text"
                       required
                       value={ticketVenue}
                       onChange={(e) => setTicketVenue(e.target.value)}
-                      placeholder="e.g. Computer Lab 02"
-                      className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                      placeholder="e.g. IT lab 01"
+                      className="w-full bg-[#000000] border border-[#2A2A2A] rounded-xl p-2.5 text-white placeholder-neutral-500 focus:outline-none focus:border-[#FFC21A]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 font-semibold mb-1">Date *</label>
+                    <label className="block text-neutral-300 font-semibold mb-1">Date *</label>
                     <input
                       type="text"
                       required
                       value={ticketDate}
                       onChange={(e) => setTicketDate(e.target.value)}
                       placeholder="e.g. March 28, 2026"
-                      className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                      className="w-full bg-[#000000] border border-[#2A2A2A] rounded-xl p-2.5 text-white placeholder-neutral-500 focus:outline-none focus:border-[#FFC21A]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Access Clearance *</label>
+                  <label className="block text-neutral-300 font-semibold mb-1">Access Clearance *</label>
                   <input
                     type="text"
                     required
                     value={ticketAccess}
                     onChange={(e) => setTicketAccess(e.target.value)}
-                    placeholder="e.g. Full Hacker Workstation & Lab 02 Clearance"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                    placeholder="e.g. Full Hacker Workstation & IT Lab 01 Clearance"
+                    className="w-full bg-[#000000] border border-[#2A2A2A] rounded-xl p-2.5 text-white placeholder-neutral-500 focus:outline-none focus:border-[#FFC21A]"
                   />
                 </div>
 
@@ -658,7 +658,7 @@ export const AdminDashboardPage: React.FC = () => {
                   <button
                     type="submit"
                     disabled={generatingTicket}
-                    className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-glow-blue disabled:opacity-50 transition"
+                    className="w-full py-2.5 px-4 rounded-xl bg-[#FFC21A] hover:bg-[#e5ad16] text-black font-bold text-xs shadow-md disabled:opacity-50 transition"
                   >
                     {generatingTicket ? 'Issuing Ticket...' : 'Issue & Authorize Event QR Pass'}
                   </button>
@@ -666,10 +666,10 @@ export const AdminDashboardPage: React.FC = () => {
               </form>
 
               {/* Right Column: Live Printable Badge Preview */}
-              <div className="p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-slate-900 via-[#10192e] to-[#142340] border border-blue-500/40 shadow-2xl relative space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="p-6 sm:p-7 rounded-3xl bg-[#080808] border border-[#2A2A2A] shadow-2xl relative space-y-4">
+                <div className="flex items-center justify-between border-b border-[#2A2A2A] pb-3">
                   <CGCLogo variant="full" size="sm" showTagline={false} />
-                  <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                  <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-[#FFC21A]/10 text-[#FFC21A] border border-[#FFC21A]/30">
                     {ticketType.toUpperCase()} PASS
                   </span>
                 </div>
@@ -704,7 +704,7 @@ export const AdminDashboardPage: React.FC = () => {
                     size={110}
                     label="Official Event Entry QR"
                   />
-                  <span className="text-[11px] font-mono text-blue-400 mt-1 font-bold">{ticketCustomId}</span>
+                  <span className="text-[11px] font-mono text-[#FFC21A] mt-1 font-bold">{ticketCustomId}</span>
                 </div>
 
                 <div className="pt-2 border-t border-slate-800 flex items-center justify-between gap-2">
@@ -747,7 +747,7 @@ export const AdminDashboardPage: React.FC = () => {
                   <tbody className="divide-y divide-slate-800/60">
                     {eventTickets.map((t) => (
                       <tr key={t.id} className="hover:bg-slate-900/40">
-                        <td className="py-2.5 px-3 font-mono text-blue-400 font-bold">{t.id}</td>
+                        <td className="py-2.5 px-3 font-mono text-[#FFC21A] font-bold">{t.id}</td>
                         <td className="py-2.5 px-3 text-white font-semibold">{t.title}</td>
                         <td className="py-2.5 px-3">
                           <span className="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-300 border border-slate-700">
@@ -796,8 +796,8 @@ export const AdminDashboardPage: React.FC = () => {
                   onClick={() => setAppFilter('ALL')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                     appFilter === 'ALL'
-                      ? 'bg-blue-600 text-white shadow-sm'
-                      : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'
+                      ? 'bg-[#FFC21A] text-black font-bold shadow-sm'
+                      : 'bg-[#141414] text-neutral-300 hover:bg-[#202020]'
                   }`}
                 >
                   All Applications ({applications.length})
@@ -806,8 +806,8 @@ export const AdminDashboardPage: React.FC = () => {
                   onClick={() => setAppFilter('WITH_IDEA')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition ${
                     appFilter === 'WITH_IDEA'
-                      ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
-                      : 'bg-amber-500/10 text-amber-300 border border-amber-500/20 hover:bg-amber-500/20'
+                      ? 'bg-[#FFC21A] text-black font-bold shadow-sm'
+                      : 'bg-[#FFC21A]/10 text-[#FFC21A] border border-[#FFC21A]/20 hover:bg-[#FFC21A]/20'
                   }`}
                 >
                   <Lightbulb className="w-3.5 h-3.5" />
@@ -817,8 +817,8 @@ export const AdminDashboardPage: React.FC = () => {
                   onClick={() => setAppFilter('PENDING')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                     appFilter === 'PENDING'
-                      ? 'bg-blue-600 text-white shadow-sm'
-                      : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'
+                      ? 'bg-[#FFC21A] text-black font-bold shadow-sm'
+                      : 'bg-[#141414] text-neutral-300 hover:bg-[#202020]'
                   }`}
                 >
                   ⏳ Needs Review ({applications.filter((a) => a.status === 'Reviewing' || a.status === 'Pending').length})
@@ -878,7 +878,7 @@ export const AdminDashboardPage: React.FC = () => {
                             <div className="text-[10px] text-slate-400">{app.year_of_study}</div>
                           </td>
                           <td className="py-3 px-3">
-                            <span className="text-blue-400 font-semibold">{app.primary_track}</span>
+                            <span className="text-[#FFC21A] font-semibold">{app.primary_track}</span>
                             <span className="text-[10px] text-slate-400 block">{app.skill_level}</span>
                           </td>
                           <td className="py-3 px-3 max-w-md">
@@ -1019,7 +1019,7 @@ export const AdminDashboardPage: React.FC = () => {
                   <span>Student Project Proposals & Innovation Pipeline</span>
                 </h3>
                 <p className="text-[11px] text-slate-400 mt-0.5">
-                  Review student initiatives from across Ambo University. Approving a proposal activates it for Lab 02 incubation and immediately publishes open co-creator roles to give other students the chance to join.
+                  Review student initiatives from across Ambo University. Approving a proposal activates it for IT lab 01 and 06 incubation and immediately publishes open co-creator roles to give other students the chance to join.
                 </p>
               </div>
 
@@ -1029,8 +1029,8 @@ export const AdminDashboardPage: React.FC = () => {
                   onClick={() => setProposalFilter('ALL')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                     proposalFilter === 'ALL'
-                      ? 'bg-blue-600 text-white shadow-sm'
-                      : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'
+                      ? 'bg-[#FFC21A] text-black font-bold shadow-sm'
+                      : 'bg-[#141414] text-neutral-300 hover:bg-[#202020]'
                   }`}
                 >
                   All ({proposals.length})
@@ -1099,7 +1099,7 @@ export const AdminDashboardPage: React.FC = () => {
                           <td className="py-3 px-3 text-slate-400 whitespace-nowrap">{pr.submitted_at?.slice(0, 10)}</td>
                           <td className="py-3 px-3">
                             <div className="font-bold text-white text-sm">{pr.title}</div>
-                            <span className="text-[10px] text-blue-400 font-mono">{pr.id}</span>
+                            <span className="text-[10px] text-[#FFC21A] font-mono">{pr.id}</span>
                           </td>
                           <td className="py-3 px-3">
                             <div className="text-white font-semibold">{pr.proposer_name}</div>
@@ -1123,7 +1123,7 @@ export const AdminDashboardPage: React.FC = () => {
                               {rolesList.map((role: string, idx: number) => (
                                 <span
                                   key={idx}
-                                  className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-blue-500/10 text-blue-300 border border-blue-500/20"
+                                  className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-[#FFC21A]/10 text-[#FFC21A] border border-[#FFC21A]/30"
                                 >
                                   {role}
                                 </span>
@@ -1152,8 +1152,8 @@ export const AdminDashboardPage: React.FC = () => {
                                 </>
                               ) : (
                                 <>
-                                  <Sparkles className="w-3 h-3 text-cyan-400" />
-                                  <span>Incubating in Lab 02</span>
+                                  <Sparkles className="w-3 h-3 text-[#FFC21A]" />
+                                  <span>Incubating in IT lab 01 & 06</span>
                                 </>
                               )}
                             </span>

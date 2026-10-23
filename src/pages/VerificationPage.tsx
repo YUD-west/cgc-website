@@ -1,24 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { CGCLogo } from '../components/Logo/CGCLogo';
-import { TiltCard } from '../components/Motion/TiltCard';
-import { MagneticButton } from '../components/Motion/MagneticButton';
 import { 
   ShieldCheck, 
-  AlertTriangle, 
   CheckCircle2, 
-  Building2, 
-  GraduationCap, 
-  Calendar, 
-  ExternalLink,
-  Search,
+  AlertTriangle, 
+  Search, 
   RefreshCw,
-  QrCode
+  GraduationCap,
+  Building2,
+  Calendar,
+  Sparkles,
+  Ticket
 } from 'lucide-react';
+import { TiltCard } from '../components/Motion/TiltCard';
+import { MagneticButton } from '../components/Motion/MagneticButton';
 
 interface VerificationResult {
   verified: boolean;
   isEventTicket?: boolean;
-  isPending?: boolean;
+  member?: {
+    id: string;
+    fullName: string;
+    department: string;
+    yearOfStudy: string;
+    primaryTrack: string;
+    role: string;
+    status: string;
+    issuedAt: string;
+    accessLevel: string;
+  };
   ticket?: {
     id: string;
     title: string;
@@ -27,52 +36,40 @@ interface VerificationResult {
     eventDate: string;
     accessLevel: string;
     createdBy: string;
-    status: string;
-    campus: string;
-  };
-  member?: {
-    id: string;
-    fullName: string;
-    email?: string;
-    role: string;
-    department: string;
-    yearOfStudy: string;
-    primaryTrack: string;
-    status: string;
-    accessLevel: string;
-    issuedAt: string;
-    campus: string;
+    createdAt: string;
   };
   error?: string;
 }
 
 interface VerificationPageProps {
-  initialPassId?: string;
   onNavigateHome: () => void;
+  initialPassId?: string;
 }
 
 export const VerificationPage: React.FC<VerificationPageProps> = ({
-  initialPassId,
-  onNavigateHome
+  onNavigateHome,
+  initialPassId
 }) => {
-  const [passIdInput, setPassIdInput] = useState<string>(initialPassId || 'CGC-WL-2026-PRES');
-  const [loading, setLoading] = useState<boolean>(false);
+  const [passIdInput, setPassIdInput] = useState(initialPassId || '');
+  const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<VerificationResult | null>(null);
 
   const verifyPass = async (idToVerify: string) => {
-    if (!idToVerify.trim()) return;
+    const cleanId = idToVerify.trim();
+    if (!cleanId) return;
+
     setLoading(true);
     setResult(null);
 
     try {
-      const cleanId = idToVerify.trim();
-      const res = await fetch(`/api/verify-pass/${encodeURIComponent(cleanId)}`);
+      const res = await fetch(`/api/verify/${encodeURIComponent(cleanId)}`);
       const data = await res.json();
       setResult(data);
     } catch (err) {
+      console.error('Verification request failed:', err);
       setResult({
         verified: false,
-        error: 'Unable to connect to Woliso verification database. Please try again.'
+        error: 'Unable to connect to Ambo University Woliso verification database. Please try again.'
       });
     } finally {
       setLoading(false);
@@ -81,9 +78,8 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
 
   useEffect(() => {
     if (initialPassId) {
+      setPassIdInput(initialPassId);
       verifyPass(initialPassId);
-    } else {
-      verifyPass('CGC-WL-2026-PRES');
     }
   }, [initialPassId]);
 
@@ -93,18 +89,18 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
   };
 
   return (
-    <div className="py-12 sm:py-16 max-w-3xl mx-auto px-4 sm:px-6 space-y-8 animate-fade-in">
+    <div className="py-12 sm:py-16 max-w-3xl mx-auto px-4 sm:px-6 space-y-8 animate-fade-in bg-black text-[#F2F2F2]">
       
       {/* Human-Crafted Header & Sub-Header */}
       <div className="text-center space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold">
-          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFC21A]/10 border border-[#FFC21A]/30 text-[#FFC21A] text-xs font-semibold">
+          <ShieldCheck className="w-4 h-4 text-[#FFC21A]" />
           <span>Official Pass & Ticket Verification</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
           Verify Member Pass or Event Ticket
         </h1>
-        <p className="text-slate-300 text-xs sm:text-sm max-w-lg mx-auto leading-relaxed">
+        <p className="text-neutral-300 text-xs sm:text-sm max-w-lg mx-auto leading-relaxed">
           Authenticate student club memberships or special event credentials for hackathons, guest lectures, and coding challenges at Ambo University, Woliso Campus.
         </p>
       </div>
@@ -117,13 +113,13 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
             value={passIdInput}
             onChange={(e) => setPassIdInput(e.target.value)}
             placeholder="e.g. CGC-WL-2026-PRES or EVT-HACK-2026-WL"
-            className="w-full bg-[#0D1527] border border-slate-700/80 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 font-mono shadow-inner"
+            className="w-full bg-[#000000] border border-[#2A2A2A] rounded-xl px-4 py-2.5 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-[#FFC21A] font-mono shadow-inner"
           />
         </div>
         <MagneticButton
           type="submit"
           disabled={loading}
-          className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 transition shadow-sm active:scale-95"
+          className="px-5 py-2.5 bg-[#FFC21A] hover:bg-[#e5ad16] disabled:opacity-50 text-black text-xs font-bold rounded-xl flex items-center gap-1.5 transition shadow-sm active:scale-95"
         >
           {loading ? (
             <RefreshCw className="w-3.5 h-3.5 animate-spin" />
@@ -139,48 +135,48 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
         <TiltCard
           maxTilt={4}
           scale={1.01}
-          className="rounded-3xl border border-slate-700/80 transition-all duration-300 shadow-2xl overflow-hidden animate-fade-in bg-[#0D1527]"
+          className="rounded-3xl border border-[#2A2A2A] transition-all duration-300 shadow-2xl overflow-hidden animate-fade-in bg-[#080808]"
         >
           {/* 1. Event / Hackathon / Lecture Ticket Verified */}
           {result.verified && result.isEventTicket && result.ticket ? (
             <div>
-              <div className="bg-gradient-to-r from-blue-950/80 via-indigo-950/70 to-[#0A101D] border-b border-blue-500/30 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="bg-[#141414] border-b border-[#2A2A2A] p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-blue-500/20 border border-blue-400/40 flex items-center justify-center text-blue-400 shrink-0">
+                  <div className="w-12 h-12 rounded-2xl bg-[#FFC21A]/10 border border-[#FFC21A]/30 flex items-center justify-center text-[#FFC21A] shrink-0">
                     <CheckCircle2 className="w-7 h-7" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-blue-400 font-mono">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#FFC21A] font-mono">
                         AUTHENTICATED EVENT TICKET
                       </span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#FFC21A]/10 text-[#FFC21A] border border-[#FFC21A]/30">
                         {result.ticket.eventType}
                       </span>
                     </div>
                     <h2 className="text-xl font-bold text-white mt-0.5">{result.ticket.title}</h2>
-                    <p className="text-xs text-slate-300 font-mono">{result.ticket.id}</p>
+                    <p className="text-xs text-neutral-300 font-mono">{result.ticket.id}</p>
                   </div>
                 </div>
 
                 <div className="text-right hidden sm:block">
-                  <div className="text-[10px] text-slate-400 uppercase font-mono">Venue</div>
-                  <div className="text-xs font-semibold text-slate-200">{result.ticket.venue}</div>
-                  <div className="text-[11px] text-blue-400">{result.ticket.eventDate}</div>
+                  <div className="text-[10px] text-neutral-400 uppercase font-mono">Venue</div>
+                  <div className="text-xs font-semibold text-neutral-200">{result.ticket.venue}</div>
+                  <div className="text-[11px] text-[#FFC21A]">{result.ticket.eventDate}</div>
                 </div>
               </div>
 
               <div className="p-6 sm:p-8 space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                  <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
-                    <span className="text-[10px] uppercase font-semibold text-slate-500">Access Level</span>
-                    <div className="font-semibold text-emerald-400">{result.ticket.accessLevel}</div>
-                    <div className="text-slate-400 text-[11px]">Computer Lab 02 Clearance</div>
+                  <div className="p-3.5 rounded-xl bg-[#000000] border border-[#2A2A2A] space-y-1">
+                    <span className="text-[10px] uppercase font-semibold text-neutral-500">Access Level</span>
+                    <div className="font-semibold text-[#FFC21A]">{result.ticket.accessLevel}</div>
+                    <div className="text-neutral-400 text-[11px]">Old Classroom ICT Building IT lab 01 and 06 Clearance</div>
                   </div>
-                  <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
-                    <span className="text-[10px] uppercase font-semibold text-slate-500">Authorized Issuer</span>
+                  <div className="p-3.5 rounded-xl bg-[#000000] border border-[#2A2A2A] space-y-1">
+                    <span className="text-[10px] uppercase font-semibold text-neutral-500">Authorized Issuer</span>
                     <div className="font-semibold text-white">{result.ticket.createdBy}</div>
-                    <div className="text-slate-400 text-[11px]">Ambo University, Woliso Campus</div>
+                    <div className="text-neutral-400 text-[11px]">Ambo University, Woliso Campus</div>
                   </div>
                 </div>
               </div>
@@ -188,84 +184,84 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
           ) : result.verified && result.member ? (
             /* 2. Official Member Pass Verified */
             <div>
-              <div className="bg-gradient-to-r from-emerald-950/80 via-emerald-900/60 to-[#0A101D] border-b border-emerald-500/30 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="bg-[#141414] border-b border-[#2A2A2A] p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 shrink-0">
+                  <div className="w-12 h-12 rounded-2xl bg-[#FFC21A]/10 border border-[#FFC21A]/30 flex items-center justify-center text-[#FFC21A] shrink-0">
                     <CheckCircle2 className="w-7 h-7" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 font-mono">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#FFC21A] font-mono">
                         AUTHENTICATED MEMBER
                       </span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#FFC21A]/10 text-[#FFC21A] border border-[#FFC21A]/30">
                         {result.member.status}
                       </span>
                     </div>
                     <h2 className="text-xl font-bold text-white mt-0.5">{result.member.fullName}</h2>
-                    <p className="text-xs text-slate-300 font-mono">{result.member.id}</p>
+                    <p className="text-xs text-neutral-300 font-mono">{result.member.id}</p>
                   </div>
                 </div>
 
                 <div className="text-right hidden sm:block">
-                  <div className="text-[10px] text-slate-400 uppercase font-mono">Affiliation</div>
-                  <div className="text-xs font-semibold text-slate-200">Ambo University</div>
-                  <div className="text-[11px] text-emerald-400">Woliso Campus</div>
+                  <div className="text-[10px] text-neutral-400 uppercase font-mono">Affiliation</div>
+                  <div className="text-xs font-semibold text-neutral-200">Ambo University</div>
+                  <div className="text-[11px] text-[#FFC21A]">Woliso Campus</div>
                 </div>
               </div>
 
               {/* Member Details Grid */}
               <div className="p-6 sm:p-8 space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                  <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
-                    <span className="text-[10px] uppercase font-semibold text-slate-500 flex items-center gap-1">
-                      <GraduationCap className="w-3.5 h-3.5 text-blue-400" />
+                  <div className="p-3.5 rounded-xl bg-[#000000] border border-[#2A2A2A] space-y-1">
+                    <span className="text-[10px] uppercase font-semibold text-neutral-500 flex items-center gap-1">
+                      <GraduationCap className="w-3.5 h-3.5 text-[#FFC21A]" />
                       Department & Standing
                     </span>
                     <div className="font-semibold text-white">{result.member.department}</div>
-                    <div className="text-slate-400 text-[11px]">{result.member.yearOfStudy}</div>
+                    <div className="text-neutral-400 text-[11px]">{result.member.yearOfStudy}</div>
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
-                    <span className="text-[10px] uppercase font-semibold text-slate-500 flex items-center gap-1">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                  <div className="p-3.5 rounded-xl bg-[#000000] border border-[#2A2A2A] space-y-1">
+                    <span className="text-[10px] uppercase font-semibold text-neutral-500 flex items-center gap-1">
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#FFC21A]" />
                       Membership Role
                     </span>
                     <div className="font-semibold text-white">{result.member.role}</div>
-                    <div className="text-slate-400 text-[11px]">{result.member.primaryTrack}</div>
+                    <div className="text-neutral-400 text-[11px]">{result.member.primaryTrack}</div>
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
-                    <span className="text-[10px] uppercase font-semibold text-slate-500 flex items-center gap-1">
-                      <Building2 className="w-3.5 h-3.5 text-amber-400" />
+                  <div className="p-3.5 rounded-xl bg-[#000000] border border-[#2A2A2A] space-y-1">
+                    <span className="text-[10px] uppercase font-semibold text-neutral-500 flex items-center gap-1">
+                      <Building2 className="w-3.5 h-3.5 text-[#FFC21A]" />
                       Campus Clearance
                     </span>
-                    <div className="font-semibold text-emerald-400">{result.member.accessLevel}</div>
-                    <div className="text-slate-400 text-[11px]">Computer Lab 02 & Orientation Hall</div>
+                    <div className="font-semibold text-[#FFC21A]">{result.member.accessLevel}</div>
+                    <div className="text-neutral-400 text-[11px]">Old Classroom ICT Building IT lab 01 and 06</div>
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
-                    <span className="text-[10px] uppercase font-semibold text-slate-500 flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5 text-indigo-400" />
+                  <div className="p-3.5 rounded-xl bg-[#000000] border border-[#2A2A2A] space-y-1">
+                    <span className="text-[10px] uppercase font-semibold text-neutral-500 flex items-center gap-1">
+                      <Calendar className="w-3.5 h-3.5 text-[#FFC21A]" />
                       Issued Date
                     </span>
                     <div className="font-semibold text-white">{result.member.issuedAt}</div>
-                    <div className="text-slate-400 text-[11px]">Valid for 2026 Academic Year</div>
+                    <div className="text-neutral-400 text-[11px]">Valid for 2026 Academic Year</div>
                   </div>
                 </div>
 
                 {/* Campus Verification Seal */}
-                <div className="p-4 rounded-2xl bg-blue-950/20 border border-blue-900/40 flex items-center justify-between text-xs">
+                <div className="p-4 rounded-2xl bg-[#141414] border border-[#2A2A2A] flex items-center justify-between text-xs">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-black text-white text-xs shadow-sm">
+                    <div className="w-8 h-8 rounded-lg bg-[#FFC21A] text-black flex items-center justify-center font-black text-xs shadow-sm">
                       CGC
                     </div>
                     <div>
                       <div className="font-bold text-white">Cyber Guardians Club Registry</div>
-                      <div className="text-[11px] text-slate-400">Lead Administration: Yesuf Dergu (@SatoshiFlash)</div>
+                      <div className="text-[11px] text-neutral-400">Lead Administration: Yesuf Dergu (@SatoshiFlash)</div>
                     </div>
                   </div>
-                  <span className="px-2.5 py-1 rounded bg-slate-800 text-emerald-400 font-mono text-[10px] border border-slate-700">
+                  <span className="px-2.5 py-1 rounded bg-[#000000] text-[#FFC21A] font-mono text-[10px] border border-[#2A2A2A]">
                     HASH: VERIFIED-OK
                   </span>
                 </div>
@@ -286,10 +282,10 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-xs text-slate-400 space-y-2">
+              <div className="p-4 rounded-xl bg-[#000000] border border-[#2A2A2A] text-xs text-neutral-400 space-y-2">
                 <p>If you are a registered student experiencing an issue, contact the CGC Lead Executive Desk:</p>
-                <div className="text-slate-300 font-mono text-[11px]">
-                  Telegram: <a href="https://t.me/IT_Jointcommunity" target="_blank" className="text-blue-400 underline">@IT_Jointcommunity</a> | Email: yesufdergu464@gmail.com
+                <div className="text-neutral-300 font-mono text-[11px]">
+                  Telegram: <a href="https://t.me/IT_Jointcommunity" target="_blank" className="text-[#FFC21A] underline">@IT_Jointcommunity</a> | Email: yesufdergu464@gmail.com
                 </div>
               </div>
             </div>
@@ -301,7 +297,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
       <div className="text-center pt-2">
         <button
           onClick={onNavigateHome}
-          className="text-xs text-slate-400 hover:text-white transition inline-flex items-center gap-1 active:scale-95"
+          className="text-xs text-neutral-400 hover:text-white transition inline-flex items-center gap-1 active:scale-95"
         >
           ← Return to Cyber Guardians Club Portal
         </button>

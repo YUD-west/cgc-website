@@ -119,7 +119,7 @@ app.post('/api/proposals', (req, res) => {
       id,
       title.trim(),
       problemStatement.trim(),
-      proposedSolution?.trim() || 'Incubating in Computer Lab 02',
+      proposedSolution?.trim() || 'Incubating in Old Classroom ICT Building IT lab 01 and 06',
       trackId || 'software-web',
       category || 'Campus Innovation',
       proposerName.trim(),
@@ -219,7 +219,7 @@ app.get('/api/verify-pass/:passId', (req, res) => {
           yearOfStudy: 'Executive Lead',
           primaryTrack: 'Cybersecurity & Software Architecture',
           status: 'Executive Verified',
-          accessLevel: 'Full Executive Lab 02 & Systems Clearance',
+          accessLevel: 'Full Executive IT lab 01 & 06 Clearance',
           issuedAt: '2026-01-15',
           campus: 'Ambo University, Woliso Campus'
         }
@@ -254,7 +254,7 @@ app.get('/api/verify-pass/:passId', (req, res) => {
           yearOfStudy: matchedApp.year_of_study,
           primaryTrack: matchedApp.primary_track,
           status: 'Active & Verified Member',
-          accessLevel: 'Official Lab 02 & Innovation Hall Access',
+          accessLevel: 'Official Old Classroom ICT Building IT lab 01 and 06 Access',
           issuedAt: matchedApp.submitted_at ? matchedApp.submitted_at.slice(0, 10) : '2026',
           campus: 'Ambo University, Woliso Campus'
         }

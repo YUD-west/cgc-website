@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { createQRCodeMatrix } from '../utils/qrCode';
+export { createQRCodeMatrix } from '../utils/qrCode';
 
 interface QRCodeViewProps {
   value: string;

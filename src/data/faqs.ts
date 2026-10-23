@@ -39,6 +39,6 @@ export const FAQS: FAQ[] = [
     category: 'General',
     question: 'Where is CGC located on the Woliso Campus?',
     answer:
-      'We meet primarily in the Main ICT Building Computer Labs and the Woliso Campus Student Innovation Space, alongside hybrid online sessions over Telegram and Google Meet.'
+      'We meet primarily in the Old Classroom ICT Building IT lab 01 and 06, Woliso Campus, alongside hybrid online sessions over Google Meet.'
   }
 ];

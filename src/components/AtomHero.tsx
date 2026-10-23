@@ -486,7 +486,7 @@ export const AtomHero: React.FC<AtomHeroProps> = ({ onNavigate }) => {
             <span className="block text-[#FFC21A]">Our Next Breakthrough</span>
           </h1>
           <p className="text-gray-300 text-lg sm:text-xl font-normal leading-relaxed mb-8 max-w-md">
-            Open to every field. Built by curious minds. From Computer Lab 02 to real-world impact.
+            Open to every field. Built by curious minds. From Old Classroom ICT Building IT lab 01 and 06 to real-world impact.
           </p>
 
           <div className="flex flex-wrap items-center gap-4">

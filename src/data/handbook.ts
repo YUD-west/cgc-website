@@ -19,11 +19,11 @@ export interface HandbookSection {
 export const HANDBOOK_SECTIONS: HandbookSection[] = [
   {
     id: 'linux-lab02',
-    title: 'Computer Lab 02 Linux Terminal Essentials',
+    title: 'IT Lab 01 & 06 Linux Terminal Essentials',
     subtitle: 'Navigating student workstations and managing files via CLI',
     category: 'linux',
     iconName: 'Terminal',
-    practicalScenario: 'Used when logging into Woliso Campus Computer Lab 02 machines and configuring project directories.',
+    practicalScenario: 'Used when logging into Woliso Campus Old Classroom ICT Building IT lab 01 and 06 machines and configuring project directories.',
     commands: [
       {
         command: 'ls -la',
@@ -153,7 +153,7 @@ export const HANDBOOK_SECTIONS: HandbookSection[] = [
     subtitle: 'Live packet filtering, spotting ARP poisoning, and analyzing network anomalies',
     category: 'cyber',
     iconName: 'ShieldCheck',
-    practicalScenario: 'Used during CGC Cybersecurity SIG workshop drills in Computer Lab 02.',
+    practicalScenario: 'Used during CGC Cybersecurity SIG workshop drills in Old Classroom ICT Building IT lab 01 and 06.',
     commands: [
       {
         command: 'ip.addr == 192.168.1.50',

@@ -88,7 +88,7 @@ Sections to Render:
    - Card 3: "Qajeelfama" (Offline academic notes sync) | Badge: [Open for Contributors] | Lead: Bonsa D. (CS).
    - Card actions: [View Code / GitHub], [Live Demo], [Join Team].
 5. Event Schedule:
-   - Date badge (e.g. OCT 24), title "Wireshark Packet Inspection Lab", location "ICT Lab 02, Woliso Campus", time "2:30 PM EAT", action [Free RSVP].
+   - Date badge (e.g. OCT 24), title "Wireshark Packet Inspection Lab", location "Old Classroom ICT Building IT lab 01 and 06", time "2:30 PM EAT", action [Free RSVP].
 6. Digital Member Pass Preview:
    - Credential card with ID "CGC-WL-2026-4821", student name "Bontu Desta", department "Information Technology", verified checkmark badge.
 ```
@@ -127,7 +127,7 @@ UI UX design of Cyber Guardians Club modern website homepage, Ambo University Wo
 
 | Area | What Makes It Feel Real | Avoid |
 | :--- | :--- | :--- |
-| **Microcopy & Local Context** | Use real campus context: *"ICT Lab 02, Woliso Campus"*, *"East Africa Time (EAT)"*, *"Ambo University"*, *"Telebirr API"*, *"Afan Oromo & Amharic NLP"*. | Generic dummy text like *"Lorem ipsum"* or fictional futuristic cities. |
+| **Microcopy & Local Context** | Use real campus context: *"Old Classroom ICT Building IT lab 01 and 06"*, *"East Africa Time (EAT)"*, *"Ambo University"*, *"Telebirr API"*, *"Afan Oromo & Amharic NLP"*. | Generic dummy text like *"Lorem ipsum"* or fictional futuristic cities. |
 | **Department Representation** | Show cross-department teams: *"Kalkidan T. (IT 3rd Year)"*, *"Tolera M. (Informatics + Plant Science)"*, *"Selamawit G. (Business Administration)"*. | Showing only stereotypical single-programmer teams. |
 | **Realistic Status Badges** | Use actionable states: `Active`, `Open for Contributors`, `Incubating`, `Concept Review`. | Generic *"Coming Soon"* placeholders everywhere. |
 | **Color Restraint** | 90% Midnight Navy (`#0F172A`) & Off-White (`#F5F7FA`), 8% Electric Blue (`#2563EB`), 2% Green Accent (`#16A34A`). | Over-saturated rainbow gradients or neon glowing purple laser lines. |

@@ -62,7 +62,7 @@ const TOUR_STEPS = [
   {
     step: 4,
     title: '4. Real-World Projects & Collaboration',
-    text: `Collaboration is the beating heart of CGC! In our **Computer Lab 02** coding sprints, students assemble cross-departmental teams to build real tools.\n\n• **Active projects** include campus network monitoring, agricultural data tools, and student portals.\n• **Propose an idea**: Any student can pitch a concept to recruit team members.\n• **Join existing teams**: Beginners can pair with senior student leads to write real code.`,
+    text: `Collaboration is the beating heart of CGC! In our **Old Classroom ICT Building IT lab 01 and 06** coding sprints, students assemble cross-departmental teams to build real tools.\n\n• **Active projects** include campus network monitoring, agricultural data tools, and student portals.\n• **Propose an idea**: Any student can pitch a concept to recruit team members.\n• **Join existing teams**: Beginners can pair with senior student leads to write real code.`,
     nextQuery: 'How do I join CGC and get my Digital Pass?',
     nextLabel: 'Step 5: Membership & Digital Pass →'
   },
@@ -188,7 +188,7 @@ export const CGCBot: React.FC<CGCBotProps> = ({ onNavigate, onOpenAuth }) => {
           {
             id: `msg-${Date.now()}`,
             sender: 'bot',
-            text: `CGC features **5 Innovation Tracks**:\n\n1. **Cybersecurity & Defense** (Wireshark, network hardening, ethical security)\n2. **Programming & Problem-Solving** (Python, logic, algorithms)\n3. **Artificial Intelligence & ML** (Machine learning, local language processing)\n4. **Software & Web Development** (React, TypeScript, databases, mobile apps)\n5. **Entrepreneurship & Product** (Startup models, product roadmaps, project defense)\n\nEvery track includes practical weekend sessions in Woliso Computer Lab 02.`,
+            text: `CGC features **5 Innovation Tracks**:\n\n1. **Cybersecurity & Defense** (Wireshark, network hardening, ethical security)\n2. **Programming & Problem-Solving** (Python, logic, algorithms)\n3. **Artificial Intelligence & ML** (Machine learning, local language processing)\n4. **Software & Web Development** (React, TypeScript, databases, mobile apps)\n5. **Entrepreneurship & Product** (Startup models, product roadmaps, project defense)\n\nEvery track includes practical weekend sessions in Old Classroom ICT Building IT lab 01 and 06.`,
             action: {
               label: 'Explore Full Tracks Overview →',
               onClick: () => { setIsOpen(false); onNavigate('explore'); }
@@ -230,7 +230,7 @@ export const CGCBot: React.FC<CGCBotProps> = ({ onNavigate, onOpenAuth }) => {
           {
             id: `msg-${Date.now()}`,
             sender: 'bot',
-            text: `**CGC Membership is 100% Free!**\n\nTo join:\n1. Fill out the quick form on the **Join CGC** page (or click Sign In to create an account).\n2. You will instantly receive your official **Verified CGC Digital Member Pass** with your unique Member ID.\n3. Quote your Member ID when attending weekend sessions in **Computer Lab 02** to get repo access and project workstation priority.`,
+            text: `**CGC Membership is 100% Free!**\n\nTo join:\n1. Fill out the quick form on the **Join CGC** page (or click Sign In to create an account).\n2. You will instantly receive your official **Verified CGC Digital Member Pass** with your unique Member ID.\n3. Quote your Member ID when attending weekend sessions in **Old Classroom ICT Building IT lab 01 and 06** to get repo access and project workstation priority.`,
             action: {
               label: 'Open Free Join Form →',
               onClick: () => { setIsOpen(false); onNavigate('join'); }
@@ -272,7 +272,7 @@ export const CGCBot: React.FC<CGCBotProps> = ({ onNavigate, onOpenAuth }) => {
           {
             id: `msg-${Date.now()}`,
             sender: 'bot',
-            text: `CGC organizes competitive hackathons and weekend lab workshops:\n\n• **Cursor Hackathon Ambo**: Competitive sprints where students present prototypes to faculty examiners.\n• **Weekend Lab Sprints**: Hands-on coding and defense sessions in Computer Lab 02.\n• **Orientation Ceremonies**: Welcoming new batches into peer study cohorts.`,
+            text: `CGC organizes competitive hackathons and weekend lab workshops:\n\n• **Cursor Hackathon Ambo**: Competitive sprints where students present prototypes to faculty examiners.\n• **Weekend Lab Sprints**: Hands-on coding and defense sessions in Old Classroom ICT Building IT lab 01 and 06.\n• **Orientation Ceremonies**: Welcoming new batches into peer study cohorts.`,
             action: {
               label: 'View Upcoming Events & Past Highlights →',
               onClick: () => { setIsOpen(false); onNavigate('events'); }
@@ -331,50 +331,50 @@ export const CGCBot: React.FC<CGCBotProps> = ({ onNavigate, onOpenAuth }) => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="group flex items-center gap-2.5 px-4 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-2xl hover:scale-105 transition-all border border-blue-400/40"
+          className="group flex items-center gap-2.5 px-4 py-3 rounded-full bg-[#FFC21A] hover:bg-[#e5ad16] text-black font-bold text-xs shadow-2xl hover:scale-105 transition-all border border-black"
           title="Chat with CGC Assistant"
         >
           <span className="flex h-2.5 w-2.5 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-black"></span>
           </span>
-          <Bot className="w-4 h-4 text-white" />
+          <Bot className="w-4 h-4 text-black" />
           <span>Ask CGC Assistant</span>
         </button>
       )}
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="bg-[#111A2E] border border-slate-700 w-[92vw] sm:w-[420px] h-[550px] max-h-[85vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-fade-in">
+        <div className="bg-[#080808] border border-[#2A2A2A] w-[92vw] sm:w-[420px] h-[550px] max-h-[85vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-fade-in text-[#F2F2F2]">
           
           {/* Header */}
-          <div className="p-4 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between">
+          <div className="p-4 bg-[#000000] border-b border-[#2A2A2A] flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-blue-600/20 text-blue-400 border border-blue-500/30 flex items-center justify-center">
-                <Bot className="w-5 h-5 text-blue-400" />
+              <div className="w-9 h-9 rounded-xl bg-[#FFC21A]/10 text-[#FFC21A] border border-[#FFC21A]/30 flex items-center justify-center">
+                <Bot className="w-5 h-5 text-[#FFC21A]" />
               </div>
               <div>
                 <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
                   <span>CGC Campus Assistant</span>
-                  <span className="px-1.5 py-0.2 rounded text-[9px] bg-emerald-500/10 text-emerald-400 font-mono border border-emerald-500/20">
+                  <span className="px-1.5 py-0.2 rounded text-[9px] bg-[#FFC21A]/10 text-[#FFC21A] font-mono border border-[#FFC21A]/30">
                     LIVE
                   </span>
                 </h4>
-                <p className="text-[10px] text-slate-400">Ambo University, Woliso Campus</p>
+                <p className="text-[10px] text-neutral-400">Ambo University, Woliso Campus</p>
               </div>
             </div>
 
             <div className="flex items-center gap-1">
               <button
                 onClick={() => handleSend('Start step-by-step tour of CGC')}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors text-[10px] font-medium"
+                className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-[#141414] transition-colors text-[10px] font-medium"
                 title="Restart Tour"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-[#141414] transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -391,8 +391,8 @@ export const CGCBot: React.FC<CGCBotProps> = ({ onNavigate, onOpenAuth }) => {
                 <div
                   className={`max-w-[88%] p-3.5 rounded-2xl leading-relaxed ${
                     m.sender === 'user'
-                      ? 'bg-blue-600 text-white rounded-br-sm'
-                      : 'bg-slate-900 border border-slate-800 text-slate-200 rounded-bl-sm'
+                      ? 'bg-[#FFC21A] text-black font-semibold rounded-br-sm'
+                      : 'bg-[#141414] border border-[#2A2A2A] text-neutral-200 rounded-bl-sm'
                   }`}
                 >
                   <div className="whitespace-pre-line">
@@ -408,7 +408,7 @@ export const CGCBot: React.FC<CGCBotProps> = ({ onNavigate, onOpenAuth }) => {
                   {m.action && (
                     <button
                       onClick={m.action.onClick}
-                      className="mt-3 px-3 py-1.5 rounded-lg bg-blue-600/30 hover:bg-blue-600 text-blue-200 hover:text-white border border-blue-500/40 text-[11px] font-semibold transition-all flex items-center gap-1.5"
+                      className="mt-3 px-3 py-1.5 rounded-lg bg-[#FFC21A] hover:bg-[#e5ad16] text-black text-[11px] font-bold transition-all flex items-center gap-1.5"
                     >
                       <span>{m.action.label}</span>
                     </button>
@@ -422,7 +422,7 @@ export const CGCBot: React.FC<CGCBotProps> = ({ onNavigate, onOpenAuth }) => {
                       <button
                         key={idx}
                         onClick={() => handleSend(opt.query)}
-                        className="px-2.5 py-1.5 rounded-lg bg-slate-900/90 hover:bg-blue-600/20 text-slate-300 hover:text-blue-300 border border-slate-800 hover:border-blue-500/40 text-[11px] transition-colors text-left"
+                        className="px-2.5 py-1.5 rounded-lg bg-[#141414] hover:bg-[#FFC21A]/10 text-neutral-300 hover:text-[#FFC21A] border border-[#2A2A2A] hover:border-[#FFC21A]/40 text-[11px] transition-colors text-left"
                       >
                         {opt.label}
                       </button>
@@ -433,10 +433,10 @@ export const CGCBot: React.FC<CGCBotProps> = ({ onNavigate, onOpenAuth }) => {
             ))}
 
             {isTyping && (
-              <div className="flex items-center gap-1.5 p-3 rounded-2xl bg-slate-900 border border-slate-800 max-w-[80px]">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+              <div className="flex items-center gap-1.5 p-3 rounded-2xl bg-[#141414] border border-[#2A2A2A] max-w-[80px]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FFC21A] animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FFC21A] animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FFC21A] animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
             )}
 
@@ -444,41 +444,41 @@ export const CGCBot: React.FC<CGCBotProps> = ({ onNavigate, onOpenAuth }) => {
           </div>
 
           {/* Quick Step Buttons Row */}
-          <div className="px-3 py-2 bg-slate-950/60 border-t border-slate-800 flex items-center gap-1.5 overflow-x-auto scrollbar-none text-[10px]">
-            <span className="text-slate-500 font-semibold uppercase flex-shrink-0">Step-by-step:</span>
+          <div className="px-3 py-2 bg-[#000000] border-t border-[#2A2A2A] flex items-center gap-1.5 overflow-x-auto scrollbar-none text-[10px]">
+            <span className="text-neutral-500 font-semibold uppercase flex-shrink-0">Step-by-step:</span>
             <button
               onClick={() => handleSend('Start step-by-step tour of CGC')}
-              className="px-2 py-1 rounded bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 whitespace-nowrap flex-shrink-0"
+              className="px-2 py-1 rounded bg-[#141414] text-neutral-300 hover:text-white hover:bg-[#202020] whitespace-nowrap flex-shrink-0"
             >
               1. Vision
             </button>
             <button
               onClick={() => handleSend('Tell me about cross-disciplinary learning at CGC')}
-              className="px-2 py-1 rounded bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 whitespace-nowrap flex-shrink-0"
+              className="px-2 py-1 rounded bg-[#141414] text-neutral-300 hover:text-white hover:bg-[#202020] whitespace-nowrap flex-shrink-0"
             >
               2. Streams
             </button>
             <button
               onClick={() => handleSend('What are the 5 innovation tracks?')}
-              className="px-2 py-1 rounded bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 whitespace-nowrap flex-shrink-0"
+              className="px-2 py-1 rounded bg-[#141414] text-neutral-300 hover:text-white hover:bg-[#202020] whitespace-nowrap flex-shrink-0"
             >
               3. Tracks
             </button>
             <button
               onClick={() => handleSend('How do student projects work?')}
-              className="px-2 py-1 rounded bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 whitespace-nowrap flex-shrink-0"
+              className="px-2 py-1 rounded bg-[#141414] text-neutral-300 hover:text-white hover:bg-[#202020] whitespace-nowrap flex-shrink-0"
             >
               4. Projects
             </button>
             <button
               onClick={() => handleSend('How do I get my Digital Member Pass?')}
-              className="px-2 py-1 rounded bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 whitespace-nowrap flex-shrink-0"
+              className="px-2 py-1 rounded bg-[#141414] text-neutral-300 hover:text-white hover:bg-[#202020] whitespace-nowrap flex-shrink-0"
             >
               5. Pass
             </button>
             <button
               onClick={() => handleSend('Who leads CGC and how can I contact them?')}
-              className="px-2 py-1 rounded bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 whitespace-nowrap flex-shrink-0"
+              className="px-2 py-1 rounded bg-[#141414] text-neutral-300 hover:text-white hover:bg-[#202020] whitespace-nowrap flex-shrink-0"
             >
               6. Admins
             </button>
@@ -487,19 +487,19 @@ export const CGCBot: React.FC<CGCBotProps> = ({ onNavigate, onOpenAuth }) => {
           {/* Input Box */}
           <form
             onSubmit={(e) => { e.preventDefault(); handleSend(); }}
-            className="p-3 bg-slate-900 border-t border-slate-800 flex items-center gap-2"
+            className="p-3 bg-[#000000] border-t border-[#2A2A2A] flex items-center gap-2"
           >
             <input
               type="text"
               placeholder="Ask about CGC, tracks, projects, or admins..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-blue-500"
+              className="flex-1 px-3.5 py-2.5 rounded-xl bg-[#080808] border border-[#2A2A2A] text-white text-xs placeholder-neutral-500 focus:outline-none focus:border-[#FFC21A]"
             />
             <button
               type="submit"
               disabled={!input.trim()}
-              className="p-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white disabled:opacity-40 transition-colors"
+              className="p-2.5 rounded-xl bg-[#FFC21A] hover:bg-[#e5ad16] text-black disabled:opacity-40 transition-colors font-bold"
             >
               <Send className="w-4 h-4" />
             </button>

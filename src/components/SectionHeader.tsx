@@ -2,7 +2,7 @@ import React from 'react';
 
 interface SectionHeaderProps {
   badge?: string;
-  badgeColor?: 'blue' | 'green' | 'slate';
+  badgeColor?: 'amber' | 'blue' | 'green' | 'slate' | string;
   title: string;
   description?: string;
   centered?: boolean;

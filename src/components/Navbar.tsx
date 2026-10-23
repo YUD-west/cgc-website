@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Menu, X, ShieldCheck, LogOut, User as UserIcon } from 'lucide-react';
+import { Menu, X, LogOut, User as UserIcon } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: string;
@@ -22,7 +22,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'about', label: 'About' },
     { id: 'projects', label: 'Projects' },
     { id: 'events', label: 'Events' },
-    { id: 'verify', label: 'Verify Pass' },
+    { id: 'join', label: 'Join Us' },
   ];
 
   const handleNavClick = (id: string) => {
@@ -37,7 +37,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Logo matching Downloads/index.html */}
         <button
           onClick={() => handleNavClick('home')}
-          className="group flex items-center gap-1.5 focus:outline-none"
+          className="group flex items-center gap-1.5 focus:outline-none cursor-pointer"
           aria-label="CGC home"
         >
           <span className="font-display font-extrabold text-xl tracking-[0.1em] text-[#F2F2F2]">
@@ -55,7 +55,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 key={link.id}
                 onClick={() => handleNavClick(link.id)}
                 className={`py-1 transition-colors hover:text-[#F2F2F2] cursor-pointer ${
-                  isActive ? 'text-[#F2F2F2] font-semibold' : ''
+                  isActive ? 'text-[#FFC21A] font-semibold' : ''
                 }`}
                 aria-current={isActive ? 'page' : undefined}
               >
@@ -72,21 +72,21 @@ export const Navbar: React.FC<NavbarProps> = ({
               {isAdmin && (
                 <button
                   onClick={() => handleNavClick('admin')}
-                  className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-[#FFC21A]/40 text-[#FFC21A] bg-[#FFC21A]/10 hover:bg-[#FFC21A]/20 transition-colors"
+                  className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-[#FFC21A]/40 text-[#FFC21A] bg-[#FFC21A]/10 hover:bg-[#FFC21A]/20 transition-colors cursor-pointer"
                 >
                   Admin Portal
                 </button>
               )}
               <button
                 onClick={() => handleNavClick('dashboard')}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-[#2A2A2A] bg-[#0A0A0A] hover:bg-[#151515] text-[#F2F2F2] text-xs font-medium transition-colors"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-[#2A2A2A] bg-[#0A0A0A] hover:bg-[#151515] hover:border-[#FFC21A]/50 text-[#F2F2F2] text-xs font-medium transition-colors cursor-pointer"
               >
                 <UserIcon className="w-3.5 h-3.5 text-[#FFC21A]" />
                 <span>My Pass</span>
               </button>
               <button
                 onClick={logout}
-                className="p-1.5 text-[#A3A3A3] hover:text-red-400 rounded-lg hover:bg-[#151515] transition-colors"
+                className="p-1.5 text-[#A3A3A3] hover:text-red-400 rounded-lg hover:bg-[#151515] transition-colors cursor-pointer"
                 title="Sign Out"
               >
                 <LogOut className="w-4 h-4" />
@@ -102,7 +102,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
               <button
                 onClick={() => handleNavClick('join')}
-                className="px-4 py-2 rounded-lg bg-[#F2F2F2] hover:bg-white text-black text-xs font-bold transition-all shadow-md active:scale-95 cursor-pointer"
+                className="px-4 py-2 rounded-lg bg-[#FFC21A] hover:bg-[#FFB81C] text-black text-xs font-bold transition-all shadow-md active:scale-95 cursor-pointer"
               >
                 Join Us
               </button>
@@ -131,7 +131,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 key={link.id}
                 onClick={() => handleNavClick(link.id)}
                 className={`w-full text-left py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
-                  activeTab === link.id ? 'bg-[#1A1A1A] text-white font-semibold' : 'text-[#A3A3A3] hover:text-white'
+                  activeTab === link.id ? 'bg-[#1A1A1A] text-[#FFC21A] font-semibold' : 'text-[#A3A3A3] hover:text-white'
                 }`}
               >
                 {link.label}
@@ -144,7 +144,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="space-y-2">
                 <button
                   onClick={() => handleNavClick('dashboard')}
-                  className="w-full py-2.5 rounded-lg bg-[#F2F2F2] text-black font-bold text-xs"
+                  className="w-full py-2.5 rounded-lg bg-[#FFC21A] text-black font-bold text-xs"
                 >
                   My Member Pass
                 </button>
@@ -173,7 +173,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </button>
                 <button
                   onClick={() => handleNavClick('join')}
-                  className="py-2.5 rounded-lg bg-[#F2F2F2] text-black font-bold text-xs"
+                  className="py-2.5 rounded-lg bg-[#FFC21A] text-black font-bold text-xs"
                 >
                   Join Us (Free)
                 </button>

@@ -6,12 +6,10 @@ import {
   Code2, 
   Cpu, 
   Sprout, 
-  QrCode, 
   Monitor, 
   Users, 
   Zap,
-  Send,
-  ArrowRight
+  GraduationCap
 } from 'lucide-react';
 
 interface HomePageProps {
@@ -27,57 +25,57 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
     {
       icon: ShieldCheck,
       title: 'Cyber Defense',
-      desc: 'Ethical hacking & network defense labs.',
-      color: 'text-[#14a94b] bg-[#14a94b]/10 border-[#14a94b]/20',
+      desc: 'Ethical hacking & network defense labs in IT lab 01 and 06.',
+      accent: 'text-[#FFC21A] bg-[#FFC21A]/10 border-[#FFC21A]/30',
       action: () => onNavigate('projects'),
     },
     {
       icon: Code2,
       title: 'Software & Web',
       desc: 'Building practical apps & shipping code.',
-      color: 'text-[#FFC21A] bg-[#FFC21A]/10 border-[#FFC21A]/20',
+      accent: 'text-white bg-white/10 border-white/20',
       action: () => onNavigate('projects'),
     },
     {
       icon: Cpu,
       title: 'AI & Machine Learning',
       desc: 'Models, datasets & intelligent tools.',
-      color: 'text-[#e8262c] bg-[#e8262c]/10 border-[#e8262c]/20',
+      accent: 'text-[#FFC21A] bg-[#FFC21A]/10 border-[#FFC21A]/30',
       action: () => onNavigate('projects'),
     },
     {
       icon: Sprout,
       title: 'AgriTech & IoT',
       desc: 'Sensors, hardware & community solutions.',
-      color: 'text-[#14a94b] bg-[#14a94b]/10 border-[#14a94b]/20',
+      accent: 'text-white bg-white/10 border-white/20',
       action: () => onNavigate('projects'),
     },
     {
-      icon: QrCode,
-      title: 'Digital Member Pass',
-      desc: '3D interactive card with QR door verification.',
-      color: 'text-[#FFC21A] bg-[#FFC21A]/10 border-[#FFC21A]/20',
-      action: () => onNavigate('verify'),
+      icon: Monitor,
+      title: 'IT Lab 01 & 06',
+      desc: 'Workstations in Old Classroom ICT Building.',
+      accent: 'text-[#FFC21A] bg-[#FFC21A]/10 border-[#FFC21A]/30',
+      action: () => onNavigate('about'),
     },
     {
-      icon: Monitor,
-      title: 'Computer Lab 02',
-      desc: 'Physical workstations in Main ICT Building.',
-      color: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
+      icon: GraduationCap,
+      title: 'Student Mentorship',
+      desc: 'Guidance from seniors, peer learning & code review.',
+      accent: 'text-white bg-white/10 border-white/20',
       action: () => onNavigate('about'),
     },
     {
       icon: Users,
       title: 'Cross-Faculty Co-Creation',
       desc: 'Team up across IT, Business & Agriculture.',
-      color: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
+      accent: 'text-[#FFC21A] bg-[#FFC21A]/10 border-[#FFC21A]/30',
       action: () => onNavigate('projects'),
     },
     {
       icon: Zap,
       title: '100% Free & Open',
       desc: 'Zero fees. Welcoming beginners & all fields.',
-      color: 'text-[#FFC21A] bg-[#FFC21A]/10 border-[#FFC21A]/20',
+      accent: 'text-white bg-white/10 border-white/20',
       action: () => onNavigate('join'),
     },
   ];
@@ -108,10 +106,10 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
               <div
                 key={idx}
                 onClick={fn.action}
-                className="p-4 sm:p-5 rounded-xl bg-[#080808] border border-[#2A2A2A] hover:border-[#FFC21A]/40 transition-all cursor-pointer group flex flex-col justify-between"
+                className="p-4 sm:p-5 rounded-xl bg-[#080808] border border-[#2A2A2A] hover:border-[#FFC21A]/50 transition-all cursor-pointer group flex flex-col justify-between"
               >
                 <div>
-                  <div className={`w-9 h-9 rounded-lg border flex items-center justify-center mb-3 transition-transform group-hover:scale-105 ${fn.color}`}>
+                  <div className={`w-9 h-9 rounded-lg border flex items-center justify-center mb-3 transition-transform group-hover:scale-105 ${fn.accent}`}>
                     <Icon className="w-4 h-4" />
                   </div>
                   <h3 className="text-sm font-bold text-white group-hover:text-[#FFC21A] transition-colors mb-1">
@@ -145,22 +143,12 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
               {LEAD_ADMIN.name} — Lead Administrator &amp; Club President
             </h3>
             <p className="text-xs text-[#A3A3A3] leading-relaxed">
-              &quot;Our mission at Woliso Campus is simple: help students move from theory to building real software. Join our community sessions every week in Computer Lab 02.&quot;
+              &quot;Our mission at Woliso Campus is simple: help students move from theory to building real software. Join our community sessions every week in Old Classroom ICT Building IT lab 01 and 06.&quot;
             </p>
             <div className="pt-1 flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs">
-              <a
-                href={OFFICIAL_COMMUNITY.telegramGroup}
-                target="_blank"
-                rel="noreferrer"
-                className="text-[#FFC21A] hover:underline flex items-center gap-1 font-semibold"
-              >
-                <Send className="w-3.5 h-3.5" />
-                <span>Join Telegram Community</span>
-              </a>
-              <span className="text-[#333]">·</span>
               <button
                 onClick={() => onNavigate('about')}
-                className="text-[#A3A3A3] hover:text-white transition-colors cursor-pointer"
+                className="text-[#FFC21A] hover:underline transition-colors cursor-pointer"
               >
                 Learn About CGC →
               </button>

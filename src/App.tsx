@@ -9,7 +9,6 @@ import { EventsPage } from './pages/EventsPage';
 import { JoinPage } from './pages/JoinPage';
 import { UserDashboardPage } from './pages/UserDashboardPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
-import { VerificationPage } from './pages/VerificationPage';
 
 import { JoinTeamModal } from './components/Modals/JoinTeamModal';
 import { RsvpModal } from './components/Modals/RsvpModal';
@@ -92,17 +91,6 @@ const AppContent: React.FC = () => {
     setCustomProposals((prev) => [asProject, ...prev]);
   };
 
-  const [verificationPassId, setVerificationPassId] = useState<string>('CGC-WL-2026-PRES');
-
-  useEffect(() => {
-    const hash = window.location.hash;
-    if (hash.startsWith('#verify')) {
-      const parts = hash.split('/');
-      if (parts[1]) setVerificationPassId(decodeURIComponent(parts[1]));
-      setActiveTab('verify');
-    }
-  }, []);
-
   const handleNavigate = (tab: string) => {
     setActiveTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -157,13 +145,6 @@ const AppContent: React.FC = () => {
           <UserDashboardPage
             onNavigate={handleNavigate}
             onProposeProject={() => setIsProposalModalOpen(true)}
-          />
-        )}
-
-        {activeTab === 'verify' && (
-          <VerificationPage
-            initialPassId={verificationPassId}
-            onNavigateHome={() => handleNavigate('home')}
           />
         )}
 

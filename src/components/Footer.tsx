@@ -1,5 +1,5 @@
 import React from 'react';
-import { Send, Github, MapPin } from 'lucide-react';
+import { Github, MapPin } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
@@ -16,26 +16,17 @@ export const Footer: React.FC = () => {
           </div>
           <div className="flex items-center justify-center sm:justify-start gap-1.5 text-xs text-[#737373]">
             <MapPin className="w-3.5 h-3.5 text-[#FFC21A]" />
-            <span>Main ICT Building, Computer Lab 02 · Woliso, Ethiopia</span>
+            <span>Old Classroom ICT Building IT lab 01 and 06 · Woliso, Ethiopia</span>
           </div>
         </div>
 
-        {/* Socials & Community */}
+        {/* GitHub link */}
         <div className="flex items-center gap-3">
-          <a
-            href="https://t.me/IT_Jointcommunity"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-[#2A2A2A] bg-[#0A0A0A] hover:bg-[#151515] hover:border-[#FFC21A]/50 text-xs text-[#F2F2F2] transition-colors"
-          >
-            <Send className="w-3.5 h-3.5 text-[#FFC21A]" />
-            <span>Telegram Channel</span>
-          </a>
           <a
             href="https://github.com/YUD-west/cgc-website"
             target="_blank"
             rel="noreferrer"
-            className="p-1.5 rounded-lg border border-[#2A2A2A] bg-[#0A0A0A] hover:bg-[#151515] text-[#A3A3A3] hover:text-white transition-colors"
+            className="p-2 rounded-lg border border-[#2A2A2A] bg-[#080808] hover:bg-[#151515] hover:border-[#FFC21A]/50 text-[#A3A3A3] hover:text-[#FFC21A] transition-colors"
             title="Open Source on GitHub"
           >
             <Github className="w-4 h-4" />

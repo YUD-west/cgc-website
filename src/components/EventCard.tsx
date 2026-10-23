@@ -2,12 +2,10 @@ import React from 'react';
 import { ClubEvent } from '../types';
 import { TiltCard } from './Motion/TiltCard';
 import { 
-  Calendar, 
   Clock, 
   MapPin, 
   Video, 
-  ArrowRight,
-  Sparkles
+  ArrowRight
 } from 'lucide-react';
 
 interface EventCardProps {
@@ -23,83 +21,68 @@ export const EventCard: React.FC<EventCardProps> = ({
   const eventDate = new Date(event.date);
   const formattedDate = eventDate.toLocaleDateString('en-US', { 
     month: 'short', 
-    day: 'numeric',
-    year: 'numeric'
+    day: 'numeric', 
+    year: 'numeric' 
   });
-
-  const getCategoryColor = (cat: string) => {
-    switch (cat) {
-      case 'Workshop':
-        return 'bg-blue-500/10 text-blue-300 border-blue-500/30';
-      case 'Hackathon':
-        return 'bg-amber-500/10 text-amber-300 border-amber-500/30';
-      case 'Project Build':
-        return 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30';
-      case 'Competition':
-        return 'bg-purple-500/10 text-purple-300 border-purple-500/30';
-      default:
-        return 'bg-slate-800 text-slate-300 border-slate-700';
-    }
-  };
 
   return (
     <TiltCard
       maxTilt={6}
       scale={1.015}
-      className="group bg-[#0D1527]/95 hover:bg-[#121D35] backdrop-blur-xl border border-slate-700/70 hover:border-emerald-500/60 rounded-2xl p-5 transition-all duration-300 flex flex-col justify-between shadow-lg hover:shadow-glow-green relative"
+      className="group bg-[#080808] hover:bg-[#111111] backdrop-blur-xl border border-[#2A2A2A] hover:border-[#FFC21A]/50 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between shadow-lg relative"
     >
       <div>
-        {/* Category & Mode Bar */}
+        {/* Category & Location */}
         <div className="flex items-center justify-between gap-2 mb-3">
-          <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${getCategoryColor(event.category)}`}>
+          <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full border bg-[#FFC21A]/10 text-[#FFC21A] border-[#FFC21A]/30">
             {event.category}
           </span>
 
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-400">
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-[#A3A3A3]">
             {event.isVirtual ? (
               <>
-                <Video className="w-3.5 h-3.5 text-emerald-400" />
+                <Video className="w-3.5 h-3.5 text-[#FFC21A]" />
                 <span>Virtual Session</span>
               </>
             ) : (
               <>
-                <MapPin className="w-3.5 h-3.5 text-blue-400" />
-                <span>Computer Lab 02</span>
+                <MapPin className="w-3.5 h-3.5 text-[#FFC21A]" />
+                <span>IT Lab 01 &amp; 06</span>
               </>
             )}
           </span>
         </div>
 
         {/* Title */}
-        <h3 className="text-base font-bold text-white group-hover:text-emerald-300 transition-colors line-clamp-1">
+        <h3 className="text-lg font-bold text-white group-hover:text-[#FFC21A] transition-colors line-clamp-1 mb-1.5">
           {event.title}
         </h3>
 
-        {/* Sub-heading under title: Schedule */}
-        <p className="text-xs text-blue-400 font-medium mt-1 flex items-center gap-1.5">
-          <Clock className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+        {/* Schedule */}
+        <p className="text-xs text-[#FFC21A] font-medium flex items-center gap-1.5 mb-3">
+          <Clock className="w-3.5 h-3.5 text-[#FFC21A] shrink-0" />
           <span>{formattedDate} • {event.time}</span>
         </p>
 
         {/* Brief description */}
-        <p className="mt-2.5 text-xs text-slate-300 line-clamp-2 leading-relaxed">
+        <p className="text-xs text-[#A3A3A3] line-clamp-3 leading-relaxed">
           {event.description}
         </p>
       </div>
 
       {/* Footer: Venue & Action */}
-      <div className="mt-5 pt-3.5 border-t border-slate-800 flex items-center justify-between gap-3">
-        <div className="text-[11px] text-slate-400 truncate max-w-[60%] flex items-center gap-1.5">
-          <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+      <div className="mt-6 pt-4 border-t border-[#1C1C1C] flex items-center justify-between gap-3">
+        <div className="text-[11px] text-[#737373] truncate max-w-[55%] flex items-center gap-1.5">
+          <MapPin className="w-3.5 h-3.5 text-[#A3A3A3] shrink-0" />
           <span className="truncate">{event.venue}</span>
         </div>
 
         {onRsvp && event.status === 'Upcoming' && (
           <button
             onClick={() => onRsvp(event)}
-            className="px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition-all flex items-center gap-1.5 shrink-0 active:scale-95"
+            className="px-4 py-2 text-xs font-bold rounded-lg bg-[#FFC21A] hover:bg-[#FFB81C] text-black shadow-sm transition-all flex items-center gap-1.5 shrink-0 active:scale-95 cursor-pointer"
           >
-            <span>Reserve Seat</span>
+            <span>RSVP Free</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         )}

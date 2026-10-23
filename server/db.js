@@ -158,9 +158,9 @@ export function seedDatabase() {
     db.prepare(`
       INSERT INTO event_tickets (id, title, event_type, venue, event_date, access_level, created_by)
       VALUES 
-      ('EVT-HACK-2026-WL', 'Woliso Inter-Department Innovation Hackathon 2026', 'Hackathon', 'Computer Lab 02 & Main Hall', 'March 28, 2026', 'Full Hacker Clearance & Workstation Access', 'Yesuf Dergu (Lead Admin)'),
-      ('EVT-LECT-2026-01', 'Git, Linux & Modern Web Architecture Masterclass', 'Lecture', 'Orientation Hall B', 'March 14, 2026', 'General Attendee Entry', 'Yesuf Dergu (Lead Admin)'),
-      ('EVT-CHAL-2026-01', 'CGC Weekend Cryptography & Ethical Defense Sprint', 'Coding Challenge', 'Computer Lab 02', 'April 05, 2026', 'Participant Terminal Clearance', 'Yesuf Dergu (Lead Admin)')
+      ('EVT-HACK-2026-WL', 'Woliso Inter-Department Innovation Hackathon 2026', 'Hackathon', 'Old Classroom ICT Building IT lab 01 and 06', 'March 28, 2026', 'Full Hacker Clearance & Workstation Access', 'Yesuf Dergu (Lead Admin)'),
+      ('EVT-LECT-2026-01', 'Git, Linux & Modern Web Architecture Masterclass', 'Lecture', 'Old Classroom ICT Building IT lab 01 and 06', 'March 14, 2026', 'General Attendee Entry', 'Yesuf Dergu (Lead Admin)'),
+      ('EVT-CHAL-2026-01', 'CGC Weekend Cryptography & Ethical Defense Sprint', 'Coding Challenge', 'Old Classroom ICT Building IT lab 01 and 06', 'April 05, 2026', 'Participant Terminal Clearance', 'Yesuf Dergu (Lead Admin)')
     `).run();
     console.log('[DB] Seeded initial event tickets.');
   }
@@ -193,8 +193,8 @@ export function seedDatabase() {
       },
       {
         id: 'collab_03',
-        title: 'Computer Lab 02 Cybersecurity Defense & Packet Inspection Group',
-        description: 'Hands-on peer group setting up Wireshark packet analysis, Linux terminal hardening, and capture-the-flag (CTF) defense drills in Computer Lab 02. Beginners welcome!',
+        title: 'IT Lab 01 & 06 Cybersecurity Defense & Packet Inspection Group',
+        description: 'Hands-on peer group setting up Wireshark packet analysis, Linux terminal hardening, and capture-the-flag (CTF) defense drills in Old Classroom ICT Building IT lab 01 and 06. Beginners welcome!',
         faculty: 'Computer Science & IT',
         needed_skills: 'Linux CLI, Wireshark, Basic Networking, Curiosity',
         contact_telegram: '@SatoshiFlash',
@@ -223,7 +223,7 @@ export function seedDatabase() {
       VALUES 
       ('PRJ-CGC-01', 'CGC Official Portal & Digital Member Pass', 'Official web platform, scannable QR verification pass, and cross-department collaboration engine for Ambo University Woliso Campus.', 'Software & Web', 'Yesuf Dergu', 'Information Technology', 'All Levels Welcome', 'Frontend UI Developer, Documentation & Community Liaison, Testing & QA Contributor', 'Active', 'Provide 500+ Ambo University Woliso Campus students with verified membership passes, project collaboration, and peer tech mentorship.'),
       ('PRJ-HACK-02', 'Ambo University Cursor Hackathon Platform', 'Competitive hackathon innovation prototype demonstrated before university faculty and technical examiners at Ambo University. Engineered to solve student workflow and academic coordination needs.', 'Software & Web', 'Yesuf Dergu & Ameyu Kaba', 'Information Technology', 'All Levels Welcome', 'Full-Stack Developer, UI/UX Designer, Technical Pitch Lead', 'Active', 'Showcase Ambo University Woliso student engineering excellence to faculty examiners and national technology competitions.'),
-      ('PRJ-LAB-03', 'Computer Lab 02 Network Defense & Ethical Telemetry', 'A student-led network security lab initiative in Computer Lab 02. Students practice live packet inspection, isolate rogue ARP traffic, test ethical firewall configurations, and conduct capture-the-flag (CTF) defense drills on campus machines.', 'Cybersecurity & Systems', 'Yesuf Dergu', 'Information Technology (Cybersecurity SIG)', 'All Levels Welcome', 'Network Security Learner, Linux Terminal Administrator, CTF Challenge Author', 'Active', 'Turn Computer Lab 02 into a secure, practical defensive computing and packet-analysis workshop for student cyber teams.'),
+      ('PRJ-LAB-03', 'IT Lab 01 & 06 Network Defense & Ethical Telemetry', 'A student-led network security lab initiative in Old Classroom ICT Building IT lab 01 and 06. Students practice live packet inspection, isolate rogue ARP traffic, test ethical firewall configurations, and conduct capture-the-flag (CTF) defense drills on campus machines.', 'Cybersecurity & Systems', 'Yesuf Dergu', 'Information Technology (Cybersecurity SIG)', 'All Levels Welcome', 'Network Security Learner, Linux Terminal Administrator, CTF Challenge Author', 'Active', 'Turn Old Classroom ICT Building IT lab 01 and 06 into a secure, practical defensive computing and packet-analysis workshop for student cyber teams.'),
       ('PRJ-AI-04', 'Woliso Campus AI & Practical Computing Cohort', 'An open technical cohort co-led by IT students to train peers across Agriculture, Business, and Natural Sciences on Python automation, data analysis, and applied AI tools for local challenges in South West Shewa zone.', 'Artificial Intelligence & Data', 'Ameyu Kaba', 'Informatics & Computer Science', 'Beginners Welcome', 'Python Beginners, Agricultural Data Collector, Community Coordinator', 'Active', 'Empower non-technical and beginner students with actionable AI and data automation skills for academic research and local problem-solving.')
     `).run();
     console.log('[DB] Seeded authentic CGC campus projects.');

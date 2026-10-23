@@ -1,238 +1,48 @@
-import React, { useState } from 'react';
-import { SectionHeader } from '../components/SectionHeader';
+import React from 'react';
 import { EventCard } from '../components/EventCard';
 import { EVENTS } from '../data/events';
-import { CAMPUS_EVENT_PHOTOS, CampusEventPhoto } from '../data/team';
 import { ClubEvent } from '../types';
-import { TiltCard } from '../components/Motion/TiltCard';
-import { MagneticButton } from '../components/Motion/MagneticButton';
-import { RevealOnScroll } from '../components/Motion/RevealOnScroll';
-import { 
-  Calendar, 
-  MapPin, 
-  Users, 
-  Maximize2, 
-  X, 
-  Sparkles, 
-  Award, 
-  ExternalLink 
-} from 'lucide-react';
+import { Calendar } from 'lucide-react';
 
 interface EventsPageProps {
   onRsvp: (event: ClubEvent) => void;
   onNavigate: (tab: string) => void;
 }
 
-export const EventsPage: React.FC<EventsPageProps> = ({ onRsvp, onNavigate }) => {
-  const [activeTab, setActiveTab] = useState<'upcoming' | 'past' | 'gallery'>('upcoming');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedPhoto, setSelectedPhoto] = useState<CampusEventPhoto | null>(null);
-
-  const upcomingEvents = EVENTS.filter((e) => e.status === 'Upcoming');
-  const pastEvents = EVENTS.filter((e) => e.status === 'Past');
-
-  const currentList = activeTab === 'upcoming' ? upcomingEvents : pastEvents;
-
-  const filteredList = currentList.filter((e) => {
-    return selectedCategory === 'all' || e.category === selectedCategory;
-  });
-
-  const categories = ['all', 'Workshop', 'Hackathon', 'Project Build', 'Tech Talk', 'Competition'];
+export const EventsPage: React.FC<EventsPageProps> = ({ onRsvp }) => {
+  // Only keep "Building Real Projects: From Idea to Working MVP"
+  const singleEventList = EVENTS.filter((e) =>
+    e.title.toLowerCase().includes('building real projects')
+  );
 
   return (
-    <div className="space-y-12 sm:space-y-16 pb-24 pt-10 sm:pt-16">
+    <div className="py-12 bg-black min-h-screen text-[#F2F2F2]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Header */}
-        <SectionHeader
-          title="Campus Events & Hackathons"
-          description="Hands-on technical workshops, competitive hackathons, and laboratory sessions at Ambo University, Woliso Campus."
-        />
-
-        {/* Tab Controls: Upcoming vs Past vs Gallery */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
-          <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-[#0D1527] border border-slate-800 w-fit">
-            <button
-              onClick={() => setActiveTab('upcoming')}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all active:scale-95 ${
-                activeTab === 'upcoming'
-                  ? 'bg-blue-600 text-white shadow-md font-bold'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Upcoming ({upcomingEvents.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('past')}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all active:scale-95 ${
-                activeTab === 'past'
-                  ? 'bg-blue-600 text-white shadow-md font-bold'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Past Recaps ({pastEvents.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('gallery')}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 active:scale-95 ${
-                activeTab === 'gallery'
-                  ? 'bg-blue-600 text-white shadow-md font-bold'
-                  : 'text-emerald-400 hover:text-white'
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Event Photo Archive ({CAMPUS_EVENT_PHOTOS.length})</span>
-            </button>
-          </div>
-
-          {/* Category Filter Chips (when in upcoming or past) */}
-          {activeTab !== 'gallery' && (
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors active:scale-95 ${
-                    selectedCategory === cat
-                      ? 'bg-slate-800 text-white border border-slate-700'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  {cat === 'all' ? 'All Formats' : cat}
-                </button>
-              ))}
-            </div>
-          )}
+        {/* Header */}
+        <div className="pb-6 border-b border-[#2A2A2A] mb-8">
+          <p className="text-xs uppercase font-semibold tracking-[0.2em] text-[#FFC21A] mb-1">
+            Hands-on Sprints
+          </p>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+            Workshops &amp; Lab Sessions
+          </h1>
+          <p className="text-xs sm:text-sm text-[#A3A3A3] mt-1 max-w-2xl leading-relaxed">
+            Technical build sessions in Old Classroom ICT Building IT lab 01 and 06, Woliso Campus.
+          </p>
         </div>
 
-        {/* 
-          =======================================================
-          GALLERY VIEW (AUTHENTIC EVENT PHOTOS)
-          =======================================================
-        */}
-        {activeTab === 'gallery' ? (
-          <div className="space-y-6 animate-fade-in">
-            <div className="p-4 rounded-2xl bg-blue-950/40 border border-blue-500/30 text-xs text-blue-200">
-              <strong>Official Photo Archive:</strong> Authentic captures from the Cursor Hackathon Ambo, IT Orientation & Welcome Ceremony, and practical coding labs at Ambo University Woliso Campus.
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {CAMPUS_EVENT_PHOTOS.map((photo) => (
-                <TiltCard
-                  key={photo.id}
-                  onClick={() => setSelectedPhoto(photo)}
-                  maxTilt={6}
-                  scale={1.02}
-                  className="group rounded-2xl overflow-hidden bg-[#0D1527]/95 border border-slate-700/70 hover:border-blue-500/60 shadow-lg transition-all duration-300 flex flex-col justify-between"
-                >
-                  <div className="relative h-60 w-full overflow-hidden bg-slate-950">
-                    <img
-                      src={photo.imageUrl}
-                      alt={photo.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0D1527] via-transparent to-transparent opacity-80" />
-                    <span className="absolute top-3 right-3 bg-slate-900/90 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-mono text-emerald-400 border border-slate-700 flex items-center gap-1">
-                      <Maximize2 className="w-3 h-3" />
-                      <span>Expand</span>
-                    </span>
-                  </div>
-
-                  <div className="p-5 space-y-2">
-                    <div className="flex items-center gap-1.5 text-xs text-blue-400 font-semibold">
-                      <Calendar className="w-3.5 h-3.5" />
-                      <span>{photo.event}</span>
-                    </div>
-                    <h4 className="text-base font-bold text-white group-hover:text-blue-300 transition-colors">
-                      {photo.title}
-                    </h4>
-                    <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
-                      {photo.description}
-                    </p>
-                    <div className="pt-2 flex flex-wrap gap-1">
-                      {photo.tags.map((t, i) => (
-                        <span key={i} className="text-[10px] font-mono bg-slate-900 text-slate-400 px-2 py-0.5 rounded border border-slate-800">
-                          #{t}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </TiltCard>
-              ))}
-            </div>
-          </div>
-        ) : (
-          /* Event List (Upcoming or Past) */
-          <div className="mt-8 space-y-4">
-            {filteredList.length > 0 ? (
-              filteredList.map((event) => (
-                <EventCard key={event.id} event={event} onRsvp={onRsvp} />
-              ))
-            ) : (
-              <div className="p-12 rounded-3xl bg-[#0D1527] border border-slate-800 text-center space-y-3">
-                <Calendar className="w-10 h-10 text-slate-500 mx-auto" />
-                <h3 className="text-lg font-bold text-white">No Events in this Category</h3>
-                <p className="text-xs text-slate-400">
-                  Check back soon or select &quot;All Formats&quot; to view upcoming activities.
-                </p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Suggest a Workshop / Speaker Box */}
-        <RevealOnScroll className="mt-16">
-          <TiltCard
-            maxTilt={3}
-            scale={1.01}
-            className="p-8 rounded-3xl bg-gradient-to-r from-[#0D1527] to-[#121E38] border border-slate-700/70 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl"
-          >
-            <div>
-              <h3 className="text-lg font-bold text-white">Want to organize or facilitate a tech event?</h3>
-              <p className="text-xs text-slate-300 mt-1 max-w-xl">
-                CGC provides lab computers, projector screening, and student audiences in the Main ICT Building. Contact Lead Admin Yesuf Dergu.
-              </p>
-            </div>
-            <MagneticButton
-              onClick={() => onNavigate('contact')}
-              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold whitespace-nowrap shadow-md transition-all active:scale-95 shrink-0"
-            >
-              Get In Touch With Event Organizers
-            </MagneticButton>
-          </TiltCard>
-        </RevealOnScroll>
-
-      </div>
-
-      {/* Lightbox Modal */}
-      {selectedPhoto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in" onClick={() => setSelectedPhoto(null)}>
-          <div className="relative max-w-4xl w-full bg-[#0D1527] rounded-2xl overflow-hidden border border-slate-700 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <button
-              onClick={() => setSelectedPhoto(null)}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/60 text-white hover:bg-black/90 transition-colors active:scale-95"
-              aria-label="Close photo preview"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <img
-              src={selectedPhoto.imageUrl}
-              alt={selectedPhoto.title}
-              className="w-full max-h-[75vh] object-contain bg-black"
+        {/* Event Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {singleEventList.map((event) => (
+            <EventCard
+              key={event.id}
+              event={event}
+              onRsvp={onRsvp}
             />
-            <div className="p-5 bg-[#090F1B] border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-              <div>
-                <span className="text-[11px] font-mono text-blue-400 font-semibold uppercase block">{selectedPhoto.event} • {selectedPhoto.location}</span>
-                <span className="font-bold text-white text-base mt-0.5 block">{selectedPhoto.title}</span>
-                <p className="text-slate-300 mt-1 max-w-2xl">{selectedPhoto.description}</p>
-              </div>
-              <span className="text-emerald-400 font-mono font-semibold bg-emerald-500/10 px-2.5 py-1 rounded border border-emerald-500/20 whitespace-nowrap">
-                Ambo University
-              </span>
-            </div>
-          </div>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 };

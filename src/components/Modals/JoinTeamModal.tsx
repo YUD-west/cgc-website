@@ -30,7 +30,6 @@ export const JoinTeamModal: React.FC<JoinTeamModalProps> = ({
       return;
     }
 
-    // Save interest note
     setSubmitted(true);
   };
 
@@ -44,11 +43,11 @@ export const JoinTeamModal: React.FC<JoinTeamModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#111A2E] border border-slate-700 w-full max-w-lg rounded-2xl p-6 sm:p-8 shadow-2xl relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in text-[#F2F2F2]">
+      <div className="bg-[#080808] border border-[#2A2A2A] w-full max-w-lg rounded-2xl p-6 sm:p-8 shadow-2xl relative">
         <button
           onClick={handleReset}
-          className="absolute top-5 right-5 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800"
+          className="absolute top-5 right-5 text-neutral-400 hover:text-white p-2 rounded-lg bg-[#141414] hover:bg-[#202020]"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
@@ -56,18 +55,18 @@ export const JoinTeamModal: React.FC<JoinTeamModalProps> = ({
 
         {submitted ? (
           <div className="text-center py-4">
-            <div className="w-14 h-14 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3">
+            <div className="w-14 h-14 bg-[#FFC21A]/10 border border-[#FFC21A]/30 text-[#FFC21A] rounded-full flex items-center justify-center mx-auto mb-3">
               <CheckCircle2 className="w-7 h-7" />
             </div>
             <h3 className="text-xl font-bold text-white">Application Sent to Team Lead!</h3>
-            <p className="mt-2 text-slate-300 text-xs">
+            <p className="mt-2 text-neutral-300 text-xs">
               Project lead <strong className="text-white">{project.lead}</strong> has been notified. 
               You will receive a Telegram / email ping regarding the next team sync.
             </p>
             <div className="mt-5">
               <button
                 onClick={handleReset}
-                className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold text-sm transition-colors"
+                className="w-full py-2.5 bg-[#FFC21A] hover:bg-[#e5ad16] text-black font-bold rounded-lg text-sm transition-colors"
               >
                 Done
               </button>
@@ -76,13 +75,13 @@ export const JoinTeamModal: React.FC<JoinTeamModalProps> = ({
         ) : (
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Users className="w-4 h-4 text-blue-400" />
-              <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">
+              <Users className="w-4 h-4 text-[#FFC21A]" />
+              <span className="text-xs font-semibold text-[#FFC21A] uppercase tracking-wider">
                 Team Recruitment
               </span>
             </div>
             <h3 className="text-xl font-bold text-white">Join {project.title}</h3>
-            <p className="text-slate-300 text-xs mt-1">
+            <p className="text-neutral-300 text-xs mt-1">
               Lead by {project.lead} ({project.leadDepartment})
             </p>
 
@@ -95,7 +94,7 @@ export const JoinTeamModal: React.FC<JoinTeamModalProps> = ({
 
             <form onSubmit={handleSubmit} className="mt-4 space-y-3">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-300 mb-1">
                   Full Name *
                 </label>
                 <input
@@ -104,12 +103,12 @@ export const JoinTeamModal: React.FC<JoinTeamModalProps> = ({
                   placeholder="e.g., Hiwot Mengistu"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:border-blue-500 focus:outline-none"
+                  className="w-full px-3.5 py-2 rounded-lg bg-[#000000] border border-[#2A2A2A] text-white text-sm focus:border-[#FFC21A] focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-300 mb-1">
                   University / Contact Email *
                 </label>
                 <input
@@ -118,19 +117,19 @@ export const JoinTeamModal: React.FC<JoinTeamModalProps> = ({
                   placeholder="e.g., student@ambou.edu.et"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:border-blue-500 focus:outline-none"
+                  className="w-full px-3.5 py-2 rounded-lg bg-[#000000] border border-[#2A2A2A] text-white text-sm focus:border-[#FFC21A] focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-300 mb-1">
                     Department
                   </label>
                   <select
                     value={department}
                     onChange={(e) => setDepartment(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-xs focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 rounded-lg bg-[#000000] border border-[#2A2A2A] text-white text-xs focus:border-[#FFC21A] focus:outline-none"
                   >
                     <option value="Information Technology">Information Technology</option>
                     <option value="Computer Science">Computer Science</option>
@@ -142,13 +141,13 @@ export const JoinTeamModal: React.FC<JoinTeamModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-300 mb-1">
                     Desired Role
                   </label>
                   <select
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-xs focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 rounded-lg bg-[#000000] border border-[#2A2A2A] text-white text-xs focus:border-[#FFC21A] focus:outline-none"
                   >
                     {project.openRoles && project.openRoles.length > 0 ? (
                       project.openRoles.map((r, i) => (
@@ -164,7 +163,7 @@ export const JoinTeamModal: React.FC<JoinTeamModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-300 mb-1">
                   How would you like to contribute?
                 </label>
                 <textarea
@@ -172,7 +171,7 @@ export const JoinTeamModal: React.FC<JoinTeamModalProps> = ({
                   placeholder="Share your current skills or what you are eager to learn on this team..."
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:border-blue-500 focus:outline-none"
+                  className="w-full px-3.5 py-2 rounded-lg bg-[#000000] border border-[#2A2A2A] text-white text-sm focus:border-[#FFC21A] focus:outline-none"
                 />
               </div>
 
@@ -180,13 +179,13 @@ export const JoinTeamModal: React.FC<JoinTeamModalProps> = ({
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="px-4 py-2 text-xs font-medium text-slate-400 hover:text-white"
+                  className="px-4 py-2 text-xs font-medium text-neutral-400 hover:text-white"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg shadow-md transition-colors"
+                  className="px-5 py-2 bg-[#FFC21A] hover:bg-[#e5ad16] text-black text-xs font-bold rounded-lg shadow-md transition-colors"
                 >
                   Submit Application
                 </button>

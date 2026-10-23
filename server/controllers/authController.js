@@ -140,7 +140,7 @@ export function getMe(req, res) {
         status: 'Approved',
         id: passId,
         primaryTrack: application?.primary_track || user.primary_track || 'cybersecurity',
-        accessLevel: isAdmin ? 'Executive Access' : 'Computer Lab 02 & Workshop Access',
+        accessLevel: isAdmin ? 'Executive Access' : 'Old Classroom ICT Building IT lab 01 and 06 & Workshop Access',
         issuedAt: application?.submitted_at ? application.submitted_at.slice(0, 10) : '2026-02-15'
       };
     } else {

@@ -87,25 +87,25 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#111A2E] border border-slate-700 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 p-4 bg-black/80 backdrop-blur-sm animate-fade-in text-[#F2F2F2]">
+      <div className="bg-[#080808] border border-[#2A2A2A] w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
         {/* Search Input Bar */}
-        <div className="flex items-center px-4 border-b border-slate-800 bg-slate-900/60">
-          <Search className="w-5 h-5 text-slate-400 mr-3 flex-shrink-0" />
+        <div className="flex items-center px-4 border-b border-[#2A2A2A] bg-[#000000]">
+          <Search className="w-5 h-5 text-neutral-400 mr-3 flex-shrink-0" />
           <input
             type="text"
             autoFocus
             placeholder="Search projects, tracks, workshops, commands..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full py-4 bg-transparent text-white placeholder-slate-500 text-sm focus:outline-none"
+            className="w-full py-4 bg-transparent text-white placeholder-neutral-500 text-sm focus:outline-none"
           />
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-1 rounded-md"
+            className="text-neutral-400 hover:text-white p-1 rounded-md"
             aria-label="Close search"
           >
-            <kbd className="text-[11px] font-mono bg-slate-800 px-2 py-0.5 rounded text-slate-400">
+            <kbd className="text-[11px] font-mono bg-[#141414] px-2 py-0.5 rounded text-neutral-400 border border-[#2A2A2A]">
               ESC
             </kbd>
           </button>
@@ -115,44 +115,44 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
         <div className="p-4 overflow-y-auto space-y-4">
           {/* Quick Page Links */}
           <div>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 px-2 block mb-1.5">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500 px-2 block mb-1.5">
               Pages
             </span>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
               <button
                 onClick={() => handleSelect('join')}
-                className="flex items-center justify-between p-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 text-xs text-left border border-emerald-500/20"
+                className="flex items-center justify-between p-2 rounded-lg bg-[#FFC21A]/10 hover:bg-[#FFC21A]/20 text-[#FFC21A] text-xs text-left border border-[#FFC21A]/30 font-semibold"
               >
                 <span>Join CGC (Free)</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => handleSelect('handbook')}
-                className="flex items-center justify-between p-2 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 text-xs text-left border border-cyan-500/20"
+                className="flex items-center justify-between p-2 rounded-lg bg-[#141414] hover:bg-[#202020] text-white text-xs text-left border border-[#2A2A2A]"
               >
                 <span>Lab Handbook</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3.5 h-3.5 text-[#FFC21A]" />
               </button>
               <button
                 onClick={() => handleSelect('projects')}
-                className="flex items-center justify-between p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs text-left border border-slate-800"
+                className="flex items-center justify-between p-2 rounded-lg bg-[#141414] hover:bg-[#202020] text-white text-xs text-left border border-[#2A2A2A]"
               >
                 <span>Projects & Code</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3.5 h-3.5 text-[#FFC21A]" />
               </button>
               <button
                 onClick={() => handleSelect('events')}
-                className="flex items-center justify-between p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs text-left border border-slate-800"
+                className="flex items-center justify-between p-2 rounded-lg bg-[#141414] hover:bg-[#202020] text-white text-xs text-left border border-[#2A2A2A]"
               >
                 <span>Events & Labs</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3.5 h-3.5 text-[#FFC21A]" />
               </button>
               <button
                 onClick={() => handleSelect('about')}
-                className="flex items-center justify-between p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs text-left border border-slate-800"
+                className="flex items-center justify-between p-2 rounded-lg bg-[#141414] hover:bg-[#202020] text-white text-xs text-left border border-[#2A2A2A]"
               >
                 <span>About CGC</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3.5 h-3.5 text-[#FFC21A]" />
               </button>
             </div>
           </div>
@@ -160,7 +160,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           {/* Tracks */}
           {filteredTracks.length > 0 && (
             <div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 px-2 block mb-1.5">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500 px-2 block mb-1.5">
                 Innovation Tracks
               </span>
               <div className="space-y-1">
@@ -168,15 +168,15 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                   <button
                     key={t.id}
                     onClick={() => handleSelect('explore')}
-                    className="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-slate-800 text-left text-xs transition-colors group"
+                    className="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-[#141414] text-left text-xs transition-colors group"
                   >
                     <div>
-                      <span className="font-semibold text-white group-hover:text-blue-300 block">
+                      <span className="font-semibold text-white group-hover:text-[#FFC21A] block">
                         {t.name}
                       </span>
-                      <span className="text-[11px] text-slate-400">{t.tagline}</span>
+                      <span className="text-[11px] text-neutral-400">{t.tagline}</span>
                     </div>
-                    <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-blue-400" />
+                    <ArrowRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-[#FFC21A]" />
                   </button>
                 ))}
               </div>
@@ -186,7 +186,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           {/* Projects */}
           {filteredProjects.length > 0 && (
             <div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 px-2 block mb-1.5">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500 px-2 block mb-1.5">
                 Projects ({filteredProjects.length})
               </span>
               <div className="space-y-1">
@@ -194,17 +194,17 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                   <button
                     key={p.id}
                     onClick={() => handleSelect('projects')}
-                    className="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-slate-800 text-left text-xs transition-colors group"
+                    className="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-[#141414] text-left text-xs transition-colors group"
                   >
                     <div>
-                      <span className="font-semibold text-white group-hover:text-blue-300 block">
+                      <span className="font-semibold text-white group-hover:text-[#FFC21A] block">
                         {p.title}
                       </span>
-                      <span className="text-[11px] text-slate-400">
+                      <span className="text-[11px] text-neutral-400">
                         {p.origin} • {p.status}
                       </span>
                     </div>
-                    <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-blue-400" />
+                    <ArrowRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-[#FFC21A]" />
                   </button>
                 ))}
               </div>
@@ -214,7 +214,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           {/* Events */}
           {filteredEvents.length > 0 && (
             <div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 px-2 block mb-1.5">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500 px-2 block mb-1.5">
                 Events ({filteredEvents.length})
               </span>
               <div className="space-y-1">
@@ -222,17 +222,17 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                   <button
                     key={e.id}
                     onClick={() => handleSelect('events')}
-                    className="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-slate-800 text-left text-xs transition-colors group"
+                    className="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-[#141414] text-left text-xs transition-colors group"
                   >
                     <div>
-                      <span className="font-semibold text-white group-hover:text-blue-300 block">
+                      <span className="font-semibold text-white group-hover:text-[#FFC21A] block">
                         {e.title}
                       </span>
-                      <span className="text-[11px] text-slate-400">
+                      <span className="text-[11px] text-neutral-400">
                         {e.date} • {e.category}
                       </span>
                     </div>
-                    <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-blue-400" />
+                    <ArrowRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-[#FFC21A]" />
                   </button>
                 ))}
               </div>
@@ -242,7 +242,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           {/* Lab Handbook & Cheats */}
           {query.trim().length > 0 && filteredHandbook.length > 0 && (
             <div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 px-2 block mb-1.5">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500 px-2 block mb-1.5">
                 Lab Cheat Sheets ({filteredHandbook.length})
               </span>
               <div className="space-y-1">
@@ -250,18 +250,18 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                   <button
                     key={h.id}
                     onClick={() => handleSelect('handbook')}
-                    className="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-slate-800 text-left text-xs transition-colors group"
+                    className="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-[#141414] text-left text-xs transition-colors group"
                   >
                     <div>
-                      <span className="font-semibold text-cyan-300 group-hover:text-cyan-200 block flex items-center gap-1.5">
+                      <span className="font-semibold text-[#FFC21A] group-hover:text-white block flex items-center gap-1.5">
                         <Terminal className="w-3.5 h-3.5" />
                         {h.title}
                       </span>
-                      <span className="text-[11px] text-slate-400">
+                      <span className="text-[11px] text-neutral-400">
                         {h.subtitle}
                       </span>
                     </div>
-                    <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-400" />
+                    <ArrowRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-[#FFC21A]" />
                   </button>
                 ))}
               </div>

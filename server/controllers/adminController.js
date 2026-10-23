@@ -94,7 +94,7 @@ export function updateApplicationStatus(req, res) {
             propId,
             `${app.full_name}'s Innovation Initiative`,
             app.project_idea,
-            app.learning_goals || 'Incubating in Computer Lab 02',
+            app.learning_goals || 'Incubating in Old Classroom ICT Building IT lab 01 and 06',
             app.primary_track || 'software-development',
             app.full_name,
             app.email,
@@ -160,7 +160,7 @@ export function updateProposalStatus(req, res) {
         `).run(
           collabId,
           proposal.title,
-          `${proposal.problem_statement} Solution: ${proposal.proposed_solution || 'Prototyping in Lab 02'}`,
+          `${proposal.problem_statement} Solution: ${proposal.proposed_solution || 'Prototyping in Old Classroom ICT Building IT lab 01 and 06'}`,
           proposal.proposer_department || 'Information Technology',
           proposal.needed_roles || 'Developers, Designers, Domain Researchers',
           proposal.proposer_email || 'cgc.woliso@ambo.edu.et',
@@ -185,7 +185,7 @@ export function updateProposalStatus(req, res) {
           proposal.proposer_department || 'Ambo University',
           proposal.target_level || 'All Levels Welcome',
           proposal.needed_roles || 'Cross-Faculty Collaborators',
-          proposal.proposed_solution || 'Student-led innovation initiative in Lab 02'
+          proposal.proposed_solution || 'Student-led innovation initiative in Old Classroom ICT Building IT lab 01 and 06'
         );
       } else {
         db.prepare("UPDATE campus_projects SET status = 'Active' WHERE id = ?").run(proposal.id);

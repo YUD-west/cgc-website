@@ -9,7 +9,7 @@ export const TRACKS: Track[] = [
     description:
       'From defensive network architecture to ethical penetration testing and threat intelligence. Students learn practical offensive/defensive methodologies and build real security tools for campus and community environments.',
     iconName: 'ShieldCheck',
-    color: 'from-blue-600 to-indigo-600',
+    color: 'from-[#FFC21A] to-[#FFD54F]',
     topics: [
       'Network Security & Packet Inspection',
       'Web Application Security & OWASP Top 10',
@@ -34,7 +34,7 @@ export const TRACKS: Track[] = [
     description:
       'The foundation of engineering excellence. We focus on computational thinking, data structures, competitive programming, and writing clean, maintainable code in Python, C++, Java, and modern systems languages.',
     iconName: 'Code2',
-    color: 'from-cyan-600 to-blue-600',
+    color: 'from-[#E6AF15] to-[#FFC21A]',
     topics: [
       'Data Structures & Algorithm Optimization',
       'Competitive Programming & Contest Problem-Solving',
@@ -58,7 +58,7 @@ export const TRACKS: Track[] = [
     description:
       'Demystifying AI through real-world applications. We explore computer vision, natural language processing for local Ethiopian languages (Afan Oromo, Amharic), predictive modeling, and applied AI in agriculture, health, and education.',
     iconName: 'Cpu',
-    color: 'from-emerald-600 to-teal-600',
+    color: 'from-[#FFC21A] to-[#F59E0B]',
     topics: [
       'Applied Data Science & Exploratory Analysis',
       'Machine Learning Models (Supervised & Unsupervised)',
@@ -83,7 +83,7 @@ export const TRACKS: Track[] = [
     description:
       'Taking ideas from prototype to production. Students learn modern frontend, backend systems, database modeling, cloud deployments, and mobile applications to solve campus logistical needs and community challenges.',
     iconName: 'Layers',
-    color: 'from-blue-700 to-sky-600',
+    color: 'from-[#FFE082] to-[#FFC21A]',
     topics: [
       'Full-Stack Web Architectures (React, Next.js, Node.js)',
       'REST & GraphQL API Engineering',
@@ -108,7 +108,7 @@ export const TRACKS: Track[] = [
     description:
       'Technology alone does not create change until it reaches people. We guide students through product thinking, lean startup methodology, customer interviews, business model canvas, and pitch preparation for grant and venture funding.',
     iconName: 'Rocket',
-    color: 'from-amber-600 to-emerald-600',
+    color: 'from-[#FFC21A] to-[#D97706]',
     topics: [
       'Problem Validation & Lean Customer Discovery',
       'Minimum Viable Product (MVP) Scoping',
