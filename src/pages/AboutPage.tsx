@@ -12,16 +12,11 @@ import {
   TrendingUp, 
   Sparkles, 
   Target, 
-  MapPin, 
-  ArrowRight,
   UserCheck,
   Send,
   Linkedin,
   Github,
-  Mail,
-  Award,
-  Calendar,
-  ExternalLink
+  Mail
 } from 'lucide-react';
 
 interface AboutPageProps {
@@ -308,27 +303,6 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
                 Partnering with regional organizations, publishing peer-reviewed student research, and incubating campus projects into sustainable civic utilities and tech startups.
               </p>
             </TiltCard>
-          </div>
-
-          {/* Woliso Campus Facilities Context */}
-          <div className="mt-10 p-6 rounded-2xl bg-[#050505] border border-[#2A2A2A] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-[#141414] text-neutral-300 border border-[#2A2A2A]">
-                <MapPin className="w-5 h-5 text-[#FFC21A]" />
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-white">Ambo University, Woliso Campus</h4>
-                <p className="text-xs text-neutral-400">Old Classroom ICT Building • IT lab 01 and 06 • South West Shewa Zone, Oromia</p>
-              </div>
-            </div>
-
-            <button
-              onClick={() => onNavigate('contact')}
-              className="text-xs font-semibold text-[#FFC21A] hover:text-white flex items-center gap-1 active:scale-95 transition-colors"
-            >
-              <span>View Lab Hours & Location</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
           </div>
         </div>
       </RevealOnScroll>
