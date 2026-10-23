@@ -8,10 +8,8 @@ import { RevealOnScroll } from '../components/Motion/RevealOnScroll';
 import { 
   ShieldCheck, 
   Users, 
-  Compass, 
   TrendingUp, 
   Sparkles, 
-  Target, 
   UserCheck,
   Send,
   Linkedin,
@@ -85,8 +83,12 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
               scale={1.015}
               className="p-8 sm:p-10 rounded-3xl bg-[#080808] backdrop-blur-xl border border-[#2A2A2A] shadow-xl space-y-4"
             >
-              <div className="w-12 h-12 rounded-xl bg-[#FFC21A]/10 border border-[#FFC21A]/30 text-[#FFC21A] flex items-center justify-center shadow-inner">
-                <Target className="w-6 h-6" />
+              <div className="w-12 h-12 rounded-xl bg-[#FFC21A]/10 border border-[#FFC21A]/30 flex items-center justify-center shadow-inner p-2.5">
+                <img
+                  src="/mission-icon-gold.png"
+                  alt="Mission Target Icon"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <h3 className="text-2xl font-bold text-white tracking-tight">{t('about.missionTitle')}</h3>
               <p className="text-neutral-300 leading-relaxed text-sm sm:text-base">
@@ -99,8 +101,12 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenBrandMod
               scale={1.015}
               className="p-8 sm:p-10 rounded-3xl bg-[#080808] backdrop-blur-xl border border-[#2A2A2A] shadow-xl space-y-4"
             >
-              <div className="w-12 h-12 rounded-xl bg-[#FFC21A]/10 border border-[#FFC21A]/30 text-[#FFC21A] flex items-center justify-center shadow-inner">
-                <Compass className="w-6 h-6" />
+              <div className="w-12 h-12 rounded-xl bg-[#FFC21A]/10 border border-[#FFC21A]/30 flex items-center justify-center shadow-inner p-2.5">
+                <img
+                  src="/vision-icon-gold.png"
+                  alt="Vision Stairs Icon"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <h3 className="text-2xl font-bold text-white tracking-tight">{t('about.visionTitle')}</h3>
               <p className="text-neutral-300 leading-relaxed text-sm sm:text-base">
