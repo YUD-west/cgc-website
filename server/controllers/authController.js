@@ -4,10 +4,28 @@ import { z } from 'zod';
 import { db } from '../db.js';
 import { JWT_SECRET } from '../middleware/auth.js';
 
-// In-memory brute-force protection
+// In-memory brute-force protection with bounded capacity and TTL cleanup
 const loginAttempts = new Map();
+const MAX_ATTEMPTS_ENTRIES = 5000;
+
+function cleanupExpiredAttempts() {
+  const now = Date.now();
+  for (const [key, record] of loginAttempts.entries()) {
+    if (record.lockedUntil && record.lockedUntil <= now) {
+      loginAttempts.delete(key);
+    }
+  }
+}
 
 function checkBruteForce(key) {
+  if (loginAttempts.size > MAX_ATTEMPTS_ENTRIES) {
+    cleanupExpiredAttempts();
+    if (loginAttempts.size > MAX_ATTEMPTS_ENTRIES) {
+      const oldestKey = loginAttempts.keys().next().value;
+      if (oldestKey) loginAttempts.delete(oldestKey);
+    }
+  }
+
   const record = loginAttempts.get(key);
   if (!record) return { allowed: true };
   const now = Date.now();
@@ -28,7 +46,7 @@ function recordFailedAttempt(key) {
   record.count += 1;
   if (record.count >= 5) {
     record.lockedUntil = now + (15 * 60 * 1000); // 15-minute lockout
-    console.warn(`[SECURITY] Account/IP locked for 15 minutes due to 5 consecutive failed attempts: ${key}`);
+    console.warn(`[SECURITY] Account locked for 15 minutes due to 5 consecutive failed attempts: ${key}`);
   }
   loginAttempts.set(key, record);
 }
@@ -39,7 +57,7 @@ function clearAttempts(key) {
 
 export const registerSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
   fullName: z.string().min(2, 'Full name is required'),
   department: z.string().optional(),
   yearOfStudy: z.string().optional(),
@@ -114,8 +132,8 @@ export async function login(req, res) {
   try {
     const { email, password } = req.validatedBody;
     const cleanEmail = email.toLowerCase().trim();
-    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
-    const rateLimitKey = `${clientIp}_${cleanEmail}`;
+    // Rate limit on target identity to prevent distributed brute-force bypass
+    const rateLimitKey = `email_${cleanEmail}`;
 
     // Brute-force check
     const { allowed, remainingMinutes } = checkBruteForce(rateLimitKey);

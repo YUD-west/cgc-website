@@ -26,13 +26,33 @@ const PORT = process.env.PORT || 5055;
 seedDatabase();
 
 // CORS setup
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000,http://localhost:5055,https://cgc-woliso.onrender.com').split(',').map(s => s.trim());
 app.use(cors({
-  origin: '*',
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin) || origin.startsWith('http://localhost:')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Cross-origin request blocked by CGC CORS policy.'));
+    }
+  },
   methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-app.use(express.json());
+// Defensive HTTP Security Headers
+app.use((req, res, next) => {
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  if (process.env.NODE_ENV === 'production') {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
+  next();
+});
+
+app.use(express.json({ limit: '100kb' }));
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -264,7 +284,7 @@ app.post('/api/rsvps', (req, res) => {
 });
 
 // ---------------- PUBLIC DIGITAL PASS & EVENT TICKET VERIFICATION ----------------
-app.get('/api/verify-pass/:passId', (req, res) => {
+const verifyPassHandler = (req, res) => {
   try {
     const rawPassId = (req.params.passId || '').trim();
     if (!rawPassId) {
@@ -272,7 +292,7 @@ app.get('/api/verify-pass/:passId', (req, res) => {
     }
 
     // 1. Check Flexible Event, Hackathon & Lecture Tickets Table
-    const matchedTicket = db.prepare('SELECT * FROM event_tickets WHERE id = ? OR upper(id) = upper(?)').get(rawPassId, rawPassId);
+    const matchedTicket = db.prepare('SELECT * FROM event_tickets WHERE upper(id) = upper(?)').get(rawPassId);
     if (matchedTicket) {
       return res.json({
         verified: true,
@@ -291,15 +311,14 @@ app.get('/api/verify-pass/:passId', (req, res) => {
       });
     }
 
-    // 2. Check Lead Admin President Pass
-    if (rawPassId.toUpperCase() === 'CGC-WL-2026-PRES' || rawPassId.toUpperCase().includes('PRES')) {
-      const admin = db.prepare('SELECT id, full_name, email, role, department, telegram FROM users WHERE email = ?').get('yesufdergu464@gmail.com');
+    // 2. Check Lead Admin President Pass (Strict exact ID matching)
+    if (rawPassId.toUpperCase() === 'CGC-WL-2026-PRES') {
+      const admin = db.prepare('SELECT id, full_name, role, department FROM users WHERE email = ?').get('yesufdergu464@gmail.com');
       return res.json({
         verified: true,
         member: {
           id: 'CGC-WL-2026-PRES',
           fullName: admin ? admin.full_name : 'Yesuf Dergu',
-          email: 'yesufdergu464@gmail.com',
           role: 'Lead Administrator & Club President',
           department: 'Information Technology (Ambo University Woliso Campus)',
           yearOfStudy: 'Executive Lead',
@@ -314,13 +333,13 @@ app.get('/api/verify-pass/:passId', (req, res) => {
 
     // 3. Check official member applications table
     const matchedApp = db.prepare(`
-      SELECT id, full_name, email, department, year_of_study, primary_track, status, submitted_at
+      SELECT id, full_name, department, year_of_study, primary_track, status, submitted_at
       FROM member_applications
-      WHERE id = ? OR upper(id) = upper(?)
-    `).get(rawPassId, rawPassId);
+      WHERE upper(id) = upper(?)
+    `).get(rawPassId);
 
     if (matchedApp) {
-      const isApproved = matchedApp.status === 'Approved';
+      const isApproved = matchedApp.status === 'Approved' || matchedApp.status === 'Innovation Lead';
       if (!isApproved) {
         return res.status(403).json({
           verified: false,
@@ -334,7 +353,6 @@ app.get('/api/verify-pass/:passId', (req, res) => {
         member: {
           id: matchedApp.id,
           fullName: matchedApp.full_name,
-          email: matchedApp.email,
           role: 'Official Approved Member',
           department: matchedApp.department,
           yearOfStudy: matchedApp.year_of_study,
@@ -347,12 +365,12 @@ app.get('/api/verify-pass/:passId', (req, res) => {
       });
     }
 
-    // 4. Check registered users table
+    // 4. Check registered users table (Strict exact ID matching without wildcard LIKE)
     const matchedUser = db.prepare(`
-      SELECT id, full_name, email, role, department, year_of_study, primary_track, membership_status
+      SELECT id, full_name, role, department, year_of_study, primary_track, membership_status
       FROM users
-      WHERE id = ? OR upper(id) = upper(?) OR id LIKE ?
-    `).get(rawPassId, rawPassId, `%${rawPassId.slice(-4)}`);
+      WHERE upper(id) = upper(?)
+    `).get(rawPassId);
 
     if (matchedUser) {
       const isApproved = matchedUser.role === 'ADMIN' || matchedUser.membership_status === 'APPROVED';
@@ -367,9 +385,8 @@ app.get('/api/verify-pass/:passId', (req, res) => {
       return res.json({
         verified: true,
         member: {
-          id: rawPassId.toUpperCase(),
+          id: matchedUser.id.toUpperCase(),
           fullName: matchedUser.full_name,
-          email: matchedUser.email,
           role: matchedUser.role === 'ADMIN' ? 'Administrator' : 'Official Approved Member',
           department: matchedUser.department || 'Informatics & Technology',
           yearOfStudy: matchedUser.year_of_study || '2nd Year Student',
@@ -390,7 +407,10 @@ app.get('/api/verify-pass/:passId', (req, res) => {
     console.error('[Verify] Error verifying pass:', err);
     res.status(500).json({ verified: false, error: 'Internal verification service error.' });
   }
-});
+};
+
+app.get('/api/verify-pass/:passId', verifyPassHandler);
+app.get('/api/verify/:passId', verifyPassHandler);
 
 // ---------------- CROSS-DISCIPLINARY CO-CREATOR BOARD ----------------
 app.get('/api/co-creators', (req, res) => {
@@ -447,12 +467,28 @@ app.post('/api/co-creators', (req, res) => {
   }
 });
 
-app.patch('/api/co-creators/:id/status', (req, res) => {
+app.patch('/api/co-creators/:id/status', authenticateUser, (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body; // 'Open' or 'Teamed Up'
-    db.prepare('UPDATE co_creators SET status = ? WHERE id = ?').run(status || 'Teamed Up', id);
-    res.json({ success: true, message: 'Status updated.' });
+    const { status } = req.body;
+    const validStatuses = ['Open', 'Teamed Up', 'Closed'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Invalid status. Must be Open, Teamed Up, or Closed.' });
+    }
+
+    const post = db.prepare('SELECT contact_email FROM co_creators WHERE id = ?').get(id);
+    if (!post) {
+      return res.status(404).json({ error: 'Collaboration post not found.' });
+    }
+
+    const isOwner = post.contact_email && post.contact_email.toLowerCase() === req.user.email.toLowerCase();
+    const isAdmin = req.user.role === 'ADMIN';
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({ error: 'Forbidden. You can only update the status of your own collaboration posts.' });
+    }
+
+    db.prepare('UPDATE co_creators SET status = ? WHERE id = ?').run(status, id);
+    res.json({ success: true, message: `Status updated to ${status}.` });
   } catch (err) {
     res.status(500).json({ error: 'Failed to update status' });
   }

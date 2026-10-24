@@ -161,8 +161,9 @@ export function seedDatabase() {
     );
     console.log(`[DB] Seeded initial Master Lead Admin for ${adminEmail}.`);
   } else {
-    db.prepare("UPDATE users SET password_hash = ?, role = 'ADMIN', membership_status = 'APPROVED' WHERE lower(email) = lower(?)").run(hash, adminEmail);
-    console.log(`[DB] Synchronized Lead Admin credentials for ${adminEmail}.`);
+    // SECURITY: Preserve existing password hash if admin has updated their password
+    db.prepare("UPDATE users SET role = 'ADMIN', membership_status = 'APPROVED' WHERE lower(email) = lower(?)").run(adminEmail);
+    console.log(`[DB] Verified Lead Admin privileges for ${adminEmail}.`);
   }
 
   // Strictly enforce that NO OTHER user can have ADMIN privileges

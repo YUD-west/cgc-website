@@ -1,7 +1,14 @@
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 import { db } from '../db.js';
 
-export const JWT_SECRET = process.env.JWT_SECRET || 'cgc-super-secret-jwt-key-woliso-2026';
+dotenv.config();
+
+if (!process.env.JWT_SECRET || process.env.JWT_SECRET.trim().length < 32) {
+  throw new Error('[FATAL] JWT_SECRET must be configured in environment variables and contain at least 32 characters.');
+}
+
+export const JWT_SECRET = process.env.JWT_SECRET.trim();
 
 export function authenticateUser(req, res, next) {
   const authHeader = req.headers.authorization;

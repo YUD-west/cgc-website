@@ -37,6 +37,7 @@ export function getMetrics(req, res) {
 export function getAllStudents(req, res) {
   try {
     const { query, limit = 50 } = req.query;
+    const safeLimit = Math.max(1, Math.min(Number(limit) || 50, 100));
 
     let sql = "SELECT id, email, full_name, role, department, year_of_study, telegram, phone, primary_track, created_at FROM users WHERE role = 'USER'";
     const params = [];
@@ -47,7 +48,7 @@ export function getAllStudents(req, res) {
     }
 
     sql += ' ORDER BY created_at DESC LIMIT ?';
-    params.push(Number(limit));
+    params.push(safeLimit);
 
     const students = db.prepare(sql).all(...params);
     return res.json({ students });
@@ -238,13 +239,13 @@ export function updateRsvpStatus(req, res) {
       return res.status(400).json({ error: 'Invalid RSVP status. Must be Pending, Approved, or Rejected.' });
     }
 
-    const rsvp = db.prepare('SELECT * FROM event_rsvps WHERE id = ?').get(id);
+    const rsvp = db.prepare('SELECT * FROM event_rsvps WHERE id = ? OR ticket_id = ?').get(id, id);
     if (!rsvp) {
       return res.status(404).json({ error: 'RSVP record not found.' });
     }
 
-    db.prepare('UPDATE event_rsvps SET status = ? WHERE id = ?').run(status, id);
-    return res.json({ success: true, id, status, message: `RSVP reservation updated to ${status}` });
+    db.prepare('UPDATE event_rsvps SET status = ? WHERE id = ?').run(status, rsvp.id);
+    return res.json({ success: true, id: rsvp.id, status, message: `RSVP reservation updated to ${status}` });
   } catch (err) {
     console.error('[Admin] Update RSVP status error:', err);
     return res.status(500).json({ error: 'Failed to update RSVP status' });

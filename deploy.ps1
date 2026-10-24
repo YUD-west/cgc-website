@@ -30,4 +30,4 @@ Write-Host "git push -u origin main" -ForegroundColor White
 
 Write-Host "`n--- Vercel Direct Deploy Command ---" -ForegroundColor Yellow
 Write-Host "To deploy straight to https://vercel.com/yud-wests-projects, run:" -ForegroundColor Cyan
-Write-Host "`$env:NODE_TLS_REJECT_UNAUTHORIZED='0'; vercel --prod" -ForegroundColor White
+Write-Host "vercel --prod" -ForegroundColor White

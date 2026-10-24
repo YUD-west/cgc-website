@@ -10,6 +10,8 @@ import { EventsPage } from './pages/EventsPage';
 import { JoinPage } from './pages/JoinPage';
 import { UserDashboardPage } from './pages/UserDashboardPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
+import { VerificationPage } from './pages/VerificationPage';
+import { CoCreatorPage } from './pages/CoCreatorPage';
 
 import { JoinTeamModal } from './components/Modals/JoinTeamModal';
 import { RsvpModal } from './components/Modals/RsvpModal';
@@ -22,6 +24,7 @@ import { Project, ClubEvent, StudentProjectProposal } from './types';
 const AppContent: React.FC = () => {
   const { user, isAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('home');
+  const [verifyPassId, setVerifyPassId] = useState<string>('');
 
   // Modals state
   const [selectedProjectForJoin, setSelectedProjectForJoin] = useState<Project | null>(null);
@@ -63,12 +66,37 @@ const AppContent: React.FC = () => {
       .catch((err) => console.warn('Could not load approved projects', err));
   }, []);
 
+  // Listen for hash-based routing (e.g. #/verify/CGC-WL-2026-PRES from badge QR scans)
+  useEffect(() => {
+    const handleHash = () => {
+      const hash = window.location.hash.replace(/^#\/?/, '');
+      if (hash.startsWith('verify/')) {
+        const passId = decodeURIComponent(hash.slice('verify/'.length));
+        setVerifyPassId(passId);
+        setActiveTab('verify');
+      } else if (hash === 'verify') {
+        setActiveTab('verify');
+      } else if (hash === 'co-creator' || hash === 'co-creators') {
+        setActiveTab('co-creators');
+      }
+    };
+
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
+
   const handleProposalSubmitted = (_newProp: StudentProjectProposal) => {
     // Newly submitted proposals remain in the Pending queue until approved by Lead Admin Yesuf Dergu
   };
 
   const handleNavigate = (tab: string) => {
     setActiveTab(tab);
+    if (tab === 'home') {
+      window.location.hash = '';
+    } else if (tab !== 'verify') {
+      window.location.hash = tab;
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -144,6 +172,17 @@ const AppContent: React.FC = () => {
               </button>
             </div>
           )
+        )}
+
+        {activeTab === 'verify' && (
+          <VerificationPage
+            initialPassId={verifyPassId}
+            onNavigateHome={() => handleNavigate('home')}
+          />
+        )}
+
+        {activeTab === 'co-creators' && (
+          <CoCreatorPage />
         )}
       </main>
 
