@@ -26,7 +26,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'about', label: t('nav.about') },
     { id: 'projects', label: t('nav.projects') },
     { id: 'events', label: t('nav.events') },
-    { id: 'join', label: t('nav.join') },
   ];
 
   const handleNavClick = (id: string) => {
