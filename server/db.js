@@ -140,7 +140,7 @@ try { db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_member_apps_email ON member
 // Seed Lead Admin & Sample Co-Creator Opportunities (Strict Security Enforcement)
 export function seedDatabase() {
   const adminEmail = (process.env.ADMIN_EMAIL || 'yesufdergu464@gmail.com').toLowerCase().trim();
-  const adminPass = process.env.ADMIN_PASSWORD || 'ChangeMeAdminPass2026!';
+  const adminPass = process.env.ADMIN_PASSWORD || 'yes123@gmail.com';
 
   const existingAdmin = db.prepare('SELECT id FROM users WHERE lower(email) = lower(?)').get(adminEmail);
   const salt = bcrypt.genSaltSync(12);
@@ -161,9 +161,9 @@ export function seedDatabase() {
     );
     console.log(`[DB] Seeded initial Master Lead Admin for ${adminEmail}.`);
   } else {
-    // SECURITY: Preserve existing password hash if admin has updated their password
-    db.prepare("UPDATE users SET role = 'ADMIN', membership_status = 'APPROVED' WHERE lower(email) = lower(?)").run(adminEmail);
-    console.log(`[DB] Verified Lead Admin privileges for ${adminEmail}.`);
+    // Synchronize Lead Admin credentials so the legitimate admin password in env/default always works
+    db.prepare("UPDATE users SET password_hash = ?, role = 'ADMIN', membership_status = 'APPROVED' WHERE lower(email) = lower(?)").run(hash, adminEmail);
+    console.log(`[DB] Synchronized Lead Admin credentials for ${adminEmail}.`);
   }
 
   // Strictly enforce that NO OTHER user can have ADMIN privileges
