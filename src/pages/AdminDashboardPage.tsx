@@ -62,7 +62,10 @@ export const AdminDashboardPage: React.FC = () => {
   const [actionMessage, setActionMessage] = useState<string | null>(null);
 
   const fetchAdminData = async () => {
-    if (!token) return;
+    if (!token || !isAdmin) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
 
     try {
@@ -125,8 +128,12 @@ export const AdminDashboardPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchAdminData();
-  }, [token, searchQuery]);
+    if (token && isAdmin) {
+      fetchAdminData();
+    } else {
+      setLoading(false);
+    }
+  }, [token, isAdmin, searchQuery]);
 
   const handleToggleUserMembership = async (userId: string, newStatus: string) => {
     if (!token) return;

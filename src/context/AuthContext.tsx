@@ -39,11 +39,13 @@ interface AuthContextType {
   register: (data: any) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   refreshUser: () => Promise<void>;
+  setSession: (authToken: string, authUser: User) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const TOKEN_KEY = 'cgc_auth_token_v1';
+export const LEAD_ADMIN_EMAIL = 'yesufdergu464@gmail.com';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -136,6 +138,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const setSession = async (authToken: string, authUser: User) => {
+    localStorage.setItem(TOKEN_KEY, authToken);
+    setToken(authToken);
+    setUser(authUser);
+    await fetchCurrentUser(authToken);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -143,11 +152,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         token,
         membership,
         isLoading,
-        isAdmin: user?.role === 'ADMIN',
+        isAdmin: Boolean(user?.role === 'ADMIN' && user?.email?.toLowerCase() === LEAD_ADMIN_EMAIL.toLowerCase()),
         login,
         register,
         logout,
-        refreshUser
+        refreshUser,
+        setSession
       }}
     >
       {children}

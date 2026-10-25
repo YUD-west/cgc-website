@@ -78,13 +78,26 @@ const AppContent: React.FC = () => {
         setActiveTab('verify');
       } else if (hash === 'co-creator' || hash === 'co-creators') {
         setActiveTab('co-creators');
+      } else if (hash === 'admin') {
+        if (!user) {
+          setActiveTab('home');
+          window.location.hash = '';
+          setIsAuthModalOpen(true);
+        } else if (!isAdmin) {
+          setActiveTab('dashboard');
+          window.location.hash = 'dashboard';
+        } else {
+          setActiveTab('admin');
+        }
+      } else if (['home', 'about', 'projects', 'events', 'join', 'dashboard'].includes(hash)) {
+        setActiveTab(hash);
       }
     };
 
     handleHash();
     window.addEventListener('hashchange', handleHash);
     return () => window.removeEventListener('hashchange', handleHash);
-  }, []);
+  }, [user, isAdmin]);
 
   const handleProposalSubmitted = (_newProp: StudentProjectProposal) => {
     // Newly submitted proposals remain in the Pending queue until approved by Lead Admin Yesuf Dergu
@@ -149,12 +162,29 @@ const AppContent: React.FC = () => {
           <UserDashboardPage
             onNavigate={handleNavigate}
             onProposeProject={() => setIsProposalModalOpen(true)}
+            onOpenAuth={() => setIsAuthModalOpen(true)}
           />
         )}
 
         {activeTab === 'admin' && (
           isAdmin ? (
             <AdminDashboardPage />
+          ) : !user ? (
+            <div className="py-24 max-w-md mx-auto px-4 text-center space-y-4">
+              <div className="w-14 h-14 bg-red-500/10 text-red-400 rounded-2xl flex items-center justify-center mx-auto border border-red-500/30">
+                <span className="text-xl font-bold">🔒</span>
+              </div>
+              <h2 className="text-xl font-bold text-white">Sign In Required</h2>
+              <p className="text-xs text-neutral-400 leading-relaxed">
+                The CGC Presidential Control Center requires administrative authentication. Please sign in with your authorized Lead Admin account.
+              </p>
+              <button
+                onClick={() => setIsAuthModalOpen(true)}
+                className="mt-3 px-5 py-2.5 rounded-xl bg-[#FFC21A] hover:bg-[#FFB81C] text-black font-bold text-xs transition-all shadow-md cursor-pointer"
+              >
+                Sign In to Proceed
+              </button>
+            </div>
           ) : (
             <div className="py-24 max-w-md mx-auto px-4 text-center space-y-4">
               <div className="w-14 h-14 bg-red-500/10 text-red-400 rounded-2xl flex items-center justify-center mx-auto border border-red-500/30">
@@ -162,13 +192,13 @@ const AppContent: React.FC = () => {
               </div>
               <h2 className="text-xl font-bold text-white">403 — Restricted Lead Admin Clearance</h2>
               <p className="text-xs text-neutral-400 leading-relaxed">
-                The CGC Presidential Control Center is restricted exclusively to the verified Lead Administrator. Please authenticate with your authorized admin credentials.
+                The CGC Presidential Control Center is restricted exclusively to Lead Administrator Yesuf Dergu. Your account is signed in as <span className="text-white font-mono">{user.email}</span> (Student Member).
               </p>
               <button
-                onClick={() => setIsAuthModalOpen(true)}
+                onClick={() => handleNavigate('dashboard')}
                 className="mt-3 px-5 py-2.5 rounded-xl bg-[#FFC21A] hover:bg-[#FFB81C] text-black font-bold text-xs transition-all shadow-md cursor-pointer"
               >
-                Authenticate as Admin
+                Go to Student Dashboard
               </button>
             </div>
           )

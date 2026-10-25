@@ -140,7 +140,7 @@ try { db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_member_apps_email ON member
 // Seed Lead Admin & Sample Co-Creator Opportunities (Strict Security Enforcement)
 export function seedDatabase() {
   const adminEmail = (process.env.ADMIN_EMAIL || 'yesufdergu464@gmail.com').toLowerCase().trim();
-  const adminPass = process.env.ADMIN_PASSWORD || 'yes123@gmail.com';
+  const adminPass = process.env.ADMIN_PASSWORD || 'ChangeMeAdminPass2026!';
 
   const existingAdmin = db.prepare('SELECT id FROM users WHERE lower(email) = lower(?)').get(adminEmail);
   const salt = bcrypt.genSaltSync(12);

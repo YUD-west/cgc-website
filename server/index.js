@@ -3,8 +3,10 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'node:path';
 import fs from 'node:fs';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import { db, seedDatabase } from './db.js';
-import { authenticateUser, requireAdmin, validateBody } from './middleware/auth.js';
+import { authenticateUser, requireAdmin, validateBody, JWT_SECRET } from './middleware/auth.js';
 import { register, login, getMe, changePassword, registerSchema, loginSchema } from './controllers/authController.js';
 import { 
   getMetrics, 
@@ -96,7 +98,19 @@ app.get('/api/applications/check', (req, res) => {
 
 app.post('/api/applications', (req, res) => {
   try {
-    const { fullName, email, phone, department, yearOfStudy, primaryTrack, skillLevel, learningGoals, projectIdea, whyJoin } = req.body;
+    const { 
+      fullName, 
+      email, 
+      password, 
+      phone, 
+      department, 
+      yearOfStudy, 
+      primaryTrack, 
+      skillLevel, 
+      learningGoals, 
+      projectIdea, 
+      whyJoin 
+    } = req.body;
     
     if (!fullName || !email || !whyJoin) {
       return res.status(400).json({ error: 'Full name, email, and statement are required.' });
@@ -104,12 +118,75 @@ app.post('/api/applications', (req, res) => {
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    // 1. Check if user account is already accepted or has Lead Admin role
-    const userAccount = db.prepare('SELECT id, role, membership_status FROM users WHERE lower(email) = ?').get(normalizedEmail);
-    if (userAccount && (userAccount.membership_status === 'APPROVED' || userAccount.role === 'ADMIN')) {
-      return res.status(400).json({ 
-        error: 'This account has already applied and been accepted as an official CGC Member! Each user account can submit only one application, and you cannot apply again once accepted.' 
-      });
+    // 1. Check if user already exists in the users table
+    let userAccount = db.prepare('SELECT id, role, membership_status, password_hash, full_name, department, year_of_study, phone, primary_track FROM users WHERE lower(email) = ?').get(normalizedEmail);
+    let token = null;
+
+    if (!userAccount) {
+      // User does not exist yet -> A secure password is required to create their student portal account
+      if (!password || password.length < 8) {
+        return res.status(400).json({ error: 'Please create a secure password (at least 8 characters) for your Student Member Portal account.' });
+      }
+
+      const salt = bcrypt.genSaltSync(12);
+      const passwordHash = bcrypt.hashSync(password, salt);
+      const newUserId = `usr_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+
+      // SECURITY: Public registration strictly hardcodes role='USER'
+      db.prepare(`
+        INSERT INTO users (id, email, password_hash, full_name, role, department, year_of_study, phone, telegram, member_role, experience_level, primary_track, membership_status)
+        VALUES (?, ?, ?, ?, 'USER', ?, ?, ?, ?, ?, ?, ?, 'PENDING')
+      `).run(
+        newUserId,
+        normalizedEmail,
+        passwordHash,
+        fullName.trim(),
+        department || 'Information Technology',
+        yearOfStudy || '2nd Year',
+        phone || null,
+        null,
+        'Technical Builder',
+        skillLevel || 'Beginner',
+        primaryTrack || 'cybersecurity'
+      );
+
+      userAccount = {
+        id: newUserId,
+        email: normalizedEmail,
+        full_name: fullName.trim(),
+        role: 'USER',
+        department: department || 'Information Technology',
+        year_of_study: yearOfStudy || '2nd Year',
+        phone: phone || null,
+        primary_track: primaryTrack || 'cybersecurity',
+        membership_status: 'PENDING'
+      };
+
+      token = jwt.sign({ userId: newUserId, role: 'USER', email: normalizedEmail }, JWT_SECRET, { expiresIn: '7d' });
+    } else {
+      // User account exists already
+      // If client supplied auth header or password, verify to authenticate
+      const authHeader = req.headers.authorization;
+      let authenticated = false;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        try {
+          const decoded = jwt.verify(authHeader.split(' ')[1], JWT_SECRET);
+          if (decoded.userId === userAccount.id) authenticated = true;
+        } catch (e) {}
+      }
+
+      if (!authenticated && password) {
+        if (bcrypt.compareSync(password, userAccount.password_hash)) {
+          authenticated = true;
+          token = jwt.sign({ userId: userAccount.id, role: userAccount.role, email: normalizedEmail }, JWT_SECRET, { expiresIn: userAccount.role === 'ADMIN' ? '24h' : '7d' });
+        }
+      }
+
+      if (userAccount.membership_status === 'APPROVED' || userAccount.role === 'ADMIN') {
+        return res.status(400).json({ 
+          error: 'This account has already applied and been accepted as an official CGC Member! Each user account can submit only one application, and you cannot apply again once accepted.' 
+        });
+      }
     }
 
     // 2. Check if an application has already been submitted for this account
@@ -131,18 +208,44 @@ app.post('/api/applications', (req, res) => {
     }
 
     const id = `CGC-MBR-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-    const userId = userAccount ? userAccount.id : null;
+    const userId = userAccount.id;
 
     db.prepare(`
       INSERT INTO member_applications (id, full_name, email, phone, department, year_of_study, primary_track, skill_level, learning_goals, project_idea, why_join, status, user_id)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Reviewing', ?)
-    `).run(id, fullName.trim(), normalizedEmail, phone || null, department, yearOfStudy, primaryTrack, skillLevel, learningGoals || null, projectIdea || null, whyJoin.trim(), userId);
+    `).run(
+      id, 
+      fullName.trim(), 
+      normalizedEmail, 
+      phone || null, 
+      department, 
+      yearOfStudy, 
+      primaryTrack, 
+      skillLevel, 
+      learningGoals || null, 
+      projectIdea || null, 
+      whyJoin.trim(), 
+      userId
+    );
 
     res.status(201).json({
       success: true,
       id,
       status: 'Reviewing',
-      message: 'Membership application submitted successfully. It is now awaiting review by Lead Admin Yesuf Dergu.'
+      token,
+      user: {
+        id: userAccount.id,
+        email: userAccount.email,
+        fullName: userAccount.full_name || fullName.trim(),
+        role: userAccount.role || 'USER',
+        department: userAccount.department,
+        yearOfStudy: userAccount.year_of_study,
+        phone: userAccount.phone,
+        primaryTrack: userAccount.primary_track,
+        isApprovedMember: false,
+        hasApplied: true
+      },
+      message: 'Membership application submitted successfully! Your student account has been created.'
     });
   } catch (err) {
     console.error('[Apps] Error saving application:', err);

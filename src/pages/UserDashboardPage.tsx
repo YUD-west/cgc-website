@@ -20,25 +20,52 @@ import {
   Download,
   QrCode,
   Printer,
-  Smartphone
+  Smartphone,
+  ArrowRight
 } from 'lucide-react';
 
 interface UserDashboardProps {
   onNavigate: (tab: string) => void;
   onProposeProject?: () => void;
+  onOpenAuth?: () => void;
 }
 
 export const UserDashboardPage: React.FC<UserDashboardProps> = ({
   onNavigate,
-  onProposeProject
+  onProposeProject,
+  onOpenAuth
 }) => {
   const { user, membership } = useAuth();
 
   if (!user) {
     return (
-      <div className="py-24 max-w-xl mx-auto px-4 text-center bg-black text-[#F2F2F2]">
-        <h2 className="text-2xl font-bold text-white mb-2">Student Member Portal</h2>
-        <p className="text-neutral-400 text-sm mb-6">Please sign in to view your CGC Digital Member Pass.</p>
+      <div className="py-24 max-w-xl mx-auto px-4 text-center bg-black text-[#F2F2F2] space-y-6 animate-fade-in">
+        <div className="w-16 h-16 rounded-3xl bg-[#FFC21A]/10 border border-[#FFC21A]/30 text-[#FFC21A] flex items-center justify-center mx-auto">
+          <Terminal className="w-8 h-8" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-white">Student Member Portal</h2>
+          <p className="text-neutral-400 text-xs sm:text-sm max-w-md mx-auto leading-relaxed">
+            Please sign in to access your CGC Digital Member Pass, lab clearance QR code, and innovation cohorts.
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+          {onOpenAuth && (
+            <button
+              onClick={onOpenAuth}
+              className="px-6 py-3 rounded-xl bg-[#FFC21A] hover:bg-[#e5ad16] text-black font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer flex items-center gap-2"
+            >
+              <span>Sign In with Password</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          )}
+          <button
+            onClick={() => onNavigate('join')}
+            className="px-6 py-3 rounded-xl bg-[#141414] hover:bg-[#202020] text-white border border-[#2A2A2A] text-xs sm:text-sm font-semibold transition-colors active:scale-95 cursor-pointer"
+          >
+            New Student? Join CGC Free
+          </button>
+        </div>
       </div>
     );
   }

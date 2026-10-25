@@ -22,6 +22,11 @@ yarn-error.log*
 *.sqlite-shm
 cgc_database.sqlite*
 
+# Archives & Temp
+*.zip
+cgc-*.zip
+scripts/
+
 # Editor
 .vscode/*
 !.vscode/extensions.json

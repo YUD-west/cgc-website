@@ -7,7 +7,6 @@ import {
   Lock, 
   Mail, 
   User, 
-  Shield, 
   AlertCircle, 
   ArrowRight,
   Sprout,
@@ -86,12 +85,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleAdminQuickFill = () => {
-    setTab('login');
-    setEmail('yesufdergu464@gmail.com');
-    setPassword('admin123');
   };
 
   return (
@@ -281,19 +274,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               </>
             )}
           </button>
-
-          {/* Quick-fill Lead Admin shortcut */}
-          <div className="pt-2 border-t border-[#2A2A2A] flex items-center justify-between text-[11px]">
-            <span className="text-neutral-400">Testing as Admin?</span>
-            <button
-              type="button"
-              onClick={handleAdminQuickFill}
-              className="text-[#FFC21A] hover:underline font-semibold flex items-center gap-1"
-            >
-              <Shield className="w-3 h-3 text-[#FFC21A]" />
-              <span>Fill Yesuf Dergu Credentials</span>
-            </button>
-          </div>
         </form>
 
       </div>

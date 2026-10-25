@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 // Comprehensive End-to-End Test Suite for CGC Innovation Platform
 const BASE = 'http://localhost:5055';
 
@@ -28,11 +31,13 @@ async function runTests() {
   // TEST 2: Admin Authentication
   let adminToken = '';
   let adminUser = null;
+  const testAdminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
+  const testAdminPassword = process.env.ADMIN_PASSWORD || 'admin_test_password';
   try {
     const res = await fetch(`${BASE}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: 'yesufdergu464@gmail.com', password: 'admin123' })
+      body: JSON.stringify({ email: testAdminEmail, password: testAdminPassword })
     });
     const data = await res.json();
     assert(res.status === 200 && data.token, `Admin Login: ${data.user?.fullName} (Role: ${data.user?.role})`, JSON.stringify(data));
@@ -186,12 +191,14 @@ async function runTests() {
 
   // TEST 11: Member Application Submission
   try {
+    const appEmail = `applicant_${Date.now()}@cgc-innovation.org`;
     const appRes = await fetch(`${BASE}/api/applications`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         fullName: 'Kidus Tadesse',
-        email: testEmail,
+        email: appEmail,
+        password: 'Password123!',
         phone: '+251 91 123 4567',
         department: 'Software Engineering',
         yearOfStudy: '3rd Year',
@@ -201,7 +208,17 @@ async function runTests() {
       })
     });
     const appData = await appRes.json();
-    assert(appRes.status === 201 && appData.success, `Member Application Submitted: ID=${appData.id}`);
+    assert(appRes.status === 201 && appData.success, `Member Application Submitted: ID=${appData.id}`, JSON.stringify(appData));
+
+    // Lead Admin approves application
+    await fetch(`${BASE}/api/admin/applications/${appData.id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`
+      },
+      body: JSON.stringify({ status: 'Approved' })
+    });
 
     // Verify Pass Lookup for the new application pass ID
     const newPassRes = await fetch(`${BASE}/api/verify-pass/${appData.id}`);

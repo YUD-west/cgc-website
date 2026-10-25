@@ -28,10 +28,12 @@ interface JoinPageProps {
 
 export const JoinPage: React.FC<JoinPageProps> = ({ onNavigate, onApplicationSubmit }) => {
   const { t } = useLanguage();
-  const { user, membership, refreshUser } = useAuth();
+  const { user, membership, refreshUser, setSession } = useAuth();
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [department, setDepartment] = useState('Information Technology');
   const [yearOfStudy, setYearOfStudy] = useState('2nd Year');
@@ -95,6 +97,21 @@ export const JoinPage: React.FC<JoinPageProps> = ({ onNavigate, onApplicationSub
       return;
     }
 
+    if (!user) {
+      if (!password) {
+        setError('Please create a password for your Student Member Portal account.');
+        return;
+      }
+      if (password.length < 8) {
+        setError('Password must be at least 8 characters long.');
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError('Passwords do not match. Please re-enter your password.');
+        return;
+      }
+    }
+
     try {
       setLoading(true);
       setError('');
@@ -105,6 +122,7 @@ export const JoinPage: React.FC<JoinPageProps> = ({ onNavigate, onApplicationSub
         body: JSON.stringify({
           fullName: fullName.trim(),
           email: email.trim(),
+          password: !user ? password : undefined,
           phone: phone.trim() || undefined,
           department,
           yearOfStudy,
@@ -141,7 +159,12 @@ export const JoinPage: React.FC<JoinPageProps> = ({ onNavigate, onApplicationSub
       setApplicationReceipt(newApplication);
       setSubmitted(true);
       onApplicationSubmit?.(newApplication);
-      await refreshUser();
+
+      if (data.token && data.user) {
+        await setSession(data.token, data.user);
+      } else {
+        await refreshUser();
+      }
     } catch (err: any) {
       console.error('Application submit error:', err);
       setError('Failed to reach server. Please check your connection and try again.');
@@ -497,6 +520,69 @@ export const JoinPage: React.FC<JoinPageProps> = ({ onNavigate, onApplicationSub
                       />
                     </div>
                   </div>
+
+                  {/* Field 3.5: Account Password (Required when registering a new account) */}
+                  {!user ? (
+                    <div className="p-4 rounded-2xl bg-[#0A0A0A] border border-[#2A2A2A] space-y-3">
+                      <div className="flex items-center justify-between">
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-[#FFC21A] flex items-center gap-1.5">
+                          <Lock className="w-3.5 h-3.5 text-[#FFC21A]" />
+                          <span>Portal Account Password *</span>
+                        </label>
+                        <span className="text-[10px] text-neutral-400 font-mono">Minimum 8 characters</span>
+                      </div>
+                      <p className="text-[11px] text-neutral-400 leading-relaxed">
+                        Create a secure password. You will use this password to sign into your Student Member Portal to view your CGC Digital Member Pass, lab entry QR code, and project status.
+                      </p>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <div>
+                          <label className="block text-[11px] font-semibold text-neutral-300 mb-1">
+                            Create Password *
+                          </label>
+                          <input
+                            type="password"
+                            required
+                            placeholder="At least 8 characters"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            minLength={8}
+                            className="w-full px-4 py-2.5 rounded-xl bg-[#000000] border border-[#2A2A2A] text-white text-sm focus:border-[#FFC21A] focus:outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-semibold text-neutral-300 mb-1">
+                            Confirm Password *
+                          </label>
+                          <input
+                            type="password"
+                            required
+                            placeholder="Repeat password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            minLength={8}
+                            className={`w-full px-4 py-2.5 rounded-xl bg-[#000000] border text-sm focus:outline-none ${
+                              confirmPassword && confirmPassword !== password
+                                ? 'border-red-500/70 focus:border-red-500'
+                                : 'border-[#2A2A2A] focus:border-[#FFC21A]'
+                            } text-white`}
+                          />
+                        </div>
+                      </div>
+                      {confirmPassword && confirmPassword !== password && (
+                        <p className="text-[11px] text-rose-400">Passwords do not match.</p>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="p-3 rounded-xl bg-[#0A0A0A] border border-[#2A2A2A] flex items-center justify-between text-xs text-neutral-300">
+                      <span className="flex items-center gap-1.5 text-neutral-400">
+                        <UserCheck className="w-4 h-4 text-[#FFC21A]" />
+                        <span>Signed in as <strong className="text-white">{user.email}</strong></span>
+                      </span>
+                      <span className="text-[10px] text-emerald-400 font-mono">Account Connected</span>
+                    </div>
+                  )}
 
                   {/* Field 4 & 5: Department & Year of Study */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

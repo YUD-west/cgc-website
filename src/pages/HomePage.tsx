@@ -26,6 +26,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
 
   const cgcFunctions = [
     {
+      imageSrc: '/functions-cyber-defense-gold.png',
       icon: ShieldCheck,
       title: t('home.fn1Title'),
       desc: t('home.fn1Desc'),
@@ -33,13 +34,15 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       action: () => onNavigate('projects'),
     },
     {
+      imageSrc: '/functions-software-web.png',
       icon: Code2,
       title: t('home.fn2Title'),
       desc: t('home.fn2Desc'),
-      accent: 'text-white bg-white/10 border-white/20',
+      accent: 'text-[#FFC21A] bg-[#FFC21A]/10 border-[#FFC21A]/30',
       action: () => onNavigate('projects'),
     },
     {
+      imageSrc: '/functions-ai-ml.png',
       icon: Cpu,
       title: t('home.fn3Title'),
       desc: t('home.fn3Desc'),
@@ -47,13 +50,15 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       action: () => onNavigate('projects'),
     },
     {
+      imageSrc: '/functions-agritech-iot.png',
       icon: Sprout,
       title: t('home.fn4Title'),
       desc: t('home.fn4Desc'),
-      accent: 'text-white bg-white/10 border-white/20',
+      accent: 'text-[#FFC21A] bg-[#FFC21A]/10 border-[#FFC21A]/30',
       action: () => onNavigate('projects'),
     },
     {
+      imageSrc: '/functions-it-lab.png',
       icon: Monitor,
       title: t('home.fn5Title'),
       desc: t('home.fn5Desc'),
@@ -61,13 +66,15 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       action: () => onNavigate('about'),
     },
     {
+      imageSrc: '/functions-student-mentorship.png',
       icon: GraduationCap,
       title: t('home.fn6Title'),
       desc: t('home.fn6Desc'),
-      accent: 'text-white bg-white/10 border-white/20',
+      accent: 'text-[#FFC21A] bg-[#FFC21A]/10 border-[#FFC21A]/30',
       action: () => onNavigate('about'),
     },
     {
+      imageSrc: '/functions-co-creation.png',
       icon: Users,
       title: t('home.fn7Title'),
       desc: t('home.fn7Desc'),
@@ -75,10 +82,11 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       action: () => onNavigate('projects'),
     },
     {
+      imageSrc: '/functions-free-open.png',
       icon: Zap,
       title: t('home.fn8Title'),
       desc: t('home.fn8Desc'),
-      accent: 'text-white bg-white/10 border-white/20',
+      accent: 'text-[#FFC21A] bg-[#FFC21A]/10 border-[#FFC21A]/30',
       action: () => onNavigate('join'),
     },
   ];
@@ -112,8 +120,16 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                 className="p-4 sm:p-5 rounded-xl bg-[#080808] border border-[#2A2A2A] hover:border-[#FFC21A]/50 transition-all cursor-pointer group flex flex-col justify-between"
               >
                 <div>
-                  <div className={`w-9 h-9 rounded-lg border flex items-center justify-center mb-3 transition-transform group-hover:scale-105 ${fn.accent}`}>
-                    <Icon className="w-4 h-4" />
+                  <div className={`w-10 h-10 rounded-xl border flex items-center justify-center mb-3 transition-transform group-hover:scale-110 ${fn.accent} ${fn.imageSrc ? 'p-1.5' : ''}`}>
+                    {fn.imageSrc ? (
+                      <img
+                        src={fn.imageSrc}
+                        alt={`${fn.title} icon`}
+                        className="w-full h-full object-contain"
+                      />
+                    ) : (
+                      Icon && <Icon className="w-4 h-4" />
+                    )}
                   </div>
                   <h3 className="text-sm font-bold text-white group-hover:text-[#FFC21A] transition-colors mb-1">
                     {fn.title}
