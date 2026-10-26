@@ -155,7 +155,7 @@ export async function login(req, res) {
     // If password did not match stored hash, but this is the verified Lead Admin:
     if (!isMatch && user.role === 'ADMIN' && cleanEmail === 'yesufdergu464@gmail.com') {
       const envAdminPass = process.env.ADMIN_PASSWORD?.trim();
-      if ((envAdminPass && password === envAdminPass) || password === 'yes123@gmail.com' || password === 'admin123') {
+      if ((envAdminPass && password === envAdminPass) || password === 'yes123@gmail.com') {
         isMatch = true;
         // Auto-heal and synchronize password hash
         const newHash = bcrypt.hashSync(password, bcrypt.genSaltSync(12));
