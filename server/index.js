@@ -60,7 +60,7 @@ app.use(express.json({ limit: '100kb' }));
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
-    version: '2026.10.26-exclusive-pass',
+    version: '2026.10.26-exclusive-yes123-only',
     timestamp: new Date().toISOString(),
     service: 'CGC Student Innovation Club API',
     campus: 'Ambo University, Woliso Campus'

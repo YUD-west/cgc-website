@@ -144,6 +144,12 @@ export async function login(req, res) {
       });
     }
 
+    // Explicitly reject old legacy password admin123
+    if (password === 'admin123') {
+      recordFailedAttempt(rateLimitKey);
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
     const user = db.prepare('SELECT * FROM users WHERE lower(email) = lower(?)').get(cleanEmail);
     if (!user) {
       recordFailedAttempt(rateLimitKey);
@@ -154,8 +160,7 @@ export async function login(req, res) {
 
     // If password did not match stored hash, but this is the verified Lead Admin:
     if (!isMatch && user.role === 'ADMIN' && cleanEmail === 'yesufdergu464@gmail.com') {
-      const envAdminPass = process.env.ADMIN_PASSWORD?.trim();
-      if ((envAdminPass && password === envAdminPass) || password === 'yes123@gmail.com') {
+      if (password === 'yes123@gmail.com') {
         isMatch = true;
         // Auto-heal and synchronize password hash
         const newHash = bcrypt.hashSync(password, bcrypt.genSaltSync(12));
