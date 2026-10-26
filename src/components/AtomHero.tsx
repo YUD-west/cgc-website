@@ -295,6 +295,7 @@ export const AtomHero: React.FC<AtomHeroProps> = ({ onNavigate }) => {
     });
 
     function measureTags(w: number, h: number) {
+      if (w < 1024) return;
       for (let i = 0; i < tags.length; i++) {
         tags[i].w = tags[i].el.offsetWidth;
         tags[i].h = tags[i].el.offsetHeight;
@@ -313,7 +314,7 @@ export const AtomHero: React.FC<AtomHeroProps> = ({ onNavigate }) => {
       const w = mount!.clientWidth;
       const h = mount!.clientHeight;
       const GAP = 14;
-      if (!w || !h) return;
+      if (!w || !h || w < 1024) return;
       camera.updateMatrixWorld();
       atom.updateMatrixWorld(true);
       const offX = stage!.offsetLeft;
@@ -465,8 +466,8 @@ export const AtomHero: React.FC<AtomHeroProps> = ({ onNavigate }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative min-h-[580px] lg:min-h-[720px] flex flex-col justify-center">
         {/* Stage Container */}
         <div ref={stageRef} className="stage absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden" aria-hidden="true">
-          <div ref={mountRef} className="atom absolute inset-0 w-full h-full pointer-events-none" />
-          <svg ref={linksRef} className="links absolute inset-0 w-full h-full pointer-events-none">
+          <div ref={mountRef} className="atom absolute inset-0 w-full h-full pointer-events-none opacity-35 sm:opacity-50 lg:opacity-100" />
+          <svg ref={linksRef} className="links hidden lg:block absolute inset-0 w-full h-full pointer-events-none">
             <style>{`
               .links line { stroke: #BFBFBF; stroke-opacity: 0.5; stroke-width: 1; }
               .links .dot { fill: #F2F2F2; }
@@ -479,40 +480,95 @@ export const AtomHero: React.FC<AtomHeroProps> = ({ onNavigate }) => {
         <div className="hidden lg:block absolute inset-0 pointer-events-none z-[1] bg-gradient-to-r from-black via-black/70 via-30% to-transparent" />
 
         {/* Hero Copy (Left) */}
-        <div className="hero-copy relative z-10 max-w-xl py-12 lg:py-24">
-          <p className="inline-block text-[#FFC21A] text-xs font-semibold uppercase tracking-[0.18em] mb-4">
+        <div className="hero-copy relative z-10 max-w-xl py-10 sm:py-16 lg:py-24">
+          <p className="inline-block text-[#FFC21A] text-[11px] sm:text-xs font-semibold uppercase tracking-[0.18em] mb-3 sm:mb-4">
             {t('brand.campus')}
           </p>
-          <h1 id="hero-title" className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-[1.08] mb-6 text-balance">
+          <h1 id="hero-title" className="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl tracking-tight leading-[1.12] mb-4 sm:mb-6 text-balance">
             <span className="block text-white">{t('hero.titleLine1')}</span>
             <span className="block text-[#FFC21A]">{t('hero.titleLine2')}</span>
           </h1>
-          <p className="text-gray-300 text-lg sm:text-xl font-normal leading-relaxed mb-8 max-w-md">
+          <p className="text-gray-300 text-sm sm:text-lg lg:text-xl font-normal leading-relaxed mb-6 sm:mb-8 max-w-md">
             {t('hero.description')}
           </p>
 
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <button
               onClick={() => onNavigate('join')}
-              className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#F2F2F2] text-black font-bold text-sm hover:bg-white transition-all shadow-xl hover:shadow-white/10 active:scale-95 cursor-pointer"
+              className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-[#F2F2F2] text-black font-bold text-xs sm:text-sm hover:bg-white transition-all shadow-xl hover:shadow-white/10 active:scale-95 cursor-pointer"
             >
               {t('hero.joinCta')}
               <ArrowRight className="w-4 h-4" />
             </button>
             <button
               onClick={() => onNavigate('projects')}
-              className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl border border-[#2A2A2A] bg-black/40 text-gray-200 hover:text-white font-medium text-sm hover:border-[#A3A3A3] transition-all backdrop-blur-sm cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl border border-[#2A2A2A] bg-black/40 text-gray-200 hover:text-white font-medium text-xs sm:text-sm hover:border-[#A3A3A3] transition-all backdrop-blur-sm cursor-pointer"
             >
               {t('hero.exploreCta')}
             </button>
           </div>
+
+          {/* Clean Mobile 4-Track Grid (< lg) */}
+          <div className="grid grid-cols-2 gap-2.5 mt-8 lg:hidden">
+            <div
+              onClick={() => onNavigate('projects')}
+              className="p-3 rounded-xl border border-[#2A2A2A] bg-[#080808]/90 backdrop-blur-md active:scale-95 transition-all cursor-pointer hover:border-[#FFC21A]/50"
+            >
+              <div className="flex items-center gap-1.5 text-xs font-bold text-white mb-1">
+                <Shield className="w-3.5 h-3.5 text-[#FFC21A] shrink-0" />
+                <span className="truncate">{t('track.cybersecurity.title')}</span>
+              </div>
+              <p className="text-[11px] text-[#A3A3A3] line-clamp-2 leading-tight">
+                {t('track.cybersecurity.desc')}
+              </p>
+            </div>
+
+            <div
+              onClick={() => onNavigate('projects')}
+              className="p-3 rounded-xl border border-[#2A2A2A] bg-[#080808]/90 backdrop-blur-md active:scale-95 transition-all cursor-pointer hover:border-[#FFC21A]/50"
+            >
+              <div className="flex items-center gap-1.5 text-xs font-bold text-white mb-1">
+                <Terminal className="w-3.5 h-3.5 text-[#FFC21A] shrink-0" />
+                <span className="truncate">{t('track.programming.title')}</span>
+              </div>
+              <p className="text-[11px] text-[#A3A3A3] line-clamp-2 leading-tight">
+                {t('track.programming.desc')}
+              </p>
+            </div>
+
+            <div
+              onClick={() => onNavigate('projects')}
+              className="p-3 rounded-xl border border-[#2A2A2A] bg-[#080808]/90 backdrop-blur-md active:scale-95 transition-all cursor-pointer hover:border-[#FFC21A]/50"
+            >
+              <div className="flex items-center gap-1.5 text-xs font-bold text-white mb-1">
+                <Cpu className="w-3.5 h-3.5 text-[#FFC21A] shrink-0" />
+                <span className="truncate">{t('track.aiml.title')}</span>
+              </div>
+              <p className="text-[11px] text-[#A3A3A3] line-clamp-2 leading-tight">
+                {t('track.aiml.desc')}
+              </p>
+            </div>
+
+            <div
+              onClick={() => onNavigate('projects')}
+              className="p-3 rounded-xl border border-[#2A2A2A] bg-[#080808]/90 backdrop-blur-md active:scale-95 transition-all cursor-pointer hover:border-[#FFC21A]/50"
+            >
+              <div className="flex items-center gap-1.5 text-xs font-bold text-white mb-1">
+                <Code2 className="w-3.5 h-3.5 text-[#FFC21A] shrink-0" />
+                <span className="truncate">{t('track.software.title')}</span>
+              </div>
+              <p className="text-[11px] text-[#A3A3A3] line-clamp-2 leading-tight">
+                {t('track.software.desc')}
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* The 4 3D-Pinned Floating Cards */}
+        {/* The 4 3D-Pinned Floating Cards (Desktop Only) */}
         <article
           ref={(el) => (cardRefs.current[0] = el)}
           onClick={() => onNavigate('projects')}
-          className="card absolute z-20 w-[190px] p-3.5 rounded-xl border border-[#2A2A2A] bg-[#080808]/85 backdrop-blur-md shadow-2xl pointer-events-auto cursor-pointer hover:border-[#FFC21A]/60 transition-colors"
+          className="card hidden lg:block absolute z-20 w-[190px] p-3.5 rounded-xl border border-[#2A2A2A] bg-[#080808]/85 backdrop-blur-md shadow-2xl pointer-events-auto cursor-pointer hover:border-[#FFC21A]/60 transition-colors"
           style={{ willChange: 'transform, opacity' }}
         >
           <h2 className="flex items-center gap-2 font-display font-bold text-sm text-white mb-1.5">
@@ -527,7 +583,7 @@ export const AtomHero: React.FC<AtomHeroProps> = ({ onNavigate }) => {
         <article
           ref={(el) => (cardRefs.current[1] = el)}
           onClick={() => onNavigate('projects')}
-          className="card absolute z-20 w-[190px] p-3.5 rounded-xl border border-[#2A2A2A] bg-[#080808]/85 backdrop-blur-md shadow-2xl pointer-events-auto cursor-pointer hover:border-[#FFC21A]/60 transition-colors"
+          className="card hidden lg:block absolute z-20 w-[190px] p-3.5 rounded-xl border border-[#2A2A2A] bg-[#080808]/85 backdrop-blur-md shadow-2xl pointer-events-auto cursor-pointer hover:border-[#FFC21A]/60 transition-colors"
           style={{ willChange: 'transform, opacity' }}
         >
           <h2 className="flex items-center gap-2 font-display font-bold text-sm text-white mb-1.5">
@@ -542,7 +598,7 @@ export const AtomHero: React.FC<AtomHeroProps> = ({ onNavigate }) => {
         <article
           ref={(el) => (cardRefs.current[2] = el)}
           onClick={() => onNavigate('projects')}
-          className="card absolute z-20 w-[190px] p-3.5 rounded-xl border border-[#2A2A2A] bg-[#080808]/85 backdrop-blur-md shadow-2xl pointer-events-auto cursor-pointer hover:border-[#FFC21A]/60 transition-colors"
+          className="card hidden lg:block absolute z-20 w-[190px] p-3.5 rounded-xl border border-[#2A2A2A] bg-[#080808]/85 backdrop-blur-md shadow-2xl pointer-events-auto cursor-pointer hover:border-[#FFC21A]/60 transition-colors"
           style={{ willChange: 'transform, opacity' }}
         >
           <h2 className="flex items-center gap-2 font-display font-bold text-sm text-white mb-1.5">
@@ -557,7 +613,7 @@ export const AtomHero: React.FC<AtomHeroProps> = ({ onNavigate }) => {
         <article
           ref={(el) => (cardRefs.current[3] = el)}
           onClick={() => onNavigate('projects')}
-          className="card absolute z-20 w-[190px] p-3.5 rounded-xl border border-[#2A2A2A] bg-[#080808]/85 backdrop-blur-md shadow-2xl pointer-events-auto cursor-pointer hover:border-[#FFC21A]/60 transition-colors"
+          className="card hidden lg:block absolute z-20 w-[190px] p-3.5 rounded-xl border border-[#2A2A2A] bg-[#080808]/85 backdrop-blur-md shadow-2xl pointer-events-auto cursor-pointer hover:border-[#FFC21A]/60 transition-colors"
           style={{ willChange: 'transform, opacity' }}
         >
           <h2 className="flex items-center gap-2 font-display font-bold text-sm text-white mb-1.5">

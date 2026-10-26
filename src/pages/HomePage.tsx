@@ -117,7 +117,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
               <div
                 key={idx}
                 onClick={fn.action}
-                className="p-4 sm:p-5 rounded-xl bg-[#080808] border border-[#2A2A2A] hover:border-[#FFC21A]/50 transition-all cursor-pointer group flex flex-col justify-between"
+                className="p-3.5 sm:p-5 rounded-xl bg-[#080808] border border-[#2A2A2A] hover:border-[#FFC21A]/50 transition-all cursor-pointer group flex flex-col justify-between"
               >
                 <div>
                   <div className={`w-10 h-10 rounded-xl border flex items-center justify-center mb-3 transition-transform group-hover:scale-110 ${fn.accent} ${fn.imageSrc ? 'p-1.5' : ''}`}>

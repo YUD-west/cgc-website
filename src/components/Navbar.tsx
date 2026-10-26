@@ -70,7 +70,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         {/* Right CTA / Language / Auth */}
-        <div className="hidden sm:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-3">
           {/* 3-Language Dropdown */}
           <LanguageSelector />
 

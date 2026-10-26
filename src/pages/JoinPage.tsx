@@ -315,8 +315,8 @@ export const JoinPage: React.FC<JoinPageProps> = ({ onNavigate, onApplicationSub
           */
           <>
             {/* The Two Participation Tiers Explained */}
-            <div className="mt-8 mb-12 grid grid-cols-1 md:grid-cols-2 gap-6 text-xs sm:text-sm">
-              <div className="p-6 rounded-2xl bg-[#080808] border border-[#2A2A2A] space-y-3">
+            <div className="mt-6 sm:mt-8 mb-8 sm:mb-12 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 text-xs sm:text-sm">
+              <div className="p-4 sm:p-6 rounded-2xl bg-[#080808] border border-[#2A2A2A] space-y-2 sm:space-y-3">
                 <div className="flex items-center gap-2 text-white font-bold">
                   <span className="w-2 h-2 rounded-full bg-[#FFC21A]" />
                   <span>Open Community (Free Access)</span>
@@ -326,7 +326,7 @@ export const JoinPage: React.FC<JoinPageProps> = ({ onNavigate, onApplicationSub
                 </p>
               </div>
 
-              <div className="p-6 rounded-2xl bg-[#141414] border border-[#FFC21A]/40 space-y-3">
+              <div className="p-4 sm:p-6 rounded-2xl bg-[#141414] border border-[#FFC21A]/40 space-y-2 sm:space-y-3">
                 <div className="flex items-center gap-2 text-[#FFC21A] font-bold">
                   <span className="w-2 h-2 rounded-full bg-[#FFC21A] animate-pulse" />
                   <span>Official Membership (This Form)</span>
@@ -437,7 +437,7 @@ export const JoinPage: React.FC<JoinPageProps> = ({ onNavigate, onApplicationSub
                 MEMBERSHIP APPLICATION FORM
                 =======================================================
               */
-              <div className="bg-[#080808] border border-[#2A2A2A] rounded-3xl p-6 sm:p-10 shadow-card">
+              <div className="bg-[#080808] border border-[#2A2A2A] rounded-2xl sm:rounded-3xl p-4 sm:p-10 shadow-card">
                 
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6 pb-4 border-b border-[#2A2A2A]">
                   <div className="flex items-center gap-2">
