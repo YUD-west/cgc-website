@@ -380,7 +380,7 @@ export const AtomHero: React.FC<AtomHeroProps> = ({ onNavigate }) => {
       const w = mount!.clientWidth;
       const h = mount!.clientHeight;
       if (!w || !h) return;
-      const pr = Math.min(window.devicePixelRatio || 1, w < 700 ? 1.5 : 2);
+      const pr = Math.min(window.devicePixelRatio || 1, w < 700 ? 1 : 2);
       renderer.setPixelRatio(pr);
       renderer.setSize(w, h, false);
       for (let i = 0; i < pointMats.length; i++) pointMats[i].size = pointMats[i].userData.base * pr;

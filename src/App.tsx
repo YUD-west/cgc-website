@@ -110,7 +110,7 @@ const AppContent: React.FC = () => {
     } else if (tab !== 'verify') {
       window.location.hash = tab;
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
   };
 
   return (

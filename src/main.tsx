@@ -8,3 +8,12 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <App />
   </React.StrictMode>
 );
+
+// Register CGC Service Worker for instant offline loading and client-side caching
+if ('serviceWorker' in navigator && !window.location.hostname.includes('localhost')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+      // Offline caching fallback
+    });
+  });
+}

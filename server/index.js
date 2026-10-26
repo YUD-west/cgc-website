@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import compression from 'compression';
 import dotenv from 'dotenv';
 import path from 'node:path';
 import fs from 'node:fs';
@@ -40,6 +41,9 @@ app.use(cors({
   methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// High-speed gzip & deflate response compression (75% network reduction)
+app.use(compression());
 
 // Defensive HTTP Security Headers
 app.use((req, res, next) => {
@@ -657,16 +661,56 @@ app.patch('/api/admin/users/:id/membership', authenticateUser, requireAdmin, (re
   }
 });
 
-// ---------------- PRODUCTION CLIENT SERVING (SPA FALLBACK) ----------------
+// ---------------- HIGH-SPEED PRODUCTION CLIENT SERVING & CACHING ----------------
 const distPath = path.resolve(process.cwd(), 'dist');
 if (fs.existsSync(distPath)) {
-  app.use(express.static(distPath));
+  // 1. Immutable caching for hashed assets (Vite produces content hashes in /assets)
+  const assetsPath = path.join(distPath, 'assets');
+  if (fs.existsSync(assetsPath)) {
+    app.use('/assets', express.static(assetsPath, {
+      maxAge: '1y',
+      immutable: true
+    }));
+  }
+
+  // 2. Public static assets (logos, icons, manifests, sw.js)
+  app.use(express.static(distPath, {
+    maxAge: '1d',
+    setHeaders: (res, filePath) => {
+      // index.html and sw.js must always revalidate for instant updates
+      if (filePath.endsWith('index.html') || filePath.endsWith('sw.js')) {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      }
+    }
+  }));
+
+  // 3. SPA Fallback routing
   app.use((req, res, next) => {
     if (req.method === 'GET' && !req.path.startsWith('/api')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       return res.sendFile(path.join(distPath, 'index.html'));
     }
     next();
   });
+}
+
+// ---------------- RENDER 24/7 KEEP-ALIVE (PREVENTS COLD STARTS) ----------------
+const RENDER_EXTERNAL_URL = process.env.RENDER_EXTERNAL_URL || 'https://cgc-woliso.onrender.com';
+if (process.env.NODE_ENV === 'production' || process.env.RENDER) {
+  // Ping every 9 minutes so Render free tier never spins down due to inactivity
+  const PING_INTERVAL_MS = 9 * 60 * 1000;
+  setInterval(async () => {
+    try {
+      const pingUrl = `${RENDER_EXTERNAL_URL}/api/health`;
+      const res = await fetch(pingUrl);
+      if (res.ok) {
+        console.log(`[KEEP-ALIVE] Ping successful: ${pingUrl} (HTTP ${res.status})`);
+      }
+    } catch (e) {
+      console.warn('[KEEP-ALIVE] Ping warning:', e.message);
+    }
+  }, PING_INTERVAL_MS);
+  console.log('[KEEP-ALIVE] Initialized 9-minute self-ping to prevent Render cold starts.');
 }
 
 app.listen(PORT, () => {

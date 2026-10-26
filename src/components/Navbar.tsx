@@ -31,7 +31,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const handleNavClick = (id: string) => {
     setActiveTab(id);
     setMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
   };
 
   return (

@@ -125,6 +125,8 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                       <img
                         src={fn.imageSrc}
                         alt={`${fn.title} icon`}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-contain"
                       />
                     ) : (
